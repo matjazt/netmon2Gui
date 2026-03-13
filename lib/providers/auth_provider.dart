@@ -51,7 +51,7 @@ class AuthProvider extends ChangeNotifier {
       _loading = false;
       notifyListeners();
       return true;
-    } catch (_) {
+    } catch (e) {
       ApiClient.instance.clear();
       _currentUser = null;
       _error = 'Login failed. Check your credentials.';

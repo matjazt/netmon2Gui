@@ -1,0 +1,15 @@
+{
+  "dotnet.defaultSolution": "disable",
+  "editor.formatOnSave": true,
+  "[dart]": {
+    "editor.defaultFormatter": "Dart-Code.dart-code",
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": "explicit"
+    }
+  },
+  "files.autoSave": "onFocusChange",
+  "arb-editor.suppressedWarnings": [
+    "missing_metadata_for_key"
+  ],
+}

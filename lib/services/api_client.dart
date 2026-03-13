@@ -1,5 +1,7 @@
 import 'dart:convert';
+
 import 'package:dio/dio.dart';
+
 import '../utils/constants.dart';
 
 /// Singleton Dio instance shared by all services.
@@ -27,7 +29,8 @@ class ApiClient {
     _password = password;
     _dio.interceptors.clear();
     _dio.interceptors.add(
-      LogInterceptor(   // TODO: tule izklopi HTTP logiranje v release buildih
+      LogInterceptor(
+        // TODO: tule izklopi HTTP logiranje v release buildih
         requestBody: true,
         responseBody: true,
       ),
