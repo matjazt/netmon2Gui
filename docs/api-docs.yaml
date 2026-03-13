@@ -1240,6 +1240,79 @@ paths:
             '*/*':
               schema:
                 $ref: "#/components/schemas/PageDeviceStatusHistoryDto"
+  /api/alerts/{id}:
+    get:
+      tags:
+      - alert-controller
+      operationId: getAlertById
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/AlertDto"
+  /api/alerts/network/{networkId}:
+    get:
+      tags:
+      - alert-controller
+      operationId: getAlertsByNetwork
+      parameters:
+      - name: networkId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - name: active
+        in: query
+        required: false
+        schema:
+          type: boolean
+          default: false
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AlertDto"
+  /api/alerts/device/{deviceId}:
+    get:
+      tags:
+      - alert-controller
+      operationId: getAlertsByDevice
+      parameters:
+      - name: deviceId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - name: active
+        in: query
+        required: false
+        schema:
+          type: boolean
+          default: false
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AlertDto"
   /api/accounts/username/{username}:
     get:
       tags:
@@ -1305,6 +1378,18 @@ paths:
             '*/*':
               schema:
                 $ref: "#/components/schemas/PageAccountDto"
+  /api/accounts/me:
+    get:
+      tags:
+      - account-controller
+      operationId: getCurrentAccount
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/AccountDto"
   /api/accounts/exists:
     get:
       tags:
@@ -1583,6 +1668,8 @@ components:
         activeAlertId:
           type: integer
           format: int64
+        vendor:
+          type: string
     SaveAccountRequest:
       type: object
       properties:
@@ -1591,7 +1678,7 @@ components:
         accountTypeId:
           type: integer
           format: int64
-        passwordHash:
+        password:
           type: string
         fullName:
           type: string
@@ -1677,15 +1764,15 @@ components:
           format: int32
         sort:
           $ref: "#/components/schemas/SortObject"
+        first:
+          type: boolean
+        last:
+          type: boolean
         numberOfElements:
           type: integer
           format: int32
         pageable:
           $ref: "#/components/schemas/PageableObject"
-        first:
-          type: boolean
-        last:
-          type: boolean
         empty:
           type: boolean
     PageableObject:
@@ -1696,15 +1783,15 @@ components:
           format: int64
         sort:
           $ref: "#/components/schemas/SortObject"
-        unpaged:
-          type: boolean
         pageNumber:
           type: integer
           format: int32
+        paged:
+          type: boolean
         pageSize:
           type: integer
           format: int32
-        paged:
+        unpaged:
           type: boolean
     SortObject:
       type: object
@@ -1758,15 +1845,15 @@ components:
           format: int32
         sort:
           $ref: "#/components/schemas/SortObject"
+        first:
+          type: boolean
+        last:
+          type: boolean
         numberOfElements:
           type: integer
           format: int32
         pageable:
           $ref: "#/components/schemas/PageableObject"
-        first:
-          type: boolean
-        last:
-          type: boolean
         empty:
           type: boolean
     DeviceStatusHistoryDto:
@@ -1809,15 +1896,15 @@ components:
           format: int32
         sort:
           $ref: "#/components/schemas/SortObject"
+        first:
+          type: boolean
+        last:
+          type: boolean
         numberOfElements:
           type: integer
           format: int32
         pageable:
           $ref: "#/components/schemas/PageableObject"
-        first:
-          type: boolean
-        last:
-          type: boolean
         empty:
           type: boolean
     DeviceStats:
@@ -1853,17 +1940,43 @@ components:
           format: int32
         sort:
           $ref: "#/components/schemas/SortObject"
+        first:
+          type: boolean
+        last:
+          type: boolean
         numberOfElements:
           type: integer
           format: int32
         pageable:
           $ref: "#/components/schemas/PageableObject"
-        first:
-          type: boolean
-        last:
-          type: boolean
         empty:
           type: boolean
+    AlertDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        networkId:
+          type: integer
+          format: int64
+        deviceId:
+          type: integer
+          format: int64
+        alertType:
+          type: string
+          enum:
+          - NETWORK_DOWN
+          - DEVICE_DOWN
+          - DEVICE_UNAUTHORIZED
+        message:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+        closureTimestamp:
+          type: string
+          format: date-time
     PageAccountDto:
       type: object
       properties:
@@ -1885,15 +1998,15 @@ components:
           format: int32
         sort:
           $ref: "#/components/schemas/SortObject"
+        first:
+          type: boolean
+        last:
+          type: boolean
         numberOfElements:
           type: integer
           format: int32
         pageable:
           $ref: "#/components/schemas/PageableObject"
-        first:
-          type: boolean
-        last:
-          type: boolean
         empty:
           type: boolean
     PageAccountNetworkDto:
@@ -1917,14 +2030,14 @@ components:
           format: int32
         sort:
           $ref: "#/components/schemas/SortObject"
+        first:
+          type: boolean
+        last:
+          type: boolean
         numberOfElements:
           type: integer
           format: int32
         pageable:
           $ref: "#/components/schemas/PageableObject"
-        first:
-          type: boolean
-        last:
-          type: boolean
         empty:
           type: boolean

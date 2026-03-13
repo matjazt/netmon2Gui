@@ -1,0 +1,35 @@
+name: netmon2_gui
+description: "NetMon2 frontend - Flutter web/desktop GUI for the NetMon2 network monitoring backend."
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.8.1
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # HTTP client - used for all REST API calls
+  dio: ^5.7.0
+
+  # State management
+  provider: ^6.1.2
+
+  # Persistent key-value storage (credentials, theme, selected network)
+  shared_preferences: ^2.3.3
+
+  # Intl for date/time formatting
+  intl: ^0.20.1
+
+  # Icons
+  cupertino_icons: ^1.0.8
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+
+flutter:
+  uses-material-design: true
