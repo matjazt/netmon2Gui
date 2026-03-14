@@ -48,8 +48,12 @@ class _NetworkConfigFormState extends State<NetworkConfigForm> {
   @override
   void dispose() {
     for (final c in [
-      _reportingInterval, _alertingDelay, _email,
-      _reminderTime, _reminderDays, _timezone,
+      _reportingInterval,
+      _alertingDelay,
+      _email,
+      _reminderTime,
+      _reminderDays,
+      _timezone,
     ]) {
       c.dispose();
     }
@@ -62,10 +66,10 @@ class _NetworkConfigFormState extends State<NetworkConfigForm> {
       NetworkConfiguration(
         reportingInterval: int.tryParse(_reportingInterval.text),
         alertingDelay: int.tryParse(_alertingDelay.text),
-        notificationEmailAddress:
-            _email.text.isNotEmpty ? _email.text : null,
-        reminderTimeOfDay:
-            _reminderTime.text.isNotEmpty ? _reminderTime.text : null,
+        notificationEmailAddress: _email.text.isNotEmpty ? _email.text : null,
+        reminderTimeOfDay: _reminderTime.text.isNotEmpty
+            ? _reminderTime.text
+            : null,
         reminderIntervalDays: int.tryParse(_reminderDays.text),
         timezone: _timezone.text.isEmpty ? 'UTC' : _timezone.text,
       ),
@@ -79,8 +83,11 @@ class _NetworkConfigFormState extends State<NetworkConfigForm> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          _intField(_reportingInterval, 'Reporting interval (seconds)',
-              required: true),
+          _intField(
+            _reportingInterval,
+            'Reporting interval (seconds)',
+            required: true,
+          ),
           const SizedBox(height: 12),
           _intField(_alertingDelay, 'Alerting delay (seconds)', required: true),
           const SizedBox(height: 12),
@@ -111,8 +118,7 @@ class _NetworkConfigFormState extends State<NetworkConfigForm> {
               border: OutlineInputBorder(),
               hintText: 'Europe/Ljubljana',
             ),
-            validator: (v) =>
-                (v == null || v.isEmpty) ? 'Required' : null,
+            validator: (v) => (v == null || v.isEmpty) ? 'Required' : null,
           ),
           const SizedBox(height: 24),
           FilledButton(onPressed: _submit, child: const Text('Save')),

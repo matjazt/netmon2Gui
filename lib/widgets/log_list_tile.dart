@@ -37,11 +37,11 @@ class LogListTile extends StatelessWidget {
   }
 
   Color _levelColor(int level) => switch (level) {
-        0 => Colors.grey,      // TRACE
-        1 => Colors.blueGrey,  // DEBUG
-        2 => Colors.blue,      // INFO
-        3 => Colors.orange,    // WARN
-        4 => Colors.red,       // ERROR
-        _ => Colors.grey,
-      };
+    0 => Colors.grey, // TRACE
+    1 => Colors.blueGrey, // DEBUG
+    2 => Colors.blue, // INFO
+    3 => Colors.orange, // WARN
+    4 => Colors.red, // ERROR
+    _ => Colors.grey,
+  };
 }

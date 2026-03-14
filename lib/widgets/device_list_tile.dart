@@ -24,11 +24,13 @@ class DeviceListTile extends StatelessWidget {
       ),
       title: Row(
         children: [
-          Expanded(
-            child: Text(device.name, overflow: TextOverflow.ellipsis),
-          ),
+          Expanded(child: Text(device.name, overflow: TextOverflow.ellipsis)),
           if (hasAlert)
-            const Icon(Icons.warning_amber_rounded, color: Colors.orange, size: 18),
+            const Icon(
+              Icons.warning_amber_rounded,
+              color: Colors.orange,
+              size: 18,
+            ),
         ],
       ),
       subtitle: Text(

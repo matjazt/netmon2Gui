@@ -55,7 +55,9 @@ class _AdminAccountFormScreenState extends State<AdminAccountFormScreen> {
         username: _username.text.trim(),
         accountTypeId: _accountTypeId,
         password: _password.text.isNotEmpty ? _password.text : null,
-        fullName: _fullName.text.trim().isNotEmpty ? _fullName.text.trim() : null,
+        fullName: _fullName.text.trim().isNotEmpty
+            ? _fullName.text.trim()
+            : null,
         email: _email.text.trim().isNotEmpty ? _email.text.trim() : null,
       );
       if (_isEdit) {
@@ -66,8 +68,9 @@ class _AdminAccountFormScreenState extends State<AdminAccountFormScreen> {
       if (mounted) Navigator.of(context).pop(true);
     } catch (_) {
       if (mounted) {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(const SnackBar(content: Text('Save failed.')));
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('Save failed.')));
         setState(() => _saving = false);
       }
     }
@@ -76,9 +79,7 @@ class _AdminAccountFormScreenState extends State<AdminAccountFormScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(_isEdit ? 'Edit account' : 'New account'),
-      ),
+      appBar: AppBar(title: Text(_isEdit ? 'Edit account' : 'New account')),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(24),
         child: ConstrainedBox(
@@ -101,10 +102,14 @@ class _AdminAccountFormScreenState extends State<AdminAccountFormScreen> {
                 TextFormField(
                   controller: _password,
                   decoration: InputDecoration(
-                    labelText: _isEdit ? 'New password (leave blank to keep)' : 'Password *',
+                    labelText: _isEdit
+                        ? 'New password (leave blank to keep)'
+                        : 'Password *',
                     border: const OutlineInputBorder(),
                     suffixIcon: IconButton(
-                      icon: Icon(_obscure ? Icons.visibility : Icons.visibility_off),
+                      icon: Icon(
+                        _obscure ? Icons.visibility : Icons.visibility_off,
+                      ),
                       onPressed: () => setState(() => _obscure = !_obscure),
                     ),
                   ),
@@ -122,9 +127,18 @@ class _AdminAccountFormScreenState extends State<AdminAccountFormScreen> {
                     border: OutlineInputBorder(),
                   ),
                   items: const [
-                    DropdownMenuItem(value: kAccountTypeAdmin, child: Text('Admin')),
-                    DropdownMenuItem(value: kAccountTypeUser, child: Text('User')),
-                    DropdownMenuItem(value: kAccountTypeDevice, child: Text('Device')),
+                    DropdownMenuItem(
+                      value: kAccountTypeAdmin,
+                      child: Text('Admin'),
+                    ),
+                    DropdownMenuItem(
+                      value: kAccountTypeUser,
+                      child: Text('User'),
+                    ),
+                    DropdownMenuItem(
+                      value: kAccountTypeDevice,
+                      child: Text('Device'),
+                    ),
                   ],
                   onChanged: (v) => setState(() => _accountTypeId = v!),
                 ),
@@ -150,7 +164,8 @@ class _AdminAccountFormScreenState extends State<AdminAccountFormScreen> {
                   onPressed: _saving ? null : _save,
                   child: _saving
                       ? const SizedBox(
-                          height: 20, width: 20,
+                          height: 20,
+                          width: 20,
                           child: CircularProgressIndicator(strokeWidth: 2),
                         )
                       : const Text('Save'),

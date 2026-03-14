@@ -34,13 +34,17 @@ class _AdminNetworkFormScreenState extends State<AdminNetworkFormScreen> {
 
   Future<void> _save(NetworkConfiguration cfg) async {
     if (_nameCtrl.text.trim().isEmpty) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(const SnackBar(content: Text('Name is required.')));
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Name is required.')));
       return;
     }
     setState(() => _saving = true);
     try {
-      final req = SaveNetworkRequest(name: _nameCtrl.text.trim(), configuration: cfg);
+      final req = SaveNetworkRequest(
+        name: _nameCtrl.text.trim(),
+        configuration: cfg,
+      );
       if (_isEdit) {
         await _service.updateNetwork(widget.network!.id, req);
       } else {
@@ -49,8 +53,9 @@ class _AdminNetworkFormScreenState extends State<AdminNetworkFormScreen> {
       if (mounted) Navigator.of(context).pop(true);
     } catch (_) {
       if (mounted) {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(const SnackBar(content: Text('Save failed.')));
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('Save failed.')));
         setState(() => _saving = false);
       }
     }
@@ -59,9 +64,7 @@ class _AdminNetworkFormScreenState extends State<AdminNetworkFormScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(_isEdit ? 'Edit network' : 'New network'),
-      ),
+      appBar: AppBar(title: Text(_isEdit ? 'Edit network' : 'New network')),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(24),
         child: ConstrainedBox(
@@ -77,11 +80,14 @@ class _AdminNetworkFormScreenState extends State<AdminNetworkFormScreen> {
                 ),
               ),
               const SizedBox(height: 24),
-              Text('Configuration',
-                  style: Theme.of(context).textTheme.titleMedium),
+              Text(
+                'Configuration',
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
               const SizedBox(height: 16),
               NetworkConfigForm(
-                initial: widget.network?.config ??
+                initial:
+                    widget.network?.config ??
                     const NetworkConfiguration(timezone: 'UTC'),
                 onSave: _saving ? (_) {} : _save,
               ),

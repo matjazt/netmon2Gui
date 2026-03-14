@@ -14,7 +14,9 @@ class AccountService {
   /// Admin only: returns every account.
   Future<List<Account>> getAllAccounts() async {
     final r = await _dio.get('/api/accounts');
-    return (r.data as List).map((e) => Account.fromJson(e as Map<String, dynamic>)).toList();
+    return (r.data as List)
+        .map((e) => Account.fromJson(e as Map<String, dynamic>))
+        .toList();
   }
 
   Future<Account> getAccountById(int id) async {

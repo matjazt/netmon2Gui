@@ -54,8 +54,8 @@ class SaveNetworkRequest {
   const SaveNetworkRequest({required this.name, required this.configuration});
 
   Map<String, dynamic> toJson() => {
-        'name': name,
-        // Server expects configuration as a JSON string.
-        'configuration': jsonEncode(configuration.toJson()),
-      };
+    'name': name,
+    // Server expects configuration as a JSON string.
+    'configuration': jsonEncode(configuration.toJson()),
+  };
 }

@@ -40,7 +40,10 @@ class _LogsScreenState extends State<LogsScreen> {
       _page = 0;
       _hasMore = true;
     }
-    setState(() { _loading = true; _error = null; });
+    setState(() {
+      _loading = true;
+      _error = null;
+    });
 
     try {
       final auth = context.read<AuthProvider>();
@@ -48,11 +51,20 @@ class _LogsScreenState extends State<LogsScreen> {
 
       PageResult<LogEntry> result;
       if (auth.isAdmin) {
-        result = await _service.getAllLogsPaginated(page: _page, size: kLogPageSize);
+        result = await _service.getAllLogsPaginated(
+          page: _page,
+          size: kLogPageSize,
+        );
       } else if (network != null) {
-        result = await _service.getLogsByNetwork(network.id, page: _page, size: kLogPageSize);
+        result = await _service.getLogsByNetwork(
+          network.id,
+          page: _page,
+          size: kLogPageSize,
+        );
       } else {
-        setState(() { _loading = false; });
+        setState(() {
+          _loading = false;
+        });
         return;
       }
 
@@ -65,7 +77,11 @@ class _LogsScreenState extends State<LogsScreen> {
         });
       }
     } catch (_) {
-      if (mounted) setState(() { _error = 'Failed to load logs.'; _loading = false; });
+      if (mounted)
+        setState(() {
+          _error = 'Failed to load logs.';
+          _loading = false;
+        });
     }
   }
 

@@ -21,26 +21,25 @@ class Network {
   });
 
   factory Network.fromJson(Map<String, dynamic> json) => Network(
-        id: json['id'] as int,
-        name: json['name'] as String,
-        firstSeen: json['firstSeen'] != null
-            ? DateTime.parse(json['firstSeen'] as String)
-            : null,
-        lastSeen: json['lastSeen'] != null
-            ? DateTime.parse(json['lastSeen'] as String)
-            : null,
-        activeAlertId: json['activeAlertId'] as int?,
-        configuration: json['configuration'] as String? ?? '{}',
-        backOnlineTime: json['backOnlineTime'] != null
-            ? DateTime.parse(json['backOnlineTime'] as String)
-            : null,
-      );
+    id: json['id'] as int,
+    name: json['name'] as String,
+    firstSeen: json['firstSeen'] != null
+        ? DateTime.parse(json['firstSeen'] as String)
+        : null,
+    lastSeen: json['lastSeen'] != null
+        ? DateTime.parse(json['lastSeen'] as String)
+        : null,
+    activeAlertId: json['activeAlertId'] as int?,
+    configuration: json['configuration'] as String? ?? '{}',
+    backOnlineTime: json['backOnlineTime'] != null
+        ? DateTime.parse(json['backOnlineTime'] as String)
+        : null,
+  );
 
   /// Convenience: parse the embedded JSON configuration string.
-  NetworkConfiguration get config =>
-      NetworkConfiguration.fromJson(
-        jsonDecode(configuration) as Map<String, dynamic>,
-      );
+  NetworkConfiguration get config => NetworkConfiguration.fromJson(
+    jsonDecode(configuration) as Map<String, dynamic>,
+  );
 
   bool get hasActiveAlert => activeAlertId != null;
 }
@@ -74,13 +73,13 @@ class NetworkConfiguration {
       );
 
   Map<String, dynamic> toJson() => {
-        'reportingInterval': reportingInterval,
-        'alertingDelay': alertingDelay,
-        if (notificationEmailAddress != null)
-          'notificationEmailAddress': notificationEmailAddress,
-        if (reminderTimeOfDay != null) 'reminderTimeOfDay': reminderTimeOfDay,
-        if (reminderIntervalDays != null)
-          'reminderIntervalDays': reminderIntervalDays,
-        'timezone': timezone,
-      };
+    'reportingInterval': reportingInterval,
+    'alertingDelay': alertingDelay,
+    if (notificationEmailAddress != null)
+      'notificationEmailAddress': notificationEmailAddress,
+    if (reminderTimeOfDay != null) 'reminderTimeOfDay': reminderTimeOfDay,
+    if (reminderIntervalDays != null)
+      'reminderIntervalDays': reminderIntervalDays,
+    'timezone': timezone,
+  };
 }

@@ -27,12 +27,23 @@ class _AdminAccountsScreenState extends State<AdminAccountsScreen> {
   }
 
   Future<void> _load() async {
-    setState(() { _loading = true; _error = null; });
+    setState(() {
+      _loading = true;
+      _error = null;
+    });
     try {
       final accounts = await _service.getAllAccounts();
-      if (mounted) setState(() { _accounts = accounts; _loading = false; });
+      if (mounted)
+        setState(() {
+          _accounts = accounts;
+          _loading = false;
+        });
     } catch (_) {
-      if (mounted) setState(() { _error = 'Failed to load accounts.'; _loading = false; });
+      if (mounted)
+        setState(() {
+          _error = 'Failed to load accounts.';
+          _loading = false;
+        });
     }
   }
 
@@ -57,18 +68,19 @@ class _AdminAccountsScreenState extends State<AdminAccountsScreen> {
       _load();
     } catch (_) {
       if (mounted) {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(const SnackBar(content: Text('Delete failed.')));
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('Delete failed.')));
       }
     }
   }
 
   String _typeName(int id) => switch (id) {
-        kAccountTypeAdmin => 'Admin',
-        kAccountTypeUser => 'User',
-        kAccountTypeDevice => 'Device',
-        _ => 'Unknown',
-      };
+    kAccountTypeAdmin => 'Admin',
+    kAccountTypeUser => 'User',
+    kAccountTypeDevice => 'Device',
+    _ => 'Unknown',
+  };
 
   @override
   Widget build(BuildContext context) {
@@ -82,41 +94,41 @@ class _AdminAccountsScreenState extends State<AdminAccountsScreen> {
       body: _loading
           ? const Center(child: CircularProgressIndicator())
           : _error != null
-              ? ErrorDisplay(message: _error!, onRetry: _load)
-              : ListView.separated(
-                  itemCount: _accounts.length,
-                  separatorBuilder: (_, __) => const Divider(height: 1),
-                  itemBuilder: (ctx, i) {
-                    final a = _accounts[i];
-                    return ListTile(
-                      leading: CircleAvatar(
-                        child: Text(a.username[0].toUpperCase()),
+          ? ErrorDisplay(message: _error!, onRetry: _load)
+          : ListView.separated(
+              itemCount: _accounts.length,
+              separatorBuilder: (_, __) => const Divider(height: 1),
+              itemBuilder: (ctx, i) {
+                final a = _accounts[i];
+                return ListTile(
+                  leading: CircleAvatar(
+                    child: Text(a.username[0].toUpperCase()),
+                  ),
+                  title: Text(a.username),
+                  subtitle: Text(
+                    [
+                      _typeName(a.accountTypeId),
+                      if (a.fullName != null) a.fullName!,
+                      if (a.email != null) a.email!,
+                    ].join('  ·  '),
+                  ),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(
+                        icon: const Icon(Icons.edit_outlined),
+                        onPressed: () => _openForm(a),
                       ),
-                      title: Text(a.username),
-                      subtitle: Text(
-                        [
-                          _typeName(a.accountTypeId),
-                          if (a.fullName != null) a.fullName!,
-                          if (a.email != null) a.email!,
-                        ].join('  ·  '),
+                      IconButton(
+                        icon: const Icon(Icons.delete_outline),
+                        color: Theme.of(context).colorScheme.error,
+                        onPressed: () => _delete(a),
                       ),
-                      trailing: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          IconButton(
-                            icon: const Icon(Icons.edit_outlined),
-                            onPressed: () => _openForm(a),
-                          ),
-                          IconButton(
-                            icon: const Icon(Icons.delete_outline),
-                            color: Theme.of(context).colorScheme.error,
-                            onPressed: () => _delete(a),
-                          ),
-                        ],
-                      ),
-                    );
-                  },
-                ),
+                    ],
+                  ),
+                );
+              },
+            ),
     );
   }
 }

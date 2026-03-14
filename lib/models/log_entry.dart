@@ -23,12 +23,12 @@ class LogEntry {
   });
 
   factory LogEntry.fromJson(Map<String, dynamic> json) => LogEntry(
-        id: json['id'] as int,
-        timestamp: DateTime.parse(json['timestamp'] as String),
-        level: json['level'] as int,
-        origin: json['origin'] as String,
-        message: json['message'] as String,
-        networkId: json['networkId'] as int?,
-        deviceId: json['deviceId'] as int?,
-      );
+    id: json['id'] as int,
+    timestamp: DateTime.parse(json['timestamp'] as String),
+    level: json['level'] as int,
+    origin: json['origin'] as String,
+    message: json['message'] as String,
+    networkId: json['networkId'] as int?,
+    deviceId: json['deviceId'] as int?,
+  );
 }

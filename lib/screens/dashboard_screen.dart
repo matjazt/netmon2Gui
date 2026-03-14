@@ -98,29 +98,32 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 child: networkProvider.loading
                     ? const Center(child: CircularProgressIndicator())
                     : networkProvider.error != null
-                        ? ErrorDisplay(message: networkProvider.error!)
-                        : ListView.builder(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 8, vertical: 4),
-                            itemCount: networks.length,
-                            itemBuilder: (ctx, i) {
-                              final n = networks[i];
-                              return Padding(
-                                padding: const EdgeInsets.only(bottom: 8),
-                                child: NetworkCard(
-                                  network: n,
-                                  onTap: () {
-                                    context
-                                        .read<NetworkProvider>()
-                                        .selectNetwork(n)
-                                        .then((_) => _loadDevices());
-                                    Navigator.of(context)
-                                        .pushNamed('/network', arguments: n.id);
-                                  },
-                                ),
-                              );
-                            },
-                          ),
+                    ? ErrorDisplay(message: networkProvider.error!)
+                    : ListView.builder(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 4,
+                        ),
+                        itemCount: networks.length,
+                        itemBuilder: (ctx, i) {
+                          final n = networks[i];
+                          return Padding(
+                            padding: const EdgeInsets.only(bottom: 8),
+                            child: NetworkCard(
+                              network: n,
+                              onTap: () {
+                                context
+                                    .read<NetworkProvider>()
+                                    .selectNetwork(n)
+                                    .then((_) => _loadDevices());
+                                Navigator.of(
+                                  context,
+                                ).pushNamed('/network', arguments: n.id);
+                              },
+                            ),
+                          );
+                        },
+                      ),
               ),
             ],
           ),
@@ -137,27 +140,24 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 child: selected == null
                     ? const Center(child: Text('Select a network'))
                     : _loadingDevices
-                        ? const Center(child: CircularProgressIndicator())
-                        : _devicesError != null
-                            ? ErrorDisplay(
-                                message: _devicesError!,
-                                onRetry: _loadDevices,
-                              )
-                            : _devices.isEmpty
-                                ? const Center(
-                                    child: Text('No devices in this network'),
-                                  )
-                                : ListView.separated(
-                                    itemCount: _devices.length,
-                                    separatorBuilder: (_, __) =>
-                                        const Divider(height: 1),
-                                    itemBuilder: (ctx, i) => DeviceListTile(
-                                      device: _devices[i],
-                                      onTap: () => Navigator.of(context)
-                                          .pushNamed('/device',
-                                              arguments: _devices[i].id),
-                                    ),
-                                  ),
+                    ? const Center(child: CircularProgressIndicator())
+                    : _devicesError != null
+                    ? ErrorDisplay(
+                        message: _devicesError!,
+                        onRetry: _loadDevices,
+                      )
+                    : _devices.isEmpty
+                    ? const Center(child: Text('No devices in this network'))
+                    : ListView.separated(
+                        itemCount: _devices.length,
+                        separatorBuilder: (_, __) => const Divider(height: 1),
+                        itemBuilder: (ctx, i) => DeviceListTile(
+                          device: _devices[i],
+                          onTap: () => Navigator.of(
+                            context,
+                          ).pushNamed('/device', arguments: _devices[i].id),
+                        ),
+                      ),
               ),
             ],
           ),
@@ -167,7 +167,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   Widget _buildHeader(
-      BuildContext context, String? networkName, DeviceStats? stats) {
+    BuildContext context,
+    String? networkName,
+    DeviceStats? stats,
+  ) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       child: Row(
@@ -197,8 +200,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-  Widget _statChip(BuildContext context,
-      {required String label, required Color color}) {
+  Widget _statChip(
+    BuildContext context, {
+    required String label,
+    required Color color,
+  }) {
     return Chip(
       label: Text(label),
       backgroundColor: color.withValues(alpha: 0.15),

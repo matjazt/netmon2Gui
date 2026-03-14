@@ -45,7 +45,10 @@ class _DeviceDetailScreenState extends State<DeviceDetailScreen>
   }
 
   Future<void> _load() async {
-    setState(() { _loading = true; _error = null; });
+    setState(() {
+      _loading = true;
+      _error = null;
+    });
     try {
       final results = await Future.wait([
         _deviceService.getDeviceById(widget.deviceId),
@@ -61,7 +64,11 @@ class _DeviceDetailScreenState extends State<DeviceDetailScreen>
         });
       }
     } catch (_) {
-      if (mounted) setState(() { _error = 'Failed to load device.'; _loading = false; });
+      if (mounted)
+        setState(() {
+          _error = 'Failed to load device.';
+          _loading = false;
+        });
     }
   }
 
@@ -104,9 +111,9 @@ class _DeviceDetailScreenState extends State<DeviceDetailScreen>
         if (mounted) setState(() => _device = updated);
       } catch (_) {
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Rename failed.')),
-          );
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(const SnackBar(content: Text('Rename failed.')));
         }
       }
     }
@@ -114,14 +121,13 @@ class _DeviceDetailScreenState extends State<DeviceDetailScreen>
 
   Future<void> _changeMode(String mode) async {
     try {
-      final updated =
-          await _deviceService.updateDeviceMode(_device!.id, mode);
+      final updated = await _deviceService.updateDeviceMode(_device!.id, mode);
       if (mounted) setState(() => _device = updated);
     } catch (_) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Mode change failed.')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('Mode change failed.')));
       }
     }
   }
@@ -146,12 +152,12 @@ class _DeviceDetailScreenState extends State<DeviceDetailScreen>
                 tooltip: 'Set operation mode',
                 onSelected: _changeMode,
                 itemBuilder: (_) => const [
+                  PopupMenuItem(value: 'AUTHORIZED', child: Text('Authorized')),
                   PopupMenuItem(
-                      value: 'AUTHORIZED', child: Text('Authorized')),
-                  PopupMenuItem(
-                      value: 'UNAUTHORIZED', child: Text('Unauthorized')),
-                  PopupMenuItem(
-                      value: 'ALWAYS_ON', child: Text('Always On')),
+                    value: 'UNAUTHORIZED',
+                    child: Text('Unauthorized'),
+                  ),
+                  PopupMenuItem(value: 'ALWAYS_ON', child: Text('Always On')),
                 ],
               ),
           ],
@@ -168,15 +174,11 @@ class _DeviceDetailScreenState extends State<DeviceDetailScreen>
       body: _loading
           ? const Center(child: CircularProgressIndicator())
           : _error != null
-              ? ErrorDisplay(message: _error!, onRetry: _load)
-              : TabBarView(
-                  controller: _tabs,
-                  children: [
-                    _buildInfo(),
-                    _buildAlerts(),
-                    _buildHistory(),
-                  ],
-                ),
+          ? ErrorDisplay(message: _error!, onRetry: _load)
+          : TabBarView(
+              controller: _tabs,
+              children: [_buildInfo(), _buildAlerts(), _buildHistory()],
+            ),
     );
   }
 
@@ -188,11 +190,15 @@ class _DeviceDetailScreenState extends State<DeviceDetailScreen>
       children: [
         Row(
           children: [
-            Icon(d.online ? Icons.circle : Icons.circle_outlined,
-                color: onlineColor),
+            Icon(
+              d.online ? Icons.circle : Icons.circle_outlined,
+              color: onlineColor,
+            ),
             const SizedBox(width: 8),
-            Text(d.online ? 'Online' : 'Offline',
-                style: TextStyle(color: onlineColor)),
+            Text(
+              d.online ? 'Online' : 'Offline',
+              style: TextStyle(color: onlineColor),
+            ),
           ],
         ),
         const SizedBox(height: 12),
@@ -225,17 +231,19 @@ class _DeviceDetailScreenState extends State<DeviceDetailScreen>
   }
 
   Widget _infoRow(String label, String value) => Padding(
-        padding: const EdgeInsets.symmetric(vertical: 6),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(
-              width: 160,
-              child: Text(label,
-                  style: const TextStyle(fontWeight: FontWeight.w500)),
-            ),
-            Expanded(child: Text(value)),
-          ],
+    padding: const EdgeInsets.symmetric(vertical: 6),
+    child: Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SizedBox(
+          width: 160,
+          child: Text(
+            label,
+            style: const TextStyle(fontWeight: FontWeight.w500),
+          ),
         ),
-      );
+        Expanded(child: Text(value)),
+      ],
+    ),
+  );
 }

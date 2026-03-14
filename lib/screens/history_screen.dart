@@ -38,16 +38,25 @@ class _HistoryScreenState extends State<HistoryScreen> {
       _page = 0;
       _hasMore = true;
     }
-    setState(() { _loading = true; _error = null; });
+    setState(() {
+      _loading = true;
+      _error = null;
+    });
 
     try {
       final network = context.read<NetworkProvider>().selectedNetwork;
 
       PageResult<DeviceStatusHistory> result;
       if (network != null) {
-        result = await _service.getByNetwork(network.id, page: _page, size: kLogPageSize);
+        result = await _service.getByNetwork(
+          network.id,
+          page: _page,
+          size: kLogPageSize,
+        );
       } else {
-        setState(() { _loading = false; });
+        setState(() {
+          _loading = false;
+        });
         return;
       }
 
@@ -60,7 +69,11 @@ class _HistoryScreenState extends State<HistoryScreen> {
         });
       }
     } catch (_) {
-      if (mounted) setState(() { _error = 'Failed to load history.'; _loading = false; });
+      if (mounted)
+        setState(() {
+          _error = 'Failed to load history.';
+          _loading = false;
+        });
     }
   }
 

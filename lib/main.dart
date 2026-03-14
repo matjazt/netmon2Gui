@@ -96,17 +96,15 @@ class _AppShellState extends State<AppShell> {
     final auth = context.read<AuthProvider>();
     if (!auth.isLoggedIn || auth.currentUser == null) return;
     await context.read<NetworkProvider>().loadNetworks(
-          isAdmin: auth.isAdmin,
-          accountId: auth.currentUser!.id,
-        );
+      isAdmin: auth.isAdmin,
+      accountId: auth.currentUser!.id,
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     if (!_sessionChecked) {
-      return const Scaffold(
-        body: Center(child: CircularProgressIndicator()),
-      );
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
     final auth = context.watch<AuthProvider>();
@@ -129,15 +127,19 @@ class _MainScaffoldState extends State<MainScaffold> {
   int _selectedIndex = 0;
 
   List<_NavItem> _navItems(bool isAdmin) => [
-        const _NavItem(Icons.dashboard_outlined, Icons.dashboard, 'Dashboard'),
-        const _NavItem(Icons.list_alt_outlined, Icons.list_alt, 'Logs'),
-        const _NavItem(Icons.history_outlined, Icons.history, 'History'),
-        if (isAdmin) ...[
-          const _NavItem(Icons.manage_accounts_outlined, Icons.manage_accounts, 'Accounts'),
-          const _NavItem(Icons.lan_outlined, Icons.lan, 'Networks'),
-        ],
-        const _NavItem(Icons.settings_outlined, Icons.settings, 'Settings'),
-      ];
+    const _NavItem(Icons.dashboard_outlined, Icons.dashboard, 'Dashboard'),
+    const _NavItem(Icons.list_alt_outlined, Icons.list_alt, 'Logs'),
+    const _NavItem(Icons.history_outlined, Icons.history, 'History'),
+    if (isAdmin) ...[
+      const _NavItem(
+        Icons.manage_accounts_outlined,
+        Icons.manage_accounts,
+        'Accounts',
+      ),
+      const _NavItem(Icons.lan_outlined, Icons.lan, 'Networks'),
+    ],
+    const _NavItem(Icons.settings_outlined, Icons.settings, 'Settings'),
+  ];
 
   Widget _body(bool isAdmin, int index) {
     final items = _navItems(isAdmin);
@@ -167,8 +169,7 @@ class _MainScaffoldState extends State<MainScaffold> {
           children: [
             NavigationRail(
               selectedIndex: safeIndex,
-              onDestinationSelected: (i) =>
-                  setState(() => _selectedIndex = i),
+              onDestinationSelected: (i) => setState(() => _selectedIndex = i),
               labelType: NavigationRailLabelType.all,
               destinations: [
                 for (final item in items)
@@ -198,8 +199,10 @@ class _MainScaffoldState extends State<MainScaffold> {
         children: [
           const Padding(
             padding: EdgeInsets.fromLTRB(28, 16, 16, 10),
-            child: Text('netmon2',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+            child: Text(
+              'netmon2',
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+            ),
           ),
           for (final item in items)
             NavigationDrawerDestination(
@@ -220,4 +223,3 @@ class _NavItem {
   final String label;
   const _NavItem(this.icon, this.selectedIcon, this.label);
 }
-

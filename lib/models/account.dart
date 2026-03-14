@@ -21,25 +21,26 @@ class Account {
   });
 
   factory Account.fromJson(Map<String, dynamic> json) => Account(
-        id: json['id'] as int,
-        username: json['username'] as String,
-        accountTypeId: json['accountTypeId'] as int,
-        accountTypeName: json['accountTypeName'] as String,
-        fullName: json['fullName'] as String?,
-        email: json['email'] as String?,
-        createdAt: json['createdAt'] != null
-            ? DateTime.parse(json['createdAt'] as String)
-            : null,
-        lastSeen: json['lastSeen'] != null
-            ? DateTime.parse(json['lastSeen'] as String)
-            : null,
-      );
+    id: json['id'] as int,
+    username: json['username'] as String,
+    accountTypeId: json['accountTypeId'] as int,
+    accountTypeName: json['accountTypeName'] as String,
+    fullName: json['fullName'] as String?,
+    email: json['email'] as String?,
+    createdAt: json['createdAt'] != null
+        ? DateTime.parse(json['createdAt'] as String)
+        : null,
+    lastSeen: json['lastSeen'] != null
+        ? DateTime.parse(json['lastSeen'] as String)
+        : null,
+  );
 }
 
 /// Used when creating or updating an account (POST/PUT /api/accounts).
 class SaveAccountRequest {
   final String username;
   final int accountTypeId;
+
   /// Plain-text password; cleared field means "do not change" on updates.
   final String? password;
   final String? fullName;
@@ -54,10 +55,10 @@ class SaveAccountRequest {
   });
 
   Map<String, dynamic> toJson() => {
-        'username': username,
-        'accountTypeId': accountTypeId,
-        if (password != null && password!.isNotEmpty) 'password': password,
-        if (fullName != null) 'fullName': fullName,
-        if (email != null) 'email': email,
-      };
+    'username': username,
+    'accountTypeId': accountTypeId,
+    if (password != null && password!.isNotEmpty) 'password': password,
+    if (fullName != null) 'fullName': fullName,
+    if (email != null) 'email': email,
+  };
 }
