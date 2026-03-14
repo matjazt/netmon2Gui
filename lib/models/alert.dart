@@ -6,11 +6,11 @@ enum AlertType {
   unknown;
 
   static AlertType fromString(String? s) => switch (s) {
-        'NETWORK_DOWN' => AlertType.networkDown,
-        'DEVICE_DOWN' => AlertType.deviceDown,
-        'DEVICE_UNAUTHORIZED' => AlertType.deviceUnauthorized,
-        _ => AlertType.unknown,
-      };
+    'NETWORK_DOWN' => AlertType.networkDown,
+    'DEVICE_DOWN' => AlertType.deviceDown,
+    'DEVICE_UNAUTHORIZED' => AlertType.deviceUnauthorized,
+    _ => AlertType.unknown,
+  };
 }
 
 /// Mirrors AlertDto returned by /api/alerts/*.
@@ -19,7 +19,7 @@ class Alert {
   final int? networkId;
   final int? deviceId;
   final AlertType alertType;
-  final String message;
+  final String? message;
   final DateTime timestamp;
   final DateTime? closureTimestamp;
 
@@ -28,22 +28,22 @@ class Alert {
     this.networkId,
     this.deviceId,
     required this.alertType,
-    required this.message,
+    this.message,
     required this.timestamp,
     this.closureTimestamp,
   });
 
   factory Alert.fromJson(Map<String, dynamic> json) => Alert(
-        id: json['id'] as int,
-        networkId: json['networkId'] as int?,
-        deviceId: json['deviceId'] as int?,
-        alertType: AlertType.fromString(json['alertType'] as String?),
-        message: json['message'] as String,
-        timestamp: DateTime.parse(json['timestamp'] as String),
-        closureTimestamp: json['closureTimestamp'] != null
-            ? DateTime.parse(json['closureTimestamp'] as String)
-            : null,
-      );
+    id: json['id'] as int,
+    networkId: json['networkId'] as int?,
+    deviceId: json['deviceId'] as int?,
+    alertType: AlertType.fromString(json['alertType'] as String?),
+    message: json['message'] as String?,
+    timestamp: DateTime.parse(json['timestamp'] as String),
+    closureTimestamp: json['closureTimestamp'] != null
+        ? DateTime.parse(json['closureTimestamp'] as String)
+        : null,
+  );
 
   bool get isOpen => closureTimestamp == null;
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+
 import '../models/alert.dart';
 
 final _fmt = DateFormat('yyyy-MM-dd HH:mm:ss');
@@ -20,7 +21,10 @@ class AlertListTile extends StatelessWidget {
         isOpen ? Icons.warning_amber_rounded : Icons.check_circle_outline,
         color: color,
       ),
-      title: Text(alert.message, overflow: TextOverflow.ellipsis),
+      title: Text(
+        alert.message ?? '<no message>',
+        overflow: TextOverflow.ellipsis,
+      ),
       subtitle: Text(
         '${_alertTypeLabel(alert.alertType)}  ·  ${_fmt.format(alert.timestamp.toLocal())}',
       ),
@@ -34,9 +38,9 @@ class AlertListTile extends StatelessWidget {
   }
 
   String _alertTypeLabel(AlertType t) => switch (t) {
-        AlertType.networkDown => 'Network down',
-        AlertType.deviceDown => 'Device down',
-        AlertType.deviceUnauthorized => 'Unauthorized device',
-        AlertType.unknown => 'Unknown',
-      };
+    AlertType.networkDown => 'Network down',
+    AlertType.deviceDown => 'Device down',
+    AlertType.deviceUnauthorized => 'Unauthorized device',
+    AlertType.unknown => 'Unknown',
+  };
 }

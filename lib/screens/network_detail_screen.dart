@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../models/network.dart';
+
 import '../models/alert.dart';
 import '../models/device.dart';
+import '../models/network.dart';
 import '../providers/auth_provider.dart';
-import '../services/network_service.dart';
 import '../services/alert_service.dart';
 import '../services/device_service.dart';
+import '../services/network_service.dart';
 import '../widgets/alert_list_tile.dart';
 import '../widgets/device_list_tile.dart';
 import '../widgets/error_display.dart';
@@ -66,8 +67,13 @@ class _NetworkDetailScreenState extends State<NetworkDetailScreen>
           _loading = false;
         });
       }
-    } catch (_) {
-      if (mounted) setState(() { _error = 'Failed to load network.'; _loading = false; });
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _error = 'Failed to load network.';
+          _loading = false;
+        });
+      }
     }
   }
 
@@ -91,9 +97,9 @@ class _NetworkDetailScreenState extends State<NetworkDetailScreen>
                 if (mounted) setState(() => _network = updated);
               } catch (_) {
                 if (mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Save failed.')),
-                  );
+                  ScaffoldMessenger.of(
+                    context,
+                  ).showSnackBar(const SnackBar(content: Text('Save failed.')));
                 }
               }
             },
@@ -130,15 +136,11 @@ class _NetworkDetailScreenState extends State<NetworkDetailScreen>
       body: _loading
           ? const Center(child: CircularProgressIndicator())
           : _error != null
-              ? ErrorDisplay(message: _error!, onRetry: _load)
-              : TabBarView(
-                  controller: _tabs,
-                  children: [
-                    _buildDeviceList(),
-                    _buildAlertList(),
-                    _buildInfo(),
-                  ],
-                ),
+          ? ErrorDisplay(message: _error!, onRetry: _load)
+          : TabBarView(
+              controller: _tabs,
+              children: [_buildDeviceList(), _buildAlertList(), _buildInfo()],
+            ),
     );
   }
 
@@ -151,8 +153,9 @@ class _NetworkDetailScreenState extends State<NetworkDetailScreen>
       separatorBuilder: (_, __) => const Divider(height: 1),
       itemBuilder: (ctx, i) => DeviceListTile(
         device: _devices[i],
-        onTap: () =>
-            Navigator.of(context).pushNamed('/device', arguments: _devices[i].id),
+        onTap: () => Navigator.of(
+          context,
+        ).pushNamed('/device', arguments: _devices[i].id),
       ),
     );
   }
@@ -178,34 +181,40 @@ class _NetworkDetailScreenState extends State<NetworkDetailScreen>
         _infoRow('First seen', n.firstSeen?.toLocal().toString() ?? '-'),
         _infoRow('Last seen', n.lastSeen?.toLocal().toString() ?? '-'),
         _infoRow('Timezone', cfg.timezone),
-        _infoRow('Reporting interval', cfg.reportingInterval != null
-            ? '${cfg.reportingInterval} s'
-            : '-'),
-        _infoRow('Alerting delay', cfg.alertingDelay != null
-            ? '${cfg.alertingDelay} s'
-            : '-'),
+        _infoRow(
+          'Reporting interval',
+          cfg.reportingInterval != null ? '${cfg.reportingInterval} s' : '-',
+        ),
+        _infoRow(
+          'Alerting delay',
+          cfg.alertingDelay != null ? '${cfg.alertingDelay} s' : '-',
+        ),
         _infoRow('Notification email', cfg.notificationEmailAddress ?? '-'),
         _infoRow('Reminder time', cfg.reminderTimeOfDay ?? '-'),
-        _infoRow('Reminder interval',
-            cfg.reminderIntervalDays != null
-                ? '${cfg.reminderIntervalDays} days'
-                : '-'),
+        _infoRow(
+          'Reminder interval',
+          cfg.reminderIntervalDays != null
+              ? '${cfg.reminderIntervalDays} days'
+              : '-',
+        ),
       ],
     );
   }
 
   Widget _infoRow(String label, String value) => Padding(
-        padding: const EdgeInsets.symmetric(vertical: 6),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(
-              width: 180,
-              child: Text(label,
-                  style: const TextStyle(fontWeight: FontWeight.w500)),
-            ),
-            Expanded(child: Text(value)),
-          ],
+    padding: const EdgeInsets.symmetric(vertical: 6),
+    child: Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SizedBox(
+          width: 180,
+          child: Text(
+            label,
+            style: const TextStyle(fontWeight: FontWeight.w500),
+          ),
         ),
-      );
+        Expanded(child: Text(value)),
+      ],
+    ),
+  );
 }

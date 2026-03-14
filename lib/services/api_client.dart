@@ -28,13 +28,15 @@ class ApiClient {
     _username = username;
     _password = password;
     _dio.interceptors.clear();
+    /*
+    // HTTP logiranje
     _dio.interceptors.add(
       LogInterceptor(
-        // TODO: tule izklopi HTTP logiranje v release buildih
         requestBody: true,
         responseBody: true,
       ),
     );
+    */
     _dio.interceptors.add(
       InterceptorsWrapper(
         onRequest: (options, handler) {
