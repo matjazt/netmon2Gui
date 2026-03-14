@@ -5,15 +5,15 @@ import 'package:provider/single_child_widget.dart';
 import 'providers/auth_provider.dart';
 import 'providers/network_provider.dart';
 import 'providers/settings_provider.dart';
-import 'screens/login_screen.dart';
-import 'screens/dashboard_screen.dart';
-import 'screens/network_detail_screen.dart';
-import 'screens/device_detail_screen.dart';
-import 'screens/logs_screen.dart';
-import 'screens/history_screen.dart';
-import 'screens/settings_screen.dart';
 import 'screens/admin/admin_accounts_screen.dart';
 import 'screens/admin/admin_networks_screen.dart';
+import 'screens/dashboard_screen.dart';
+import 'screens/device_detail_screen.dart';
+import 'screens/history_screen.dart';
+import 'screens/login_screen.dart';
+import 'screens/logs_screen.dart';
+import 'screens/network_detail_screen.dart';
+import 'screens/settings_screen.dart';
 import 'utils/theme.dart';
 
 void main() async {
@@ -181,7 +181,15 @@ class _MainScaffoldState extends State<MainScaffold> {
               ],
             ),
             const VerticalDivider(width: 1),
-            Expanded(child: _body(isAdmin, safeIndex)),
+            Expanded(
+              child: AnimatedSwitcher(
+                duration: const Duration(milliseconds: 200),
+                child: KeyedSubtree(
+                  key: ValueKey('$isAdmin/$safeIndex'),
+                  child: _body(isAdmin, safeIndex),
+                ),
+              ),
+            ),
           ],
         ),
       );
@@ -212,7 +220,13 @@ class _MainScaffoldState extends State<MainScaffold> {
             ),
         ],
       ),
-      body: _body(isAdmin, safeIndex),
+      body: AnimatedSwitcher(
+        duration: const Duration(milliseconds: 200),
+        child: KeyedSubtree(
+          key: ValueKey('$isAdmin/$safeIndex'),
+          child: _body(isAdmin, safeIndex),
+        ),
+      ),
     );
   }
 }

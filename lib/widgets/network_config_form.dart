@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../models/network.dart';
 
 /// A structured form for editing all fields inside [NetworkConfiguration].
@@ -93,10 +94,7 @@ class _NetworkConfigFormState extends State<NetworkConfigForm> {
           const SizedBox(height: 12),
           TextFormField(
             controller: _email,
-            decoration: const InputDecoration(
-              labelText: 'Notification email',
-              border: OutlineInputBorder(),
-            ),
+            decoration: const InputDecoration(labelText: 'Notification email'),
             keyboardType: TextInputType.emailAddress,
           ),
           const SizedBox(height: 12),
@@ -104,7 +102,6 @@ class _NetworkConfigFormState extends State<NetworkConfigForm> {
             controller: _reminderTime,
             decoration: const InputDecoration(
               labelText: 'Reminder time (HH:mm)',
-              border: OutlineInputBorder(),
               hintText: '08:00',
             ),
           ),
@@ -115,7 +112,6 @@ class _NetworkConfigFormState extends State<NetworkConfigForm> {
             controller: _timezone,
             decoration: const InputDecoration(
               labelText: 'Timezone (IANA)',
-              border: OutlineInputBorder(),
               hintText: 'Europe/Ljubljana',
             ),
             validator: (v) => (v == null || v.isEmpty) ? 'Required' : null,
@@ -134,10 +130,7 @@ class _NetworkConfigFormState extends State<NetworkConfigForm> {
   }) {
     return TextFormField(
       controller: ctrl,
-      decoration: InputDecoration(
-        labelText: label,
-        border: const OutlineInputBorder(),
-      ),
+      decoration: InputDecoration(labelText: label),
       keyboardType: TextInputType.number,
       validator: (v) {
         if (required && (v == null || v.isEmpty)) return 'Required';

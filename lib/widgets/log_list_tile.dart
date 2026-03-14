@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+
 import '../models/log_entry.dart';
 import '../utils/constants.dart';
 
@@ -16,14 +17,19 @@ class LogListTile extends StatelessWidget {
     final levelColor = _levelColor(entry.level);
     return ListTile(
       dense: true,
-      leading: SizedBox(
+      leading: Container(
         width: 52,
+        padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 2),
+        decoration: BoxDecoration(
+          color: levelColor.withValues(alpha: 0.12),
+          borderRadius: BorderRadius.circular(6),
+        ),
         child: Text(
           logLevelName(entry.level),
           style: TextStyle(
             color: levelColor,
             fontWeight: FontWeight.bold,
-            fontSize: 12,
+            fontSize: 11,
           ),
           textAlign: TextAlign.center,
         ),

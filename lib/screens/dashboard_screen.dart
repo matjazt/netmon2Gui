@@ -1,13 +1,15 @@
 import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 import '../models/device.dart';
 import '../providers/network_provider.dart';
 import '../services/device_service.dart';
 import '../utils/constants.dart';
-import '../widgets/network_card.dart';
 import '../widgets/device_list_tile.dart';
 import '../widgets/error_display.dart';
+import '../widgets/network_card.dart';
 
 /// Main dashboard: network selector on the left, device list on the right.
 /// Auto-refreshes every [kDashboardRefreshInterval].
@@ -82,8 +84,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return Row(
       children: [
         // Network side panel
-        SizedBox(
+        Container(
           width: 220,
+          color: Theme.of(context).colorScheme.surfaceContainer,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
@@ -171,31 +174,34 @@ class _DashboardScreenState extends State<DashboardScreen> {
     String? networkName,
     DeviceStats? stats,
   ) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      child: Row(
-        children: [
-          Expanded(
-            child: Text(
-              networkName ?? 'Dashboard',
-              style: Theme.of(context).textTheme.titleLarge,
-              overflow: TextOverflow.ellipsis,
+    return Material(
+      color: Theme.of(context).colorScheme.surfaceContainerLow,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        child: Row(
+          children: [
+            Expanded(
+              child: Text(
+                networkName ?? 'Dashboard',
+                style: Theme.of(context).textTheme.titleLarge,
+                overflow: TextOverflow.ellipsis,
+              ),
             ),
-          ),
-          if (stats != null) ...[
-            _statChip(
-              context,
-              label: '${stats.online} online',
-              color: Colors.green,
-            ),
-            const SizedBox(width: 8),
-            _statChip(
-              context,
-              label: '${stats.offline} offline',
-              color: Colors.red,
-            ),
+            if (stats != null) ...[
+              _statChip(
+                context,
+                label: '${stats.online} online',
+                color: Colors.green,
+              ),
+              const SizedBox(width: 8),
+              _statChip(
+                context,
+                label: '${stats.offline} offline',
+                color: Colors.red,
+              ),
+            ],
           ],
-        ],
+        ),
       ),
     );
   }
@@ -206,10 +212,18 @@ class _DashboardScreenState extends State<DashboardScreen> {
     required Color color,
   }) {
     return Chip(
-      label: Text(label),
-      backgroundColor: color.withValues(alpha: 0.15),
-      labelStyle: TextStyle(color: color, fontSize: 12),
+      label: Text(
+        label,
+        style: TextStyle(
+          color: color,
+          fontSize: 12,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+      backgroundColor: color.withValues(alpha: 0.12),
+      side: BorderSide(color: color.withValues(alpha: 0.3)),
       visualDensity: VisualDensity.compact,
+      padding: const EdgeInsets.symmetric(horizontal: 4),
     );
   }
 }
