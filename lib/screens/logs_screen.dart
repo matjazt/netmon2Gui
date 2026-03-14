@@ -77,11 +77,12 @@ class _LogsScreenState extends State<LogsScreen> {
         });
       }
     } catch (_) {
-      if (mounted)
+      if (mounted) {
         setState(() {
           _error = 'Failed to load logs.';
           _loading = false;
         });
+      }
     }
   }
 

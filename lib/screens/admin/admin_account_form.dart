@@ -121,7 +121,7 @@ class _AdminAccountFormScreenState extends State<AdminAccountFormScreen> {
                 ),
                 const SizedBox(height: 16),
                 DropdownButtonFormField<int>(
-                  value: _accountTypeId,
+                  initialValue: _accountTypeId,
                   decoration: const InputDecoration(
                     labelText: 'Account type',
                     border: OutlineInputBorder(),

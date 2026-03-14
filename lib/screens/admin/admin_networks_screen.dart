@@ -32,17 +32,19 @@ class _AdminNetworksScreenState extends State<AdminNetworksScreen> {
     });
     try {
       final networks = await _service.getAllNetworks();
-      if (mounted)
+      if (mounted) {
         setState(() {
           _networks = networks;
           _loading = false;
         });
+      }
     } catch (_) {
-      if (mounted)
+      if (mounted) {
         setState(() {
           _error = 'Failed to load networks.';
           _loading = false;
         });
+      }
     }
   }
 

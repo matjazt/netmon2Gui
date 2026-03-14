@@ -33,17 +33,19 @@ class _AdminAccountsScreenState extends State<AdminAccountsScreen> {
     });
     try {
       final accounts = await _service.getAllAccounts();
-      if (mounted)
+      if (mounted) {
         setState(() {
           _accounts = accounts;
           _loading = false;
         });
+      }
     } catch (_) {
-      if (mounted)
+      if (mounted) {
         setState(() {
           _error = 'Failed to load accounts.';
           _loading = false;
         });
+      }
     }
   }
 

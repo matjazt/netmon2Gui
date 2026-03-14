@@ -69,11 +69,12 @@ class _HistoryScreenState extends State<HistoryScreen> {
         });
       }
     } catch (_) {
-      if (mounted)
+      if (mounted) {
         setState(() {
           _error = 'Failed to load history.';
           _loading = false;
         });
+      }
     }
   }
 

@@ -64,11 +64,12 @@ class _DeviceDetailScreenState extends State<DeviceDetailScreen>
         });
       }
     } catch (_) {
-      if (mounted)
+      if (mounted) {
         setState(() {
           _error = 'Failed to load device.';
           _loading = false;
         });
+      }
     }
   }
 
