@@ -1,15 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+
 import '../models/device_status_history.dart';
-import '../models/page_result.dart';
-import '../providers/network_provider.dart';
 import '../services/history_service.dart';
 import '../utils/constants.dart';
-import '../widgets/history_list_tile.dart';
 import '../widgets/error_display.dart';
+import '../widgets/history_list_tile.dart';
 
-/// Shows paginated device-status-history.
-/// Scoped to the selected network (or all for admins).
+/// Shows paginated device-status-history for all networks the user can access.
 class HistoryScreen extends StatefulWidget {
   const HistoryScreen({super.key});
 
@@ -44,21 +41,10 @@ class _HistoryScreenState extends State<HistoryScreen> {
     });
 
     try {
-      final network = context.read<NetworkProvider>().selectedNetwork;
-
-      PageResult<DeviceStatusHistory> result;
-      if (network != null) {
-        result = await _service.getByNetwork(
-          network.id,
-          page: _page,
-          size: kLogPageSize,
-        );
-      } else {
-        setState(() {
-          _loading = false;
-        });
-        return;
-      }
+      final result = await _service.getAllPaginated(
+        page: _page,
+        size: kLogPageSize,
+      );
 
       if (mounted) {
         setState(() {

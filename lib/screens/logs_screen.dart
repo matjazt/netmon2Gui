@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 import '../models/log_entry.dart';
 import '../models/page_result.dart';
 import '../providers/auth_provider.dart';
 import '../providers/network_provider.dart';
 import '../services/log_service.dart';
 import '../utils/constants.dart';
-import '../widgets/log_list_tile.dart';
 import '../widgets/error_display.dart';
+import '../widgets/log_list_tile.dart';
 
 /// Shows paginated logs.
 /// - Admins see all logs via /api/logs/paginated.

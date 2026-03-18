@@ -79,4 +79,18 @@ class HistoryService {
       DeviceStatusHistory.fromJson,
     );
   }
+
+  Future<PageResult<DeviceStatusHistory>> getAllPaginated({
+    int page = 0,
+    int size = 50,
+  }) async {
+    final r = await _dio.get(
+      '/api/device-status-history/paginated',
+      queryParameters: {'page': page, 'size': size},
+    );
+    return PageResult.fromJson(
+      r.data as Map<String, dynamic>,
+      DeviceStatusHistory.fromJson,
+    );
+  }
 }
