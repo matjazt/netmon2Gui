@@ -6,6 +6,8 @@ class DeviceStatusHistory {
   final String? ipAddress;
   final bool online;
   final DateTime timestamp;
+  final String? networkName;
+  final String? deviceNameOrVendor;
 
   const DeviceStatusHistory({
     required this.id,
@@ -14,6 +16,8 @@ class DeviceStatusHistory {
     this.ipAddress,
     required this.online,
     required this.timestamp,
+    this.networkName,
+    this.deviceNameOrVendor,
   });
 
   factory DeviceStatusHistory.fromJson(Map<String, dynamic> json) =>
@@ -24,5 +28,7 @@ class DeviceStatusHistory {
         ipAddress: json['ipAddress'] as String?,
         online: json['online'] as bool? ?? false,
         timestamp: DateTime.parse(json['timestamp'] as String),
+        networkName: json['networkName'] as String?,
+        deviceNameOrVendor: json['deviceNameOrVendor'] as String?,
       );
 }

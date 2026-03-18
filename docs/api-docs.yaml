@@ -1660,6 +1660,10 @@ components:
         deviceId:
           type: integer
           format: int64
+        networkName:
+          type: string
+        deviceNameOrVendor:
+          type: string
     PageMetadata:
       type: object
       properties:
@@ -1703,6 +1707,10 @@ components:
         timestamp:
           type: string
           format: date-time
+        networkName:
+          type: string
+        deviceNameOrVendor:
+          type: string
     DeviceStats:
       type: object
       properties:

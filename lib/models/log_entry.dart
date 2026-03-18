@@ -11,6 +11,8 @@ class LogEntry {
   final String message;
   final int? networkId;
   final int? deviceId;
+  final String? networkName;
+  final String? deviceNameOrVendor;
 
   const LogEntry({
     required this.id,
@@ -20,6 +22,8 @@ class LogEntry {
     required this.message,
     this.networkId,
     this.deviceId,
+    this.networkName,
+    this.deviceNameOrVendor,
   });
 
   factory LogEntry.fromJson(Map<String, dynamic> json) => LogEntry(
@@ -30,5 +34,7 @@ class LogEntry {
     message: json['message'] as String,
     networkId: json['networkId'] as int?,
     deviceId: json['deviceId'] as int?,
+    networkName: json['networkName'] as String?,
+    deviceNameOrVendor: json['deviceNameOrVendor'] as String?,
   );
 }

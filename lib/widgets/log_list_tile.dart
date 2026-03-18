@@ -36,7 +36,14 @@ class LogListTile extends StatelessWidget {
       ),
       title: Text(entry.message, overflow: TextOverflow.ellipsis),
       subtitle: Text(
-        '${entry.origin}  ·  ${_fmt.format(entry.timestamp.toLocal())}',
+        [
+          _fmt.format(entry.timestamp.toLocal()),
+          if (entry.deviceNameOrVendor != null && entry.networkName != null)
+            '${entry.deviceNameOrVendor!} @ ${entry.networkName!}',
+          if (entry.deviceNameOrVendor == null && entry.networkName != null)
+            entry.networkName!,
+          entry.origin,
+        ].join('  ·  '),
         style: const TextStyle(fontSize: 11),
       ),
     );

@@ -142,8 +142,8 @@ class _NetworkDetailScreenState extends State<NetworkDetailScreen>
         bottom: TabBar(
           controller: _tabs,
           tabs: const [
-            Tab(text: 'Devices'),
             Tab(text: 'Info'),
+            Tab(text: 'Devices'),
             Tab(text: 'Alerts'),
             Tab(text: 'Logs'),
             Tab(text: 'History'),
@@ -157,8 +157,8 @@ class _NetworkDetailScreenState extends State<NetworkDetailScreen>
           : TabBarView(
               controller: _tabs,
               children: [
-                _buildDeviceList(),
                 _buildInfo(),
+                _buildDeviceList(),
                 _buildAlertList(),
                 _buildLogs(),
                 _buildHistory(),

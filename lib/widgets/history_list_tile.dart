@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+
 import '../models/device_status_history.dart';
 
 final _fmt = DateFormat('yyyy-MM-dd HH:mm:ss');
@@ -13,6 +14,14 @@ class HistoryListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final color = entry.online ? Colors.green : Colors.red;
+    final parts = [
+      _fmt.format(entry.timestamp.toLocal()),
+      if (entry.deviceNameOrVendor != null && entry.networkName != null)
+        '${entry.deviceNameOrVendor!} @ ${entry.networkName!}',
+      if (entry.deviceNameOrVendor == null && entry.networkName != null)
+        entry.networkName!,
+      if (entry.ipAddress != null) entry.ipAddress!,
+    ];
     return ListTile(
       dense: true,
       leading: Icon(
@@ -24,13 +33,7 @@ class HistoryListTile extends StatelessWidget {
         entry.online ? 'Came online' : 'Went offline',
         style: TextStyle(color: color),
       ),
-      subtitle: Text(
-        [
-          _fmt.format(entry.timestamp.toLocal()),
-          if (entry.ipAddress != null) entry.ipAddress!,
-        ].join('  ·  '),
-        style: const TextStyle(fontSize: 11),
-      ),
+      subtitle: Text(parts.join('  ·  '), style: const TextStyle(fontSize: 11)),
     );
   }
 }

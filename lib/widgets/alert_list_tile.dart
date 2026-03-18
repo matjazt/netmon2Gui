@@ -26,8 +26,12 @@ class AlertListTile extends StatelessWidget {
         overflow: TextOverflow.ellipsis,
       ),
       subtitle: Text(
-        _fmt.format(alert.timestamp.toLocal()) +
-            (alert.message != null ? '  ·  ${alert.message}' : ''),
+        [
+          _fmt.format(alert.timestamp.toLocal()),
+          if (alert.closureTimestamp != null)
+            'closed at ${_fmt.format(alert.closureTimestamp!.toLocal())}',
+          if (alert.message != null) alert.message!,
+        ].join('  ·  '),
       ),
       trailing: Chip(
         label: Text(isOpen ? 'Open' : 'Closed'),
