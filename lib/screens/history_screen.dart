@@ -97,7 +97,12 @@ class _HistoryScreenState extends State<HistoryScreen> {
         separatorBuilder: (_, __) => const Divider(height: 1),
         itemBuilder: (ctx, i) {
           if (i == _entries.length) {
-            if (!_loading) _load();
+            // Load-more trigger — deferred to avoid setState during build.
+            if (!_loading) {
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                if (mounted && !_loading) _load();
+              });
+            }
             return const Padding(
               padding: EdgeInsets.all(16),
               child: Center(child: CircularProgressIndicator()),

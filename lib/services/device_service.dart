@@ -41,7 +41,7 @@ class DeviceService {
   /// Returns the most recent [limit] status history entries for a device.
   Future<List<DeviceStatusHistory>> getDeviceHistory(
     int deviceId, {
-    int limit = 50,
+    int limit = 1000,
   }) async {
     final r = await _dio.get(
       '/api/devices/$deviceId/history',

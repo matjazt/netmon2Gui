@@ -3,39 +3,39 @@ info:
   title: OpenAPI definition
   version: v0
 servers:
-- url: http://localhost:8080/netmon2
-  description: Generated server url
+  - url: http://localhost:8080/netmon2
+    description: Generated server url
 paths:
   /api/networks/{id}:
     get:
       tags:
-      - network-controller
+        - network-controller
       operationId: getNetworkById
       parameters:
-      - name: id
-        in: path
-        required: true
-        schema:
-          type: integer
-          format: int64
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
       responses:
         "200":
           description: OK
           content:
-            '*/*':
+            "*/*":
               schema:
                 $ref: "#/components/schemas/NetworkDto"
     put:
       tags:
-      - network-controller
+        - network-controller
       operationId: updateNetwork
       parameters:
-      - name: id
-        in: path
-        required: true
-        schema:
-          type: integer
-          format: int64
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
       requestBody:
         content:
           application/json:
@@ -46,53 +46,53 @@ paths:
         "200":
           description: OK
           content:
-            '*/*':
+            "*/*":
               schema:
                 $ref: "#/components/schemas/NetworkDto"
     delete:
       tags:
-      - network-controller
+        - network-controller
       operationId: deleteNetwork
       parameters:
-      - name: id
-        in: path
-        required: true
-        schema:
-          type: integer
-          format: int64
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
       responses:
         "200":
           description: OK
   /api/devices/{id}:
     get:
       tags:
-      - device-controller
+        - device-controller
       operationId: getDeviceById
       parameters:
-      - name: id
-        in: path
-        required: true
-        schema:
-          type: integer
-          format: int64
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
       responses:
         "200":
           description: OK
           content:
-            '*/*':
+            "*/*":
               schema:
                 $ref: "#/components/schemas/DeviceDto"
     put:
       tags:
-      - device-controller
+        - device-controller
       operationId: updateDevice
       parameters:
-      - name: id
-        in: path
-        required: true
-        schema:
-          type: integer
-          format: int64
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
       requestBody:
         content:
           application/json:
@@ -103,81 +103,81 @@ paths:
         "200":
           description: OK
           content:
-            '*/*':
+            "*/*":
               schema:
                 $ref: "#/components/schemas/DeviceDto"
     delete:
       tags:
-      - device-controller
+        - device-controller
       operationId: deleteDevice
       parameters:
-      - name: id
-        in: path
-        required: true
-        schema:
-          type: integer
-          format: int64
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
       responses:
         "200":
           description: OK
   /api/devices/{id}/mode:
     put:
       tags:
-      - device-controller
+        - device-controller
       operationId: updateDeviceMode
       parameters:
-      - name: id
-        in: path
-        required: true
-        schema:
-          type: integer
-          format: int64
-      - name: mode
-        in: query
-        required: true
-        schema:
-          type: string
-          enum:
-          - UNAUTHORIZED
-          - AUTHORIZED
-          - ALWAYS_ON
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: mode
+          in: query
+          required: true
+          schema:
+            type: string
+            enum:
+              - UNAUTHORIZED
+              - AUTHORIZED
+              - ALWAYS_ON
       responses:
         "200":
           description: OK
           content:
-            '*/*':
+            "*/*":
               schema:
                 $ref: "#/components/schemas/DeviceDto"
   /api/accounts/{id}:
     get:
       tags:
-      - account-controller
+        - account-controller
       operationId: getAccountById
       parameters:
-      - name: id
-        in: path
-        required: true
-        schema:
-          type: integer
-          format: int64
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
       responses:
         "200":
           description: OK
           content:
-            '*/*':
+            "*/*":
               schema:
                 $ref: "#/components/schemas/AccountDto"
     put:
       tags:
-      - account-controller
+        - account-controller
       operationId: updateAccount
       parameters:
-      - name: id
-        in: path
-        required: true
-        schema:
-          type: integer
-          format: int64
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
       requestBody:
         content:
           application/json:
@@ -188,53 +188,53 @@ paths:
         "200":
           description: OK
           content:
-            '*/*':
+            "*/*":
               schema:
                 $ref: "#/components/schemas/AccountDto"
     delete:
       tags:
-      - account-controller
+        - account-controller
       operationId: deleteAccount
       parameters:
-      - name: id
-        in: path
-        required: true
-        schema:
-          type: integer
-          format: int64
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
       responses:
         "200":
           description: OK
   /api/account-networks/{id}:
     get:
       tags:
-      - account-network-controller
+        - account-network-controller
       operationId: getAccountNetworkById
       parameters:
-      - name: id
-        in: path
-        required: true
-        schema:
-          type: integer
-          format: int64
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
       responses:
         "200":
           description: OK
           content:
-            '*/*':
+            "*/*":
               schema:
                 $ref: "#/components/schemas/AccountNetworkDto"
     put:
       tags:
-      - account-network-controller
+        - account-network-controller
       operationId: updateAccountNetwork
       parameters:
-      - name: id
-        in: path
-        required: true
-        schema:
-          type: integer
-          format: int64
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
       requestBody:
         content:
           application/json:
@@ -245,40 +245,40 @@ paths:
         "200":
           description: OK
           content:
-            '*/*':
+            "*/*":
               schema:
                 $ref: "#/components/schemas/AccountNetworkDto"
     delete:
       tags:
-      - account-network-controller
+        - account-network-controller
       operationId: deleteAccountNetwork
       parameters:
-      - name: id
-        in: path
-        required: true
-        schema:
-          type: integer
-          format: int64
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
       responses:
         "200":
           description: OK
   /api/networks:
     get:
       tags:
-      - network-controller
+        - network-controller
       operationId: getAllNetworks
       responses:
         "200":
           description: OK
           content:
-            '*/*':
+            "*/*":
               schema:
                 type: array
                 items:
                   $ref: "#/components/schemas/NetworkDto"
     post:
       tags:
-      - network-controller
+        - network-controller
       operationId: createNetwork
       requestBody:
         content:
@@ -290,26 +290,26 @@ paths:
         "200":
           description: OK
           content:
-            '*/*':
+            "*/*":
               schema:
                 $ref: "#/components/schemas/NetworkDto"
   /api/devices:
     get:
       tags:
-      - device-controller
+        - device-controller
       operationId: getAllDevices
       responses:
         "200":
           description: OK
           content:
-            '*/*':
+            "*/*":
               schema:
                 type: array
                 items:
                   $ref: "#/components/schemas/DeviceDto"
     post:
       tags:
-      - device-controller
+        - device-controller
       operationId: createDevice
       requestBody:
         content:
@@ -321,13 +321,13 @@ paths:
         "200":
           description: OK
           content:
-            '*/*':
+            "*/*":
               schema:
                 $ref: "#/components/schemas/DeviceDto"
   /api/devices/mqtt-update:
     post:
       tags:
-      - device-controller
+        - device-controller
       operationId: processMqttUpdate
       requestBody:
         content:
@@ -339,26 +339,26 @@ paths:
         "200":
           description: OK
           content:
-            '*/*':
+            "*/*":
               schema:
                 $ref: "#/components/schemas/DeviceDto"
   /api/accounts:
     get:
       tags:
-      - account-controller
+        - account-controller
       operationId: getAllAccounts
       responses:
         "200":
           description: OK
           content:
-            '*/*':
+            "*/*":
               schema:
                 type: array
                 items:
                   $ref: "#/components/schemas/AccountDto"
     post:
       tags:
-      - account-controller
+        - account-controller
       operationId: createAccount
       requestBody:
         content:
@@ -370,26 +370,26 @@ paths:
         "200":
           description: OK
           content:
-            '*/*':
+            "*/*":
               schema:
                 $ref: "#/components/schemas/AccountDto"
   /api/account-networks:
     get:
       tags:
-      - account-network-controller
+        - account-network-controller
       operationId: getAllAccountNetworks
       responses:
         "200":
           description: OK
           content:
-            '*/*':
+            "*/*":
               schema:
                 type: array
                 items:
                   $ref: "#/components/schemas/AccountNetworkDto"
     post:
       tags:
-      - account-network-controller
+        - account-network-controller
       operationId: createAccountNetwork
       requestBody:
         content:
@@ -401,44 +401,44 @@ paths:
         "200":
           description: OK
           content:
-            '*/*':
+            "*/*":
               schema:
                 $ref: "#/components/schemas/AccountNetworkDto"
   /api/account-networks/grant-access:
     post:
       tags:
-      - account-network-controller
+        - account-network-controller
       operationId: grantAccess
       parameters:
-      - name: accountId
-        in: query
-        required: true
-        schema:
-          type: integer
-          format: int64
-      - name: networkId
-        in: query
-        required: true
-        schema:
-          type: integer
-          format: int64
+        - name: accountId
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: networkId
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int64
       responses:
         "200":
           description: OK
           content:
-            '*/*':
+            "*/*":
               schema:
                 $ref: "#/components/schemas/AccountNetworkDto"
   /api/networks/without-active-alerts:
     get:
       tags:
-      - network-controller
+        - network-controller
       operationId: getNetworksWithoutActiveAlerts
       responses:
         "200":
           description: OK
           content:
-            '*/*':
+            "*/*":
               schema:
                 type: array
                 items:
@@ -446,13 +446,13 @@ paths:
   /api/networks/with-active-alerts:
     get:
       tags:
-      - network-controller
+        - network-controller
       operationId: getNetworksWithActiveAlerts
       responses:
         "200":
           description: OK
           content:
-            '*/*':
+            "*/*":
               schema:
                 type: array
                 items:
@@ -460,399 +460,345 @@ paths:
   /api/networks/search:
     get:
       tags:
-      - network-controller
+        - network-controller
       operationId: searchNetworksByName
       parameters:
-      - name: name
-        in: query
-        required: true
-        schema:
-          type: string
+        - name: name
+          in: query
+          required: true
+          schema:
+            type: string
       responses:
         "200":
           description: OK
           content:
-            '*/*':
+            "*/*":
               schema:
                 type: array
                 items:
                   $ref: "#/components/schemas/NetworkDto"
-  /api/networks/paginated:
-    get:
-      tags:
-      - network-controller
-      operationId: getNetworksPaginated
-      parameters:
-      - name: page
-        in: query
-        required: false
-        schema:
-          type: integer
-          format: int32
-          default: 0
-      - name: size
-        in: query
-        required: false
-        schema:
-          type: integer
-          format: int32
-          default: 20
-      responses:
-        "200":
-          description: OK
-          content:
-            '*/*':
-              schema:
-                $ref: "#/components/schemas/PageNetworkDto"
   /api/networks/name/{name}:
     get:
       tags:
-      - network-controller
+        - network-controller
       operationId: getNetworkByName
       parameters:
-      - name: name
-        in: path
-        required: true
-        schema:
-          type: string
+        - name: name
+          in: path
+          required: true
+          schema:
+            type: string
       responses:
         "200":
           description: OK
           content:
-            '*/*':
+            "*/*":
               schema:
                 $ref: "#/components/schemas/NetworkDto"
   /api/networks/exists:
     get:
       tags:
-      - network-controller
+        - network-controller
       operationId: checkNetworkExists
       parameters:
-      - name: name
-        in: query
-        required: true
-        schema:
-          type: string
+        - name: name
+          in: query
+          required: true
+          schema:
+            type: string
       responses:
         "200":
           description: OK
           content:
-            '*/*':
+            "*/*":
               schema:
                 type: boolean
   /api/logs/{id}:
     get:
       tags:
-      - log-controller
+        - log-controller
       operationId: getLogById
       parameters:
-      - name: id
-        in: path
-        required: true
-        schema:
-          type: integer
-          format: int64
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
       responses:
         "200":
           description: OK
           content:
-            '*/*':
+            "*/*":
               schema:
                 $ref: "#/components/schemas/LogDto"
   /api/logs/paginated:
     get:
       tags:
-      - log-controller
+        - log-controller
       operationId: getAllLogsPaginated
       parameters:
-      - name: page
-        in: query
-        required: false
-        schema:
-          type: integer
-          format: int32
-          default: 0
-      - name: size
-        in: query
-        required: false
-        schema:
-          type: integer
-          format: int32
-          default: 50
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 0
+        - name: size
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 50
       responses:
         "200":
           description: OK
           content:
-            '*/*':
+            "*/*":
               schema:
-                $ref: "#/components/schemas/PageLogDto"
+                $ref: "#/components/schemas/PagedModelLogDto"
   /api/logs/network/{networkId}:
     get:
       tags:
-      - log-controller
+        - log-controller
       operationId: getLogsByNetwork
       parameters:
-      - name: networkId
-        in: path
-        required: true
-        schema:
-          type: integer
-          format: int64
-      - name: page
-        in: query
-        required: false
-        schema:
-          type: integer
-          format: int32
-          default: 0
-      - name: size
-        in: query
-        required: false
-        schema:
-          type: integer
-          format: int32
-          default: 50
+        - name: networkId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 0
+        - name: size
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 50
       responses:
         "200":
           description: OK
           content:
-            '*/*':
+            "*/*":
               schema:
-                $ref: "#/components/schemas/PageLogDto"
+                $ref: "#/components/schemas/PagedModelLogDto"
   /api/logs/network/{networkId}/by-timestamp:
     get:
       tags:
-      - log-controller
+        - log-controller
       operationId: getLogsByNetworkAndTimestampRange
       parameters:
-      - name: networkId
-        in: path
-        required: true
-        schema:
-          type: integer
-          format: int64
-      - name: minTimestamp
-        in: query
-        required: true
-        schema:
-          type: string
-          format: date-time
-      - name: maxTimestamp
-        in: query
-        required: true
-        schema:
-          type: string
-          format: date-time
-      - name: page
-        in: query
-        required: false
-        schema:
-          type: integer
-          format: int32
-          default: 0
-      - name: size
-        in: query
-        required: false
-        schema:
-          type: integer
-          format: int32
-          default: 50
+        - name: networkId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: minTimestamp
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date-time
+        - name: maxTimestamp
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date-time
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 0
+        - name: size
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 50
       responses:
         "200":
           description: OK
           content:
-            '*/*':
+            "*/*":
               schema:
-                $ref: "#/components/schemas/PageLogDto"
+                $ref: "#/components/schemas/PagedModelLogDto"
   /api/logs/device/{deviceId}:
     get:
       tags:
-      - log-controller
+        - log-controller
       operationId: getLogsByDevice
       parameters:
-      - name: deviceId
-        in: path
-        required: true
-        schema:
-          type: integer
-          format: int64
-      - name: page
-        in: query
-        required: false
-        schema:
-          type: integer
-          format: int32
-          default: 0
-      - name: size
-        in: query
-        required: false
-        schema:
-          type: integer
-          format: int32
-          default: 50
+        - name: deviceId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 0
+        - name: size
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 50
       responses:
         "200":
           description: OK
           content:
-            '*/*':
+            "*/*":
               schema:
-                $ref: "#/components/schemas/PageLogDto"
+                $ref: "#/components/schemas/PagedModelLogDto"
   /api/logs/device/{deviceId}/by-timestamp:
     get:
       tags:
-      - log-controller
+        - log-controller
       operationId: getLogsByDeviceAndTimestampRange
       parameters:
-      - name: deviceId
-        in: path
-        required: true
-        schema:
-          type: integer
-          format: int64
-      - name: minTimestamp
-        in: query
-        required: true
-        schema:
-          type: string
-          format: date-time
-      - name: maxTimestamp
-        in: query
-        required: true
-        schema:
-          type: string
-          format: date-time
-      - name: page
-        in: query
-        required: false
-        schema:
-          type: integer
-          format: int32
-          default: 0
-      - name: size
-        in: query
-        required: false
-        schema:
-          type: integer
-          format: int32
-          default: 50
+        - name: deviceId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: minTimestamp
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date-time
+        - name: maxTimestamp
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date-time
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 0
+        - name: size
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 50
       responses:
         "200":
           description: OK
           content:
-            '*/*':
+            "*/*":
               schema:
-                $ref: "#/components/schemas/PageLogDto"
+                $ref: "#/components/schemas/PagedModelLogDto"
   /api/logs/by-timestamp:
     get:
       tags:
-      - log-controller
+        - log-controller
       operationId: getLogsByTimestampRange
       parameters:
-      - name: minTimestamp
-        in: query
-        required: true
-        schema:
-          type: string
-          format: date-time
-      - name: maxTimestamp
-        in: query
-        required: true
-        schema:
-          type: string
-          format: date-time
-      - name: page
-        in: query
-        required: false
-        schema:
-          type: integer
-          format: int32
-          default: 0
-      - name: size
-        in: query
-        required: false
-        schema:
-          type: integer
-          format: int32
-          default: 50
+        - name: minTimestamp
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date-time
+        - name: maxTimestamp
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date-time
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 0
+        - name: size
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 50
       responses:
         "200":
           description: OK
           content:
-            '*/*':
+            "*/*":
               schema:
-                $ref: "#/components/schemas/PageLogDto"
+                $ref: "#/components/schemas/PagedModelLogDto"
   /api/devices/{id}/history:
     get:
       tags:
-      - device-controller
+        - device-controller
       operationId: getDeviceHistory
       parameters:
-      - name: id
-        in: path
-        required: true
-        schema:
-          type: integer
-          format: int64
-      - name: limit
-        in: query
-        required: false
-        schema:
-          type: integer
-          format: int32
-          default: 50
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 50
       responses:
         "200":
           description: OK
           content:
-            '*/*':
+            "*/*":
               schema:
                 type: array
                 items:
                   $ref: "#/components/schemas/DeviceStatusHistoryDto"
-  /api/devices/paginated:
-    get:
-      tags:
-      - device-controller
-      operationId: getDevicesPaginated
-      parameters:
-      - name: page
-        in: query
-        required: false
-        schema:
-          type: integer
-          format: int32
-          default: 0
-      - name: size
-        in: query
-        required: false
-        schema:
-          type: integer
-          format: int32
-          default: 20
-      responses:
-        "200":
-          description: OK
-          content:
-            '*/*':
-              schema:
-                $ref: "#/components/schemas/PageDeviceDto"
   /api/devices/network/{networkId}:
     get:
       tags:
-      - device-controller
+        - device-controller
       operationId: getDevicesByNetwork
       parameters:
-      - name: networkId
-        in: path
-        required: true
-        schema:
-          type: integer
-          format: int64
+        - name: networkId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
       responses:
         "200":
           description: OK
           content:
-            '*/*':
+            "*/*":
               schema:
                 type: array
                 items:
@@ -860,39 +806,39 @@ paths:
   /api/devices/network/{networkId}/stats:
     get:
       tags:
-      - device-controller
+        - device-controller
       operationId: getDeviceStats
       parameters:
-      - name: networkId
-        in: path
-        required: true
-        schema:
-          type: integer
-          format: int64
+        - name: networkId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
       responses:
         "200":
           description: OK
           content:
-            '*/*':
+            "*/*":
               schema:
                 $ref: "#/components/schemas/DeviceStats"
   /api/devices/network/{networkId}/online:
     get:
       tags:
-      - device-controller
+        - device-controller
       operationId: getOnlineDevices
       parameters:
-      - name: networkId
-        in: path
-        required: true
-        schema:
-          type: integer
-          format: int64
+        - name: networkId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
       responses:
         "200":
           description: OK
           content:
-            '*/*':
+            "*/*":
               schema:
                 type: array
                 items:
@@ -900,13 +846,13 @@ paths:
   /api/devices/needing-alerts:
     get:
       tags:
-      - device-controller
+        - device-controller
       operationId: getDevicesNeedingAlerts
       responses:
         "200":
           description: OK
           content:
-            '*/*':
+            "*/*":
               schema:
                 type: array
                 items:
@@ -914,374 +860,374 @@ paths:
   /api/devices/mac/{macAddress}:
     get:
       tags:
-      - device-controller
+        - device-controller
       operationId: getDeviceByMac
       parameters:
-      - name: macAddress
-        in: path
-        required: true
-        schema:
-          type: string
+        - name: macAddress
+          in: path
+          required: true
+          schema:
+            type: string
       responses:
         "200":
           description: OK
           content:
-            '*/*':
+            "*/*":
               schema:
                 $ref: "#/components/schemas/DeviceDto"
   /api/devices/exists:
     get:
       tags:
-      - device-controller
+        - device-controller
       operationId: checkDeviceExists
       parameters:
-      - name: networkId
-        in: query
-        required: true
-        schema:
-          type: integer
-          format: int64
-      - name: macAddress
-        in: query
-        required: true
-        schema:
-          type: string
+        - name: networkId
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: macAddress
+          in: query
+          required: true
+          schema:
+            type: string
       responses:
         "200":
           description: OK
           content:
-            '*/*':
+            "*/*":
               schema:
                 type: boolean
   /api/device-status-history/{id}:
     get:
       tags:
-      - device-status-history-controller
+        - device-status-history-controller
       operationId: getById
       parameters:
-      - name: id
-        in: path
-        required: true
-        schema:
-          type: integer
-          format: int64
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
       responses:
         "200":
           description: OK
           content:
-            '*/*':
+            "*/*":
               schema:
                 $ref: "#/components/schemas/DeviceStatusHistoryDto"
   /api/device-status-history/paginated:
     get:
       tags:
-      - device-status-history-controller
+        - device-status-history-controller
       operationId: getAllPaginated
       parameters:
-      - name: page
-        in: query
-        required: false
-        schema:
-          type: integer
-          format: int32
-          default: 0
-      - name: size
-        in: query
-        required: false
-        schema:
-          type: integer
-          format: int32
-          default: 50
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 0
+        - name: size
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 50
       responses:
         "200":
           description: OK
           content:
-            '*/*':
+            "*/*":
               schema:
-                $ref: "#/components/schemas/PageDeviceStatusHistoryDto"
+                $ref: "#/components/schemas/PagedModelDeviceStatusHistoryDto"
   /api/device-status-history/network/{networkId}:
     get:
       tags:
-      - device-status-history-controller
+        - device-status-history-controller
       operationId: getByNetwork
       parameters:
-      - name: networkId
-        in: path
-        required: true
-        schema:
-          type: integer
-          format: int64
-      - name: page
-        in: query
-        required: false
-        schema:
-          type: integer
-          format: int32
-          default: 0
-      - name: size
-        in: query
-        required: false
-        schema:
-          type: integer
-          format: int32
-          default: 50
+        - name: networkId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 0
+        - name: size
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 50
       responses:
         "200":
           description: OK
           content:
-            '*/*':
+            "*/*":
               schema:
-                $ref: "#/components/schemas/PageDeviceStatusHistoryDto"
+                $ref: "#/components/schemas/PagedModelDeviceStatusHistoryDto"
   /api/device-status-history/network/{networkId}/by-timestamp:
     get:
       tags:
-      - device-status-history-controller
+        - device-status-history-controller
       operationId: getByNetworkAndTimestampRange
       parameters:
-      - name: networkId
-        in: path
-        required: true
-        schema:
-          type: integer
-          format: int64
-      - name: minTimestamp
-        in: query
-        required: true
-        schema:
-          type: string
-          format: date-time
-      - name: maxTimestamp
-        in: query
-        required: true
-        schema:
-          type: string
-          format: date-time
-      - name: page
-        in: query
-        required: false
-        schema:
-          type: integer
-          format: int32
-          default: 0
-      - name: size
-        in: query
-        required: false
-        schema:
-          type: integer
-          format: int32
-          default: 50
+        - name: networkId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: minTimestamp
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date-time
+        - name: maxTimestamp
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date-time
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 0
+        - name: size
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 50
       responses:
         "200":
           description: OK
           content:
-            '*/*':
+            "*/*":
               schema:
-                $ref: "#/components/schemas/PageDeviceStatusHistoryDto"
+                $ref: "#/components/schemas/PagedModelDeviceStatusHistoryDto"
   /api/device-status-history/device/{deviceId}:
     get:
       tags:
-      - device-status-history-controller
+        - device-status-history-controller
       operationId: getByDevice
       parameters:
-      - name: deviceId
-        in: path
-        required: true
-        schema:
-          type: integer
-          format: int64
-      - name: page
-        in: query
-        required: false
-        schema:
-          type: integer
-          format: int32
-          default: 0
-      - name: size
-        in: query
-        required: false
-        schema:
-          type: integer
-          format: int32
-          default: 50
+        - name: deviceId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 0
+        - name: size
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 50
       responses:
         "200":
           description: OK
           content:
-            '*/*':
+            "*/*":
               schema:
-                $ref: "#/components/schemas/PageDeviceStatusHistoryDto"
+                $ref: "#/components/schemas/PagedModelDeviceStatusHistoryDto"
   /api/device-status-history/device/{deviceId}/count:
     get:
       tags:
-      - device-status-history-controller
+        - device-status-history-controller
       operationId: countByDevice
       parameters:
-      - name: deviceId
-        in: path
-        required: true
-        schema:
-          type: integer
-          format: int64
+        - name: deviceId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
       responses:
         "200":
           description: OK
           content:
-            '*/*':
+            "*/*":
               schema:
                 type: integer
                 format: int64
   /api/device-status-history/device/{deviceId}/by-timestamp:
     get:
       tags:
-      - device-status-history-controller
+        - device-status-history-controller
       operationId: getByDeviceAndTimestampRange
       parameters:
-      - name: deviceId
-        in: path
-        required: true
-        schema:
-          type: integer
-          format: int64
-      - name: minTimestamp
-        in: query
-        required: true
-        schema:
-          type: string
-          format: date-time
-      - name: maxTimestamp
-        in: query
-        required: true
-        schema:
-          type: string
-          format: date-time
-      - name: page
-        in: query
-        required: false
-        schema:
-          type: integer
-          format: int32
-          default: 0
-      - name: size
-        in: query
-        required: false
-        schema:
-          type: integer
-          format: int32
-          default: 50
+        - name: deviceId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: minTimestamp
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date-time
+        - name: maxTimestamp
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date-time
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 0
+        - name: size
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 50
       responses:
         "200":
           description: OK
           content:
-            '*/*':
+            "*/*":
               schema:
-                $ref: "#/components/schemas/PageDeviceStatusHistoryDto"
+                $ref: "#/components/schemas/PagedModelDeviceStatusHistoryDto"
   /api/device-status-history/count-by-timestamp:
     get:
       tags:
-      - device-status-history-controller
+        - device-status-history-controller
       operationId: countByTimestampRange
       parameters:
-      - name: start
-        in: query
-        required: true
-        schema:
-          type: string
-          format: date-time
-      - name: end
-        in: query
-        required: true
-        schema:
-          type: string
-          format: date-time
+        - name: start
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date-time
+        - name: end
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date-time
       responses:
         "200":
           description: OK
           content:
-            '*/*':
+            "*/*":
               schema:
                 type: integer
                 format: int64
   /api/device-status-history/by-timestamp:
     get:
       tags:
-      - device-status-history-controller
+        - device-status-history-controller
       operationId: getByTimestampRange
       parameters:
-      - name: minTimestamp
-        in: query
-        required: true
-        schema:
-          type: string
-          format: date-time
-      - name: maxTimestamp
-        in: query
-        required: true
-        schema:
-          type: string
-          format: date-time
-      - name: page
-        in: query
-        required: false
-        schema:
-          type: integer
-          format: int32
-          default: 0
-      - name: size
-        in: query
-        required: false
-        schema:
-          type: integer
-          format: int32
-          default: 50
+        - name: minTimestamp
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date-time
+        - name: maxTimestamp
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date-time
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 0
+        - name: size
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 50
       responses:
         "200":
           description: OK
           content:
-            '*/*':
+            "*/*":
               schema:
-                $ref: "#/components/schemas/PageDeviceStatusHistoryDto"
+                $ref: "#/components/schemas/PagedModelDeviceStatusHistoryDto"
   /api/alerts/{id}:
     get:
       tags:
-      - alert-controller
+        - alert-controller
       operationId: getAlertById
       parameters:
-      - name: id
-        in: path
-        required: true
-        schema:
-          type: integer
-          format: int64
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
       responses:
         "200":
           description: OK
           content:
-            '*/*':
+            "*/*":
               schema:
                 $ref: "#/components/schemas/AlertDto"
   /api/alerts/network/{networkId}:
     get:
       tags:
-      - alert-controller
+        - alert-controller
       operationId: getAlertsByNetwork
       parameters:
-      - name: networkId
-        in: path
-        required: true
-        schema:
-          type: integer
-          format: int64
-      - name: active
-        in: query
-        required: false
-        schema:
-          type: boolean
-          default: false
+        - name: networkId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: active
+          in: query
+          required: false
+          schema:
+            type: boolean
+            default: false
       responses:
         "200":
           description: OK
           content:
-            '*/*':
+            "*/*":
               schema:
                 type: array
                 items:
@@ -1289,26 +1235,26 @@ paths:
   /api/alerts/device/{deviceId}:
     get:
       tags:
-      - alert-controller
+        - alert-controller
       operationId: getAlertsByDevice
       parameters:
-      - name: deviceId
-        in: path
-        required: true
-        schema:
-          type: integer
-          format: int64
-      - name: active
-        in: query
-        required: false
-        schema:
-          type: boolean
-          default: false
+        - name: deviceId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: active
+          in: query
+          required: false
+          schema:
+            type: boolean
+            default: false
       responses:
         "200":
           description: OK
           content:
-            '*/*':
+            "*/*":
               schema:
                 type: array
                 items:
@@ -1316,142 +1262,88 @@ paths:
   /api/accounts/username/{username}:
     get:
       tags:
-      - account-controller
+        - account-controller
       operationId: getAccountByUsername
       parameters:
-      - name: username
-        in: path
-        required: true
-        schema:
-          type: string
+        - name: username
+          in: path
+          required: true
+          schema:
+            type: string
       responses:
         "200":
           description: OK
           content:
-            '*/*':
+            "*/*":
               schema:
                 $ref: "#/components/schemas/AccountDto"
   /api/accounts/type/{accountTypeName}:
     get:
       tags:
-      - account-controller
+        - account-controller
       operationId: getAccountsByType
       parameters:
-      - name: accountTypeName
-        in: path
-        required: true
-        schema:
-          type: string
+        - name: accountTypeName
+          in: path
+          required: true
+          schema:
+            type: string
       responses:
         "200":
           description: OK
           content:
-            '*/*':
+            "*/*":
               schema:
                 type: array
                 items:
                   $ref: "#/components/schemas/AccountDto"
-  /api/accounts/paginated:
-    get:
-      tags:
-      - account-controller
-      operationId: getAccountsPaginated
-      parameters:
-      - name: page
-        in: query
-        required: false
-        schema:
-          type: integer
-          format: int32
-          default: 0
-      - name: size
-        in: query
-        required: false
-        schema:
-          type: integer
-          format: int32
-          default: 20
-      responses:
-        "200":
-          description: OK
-          content:
-            '*/*':
-              schema:
-                $ref: "#/components/schemas/PageAccountDto"
   /api/accounts/me:
     get:
       tags:
-      - account-controller
+        - account-controller
       operationId: getCurrentAccount
       responses:
         "200":
           description: OK
           content:
-            '*/*':
+            "*/*":
               schema:
                 $ref: "#/components/schemas/AccountDto"
   /api/accounts/exists:
     get:
       tags:
-      - account-controller
+        - account-controller
       operationId: checkAccountExists
       parameters:
-      - name: username
-        in: query
-        required: true
-        schema:
-          type: string
+        - name: username
+          in: query
+          required: true
+          schema:
+            type: string
       responses:
         "200":
           description: OK
           content:
-            '*/*':
+            "*/*":
               schema:
                 type: boolean
-  /api/account-networks/paginated:
-    get:
-      tags:
-      - account-network-controller
-      operationId: getAccountNetworksPaginated
-      parameters:
-      - name: page
-        in: query
-        required: false
-        schema:
-          type: integer
-          format: int32
-          default: 0
-      - name: size
-        in: query
-        required: false
-        schema:
-          type: integer
-          format: int32
-          default: 20
-      responses:
-        "200":
-          description: OK
-          content:
-            '*/*':
-              schema:
-                $ref: "#/components/schemas/PageAccountNetworkDto"
   /api/account-networks/networks-by-account/{accountId}:
     get:
       tags:
-      - account-network-controller
+        - account-network-controller
       operationId: getNetworkEntitiesByAccount
       parameters:
-      - name: accountId
-        in: path
-        required: true
-        schema:
-          type: integer
-          format: int64
+        - name: accountId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
       responses:
         "200":
           description: OK
           content:
-            '*/*':
+            "*/*":
               schema:
                 type: array
                 items:
@@ -1459,20 +1351,20 @@ paths:
   /api/account-networks/network/{networkId}:
     get:
       tags:
-      - account-network-controller
+        - account-network-controller
       operationId: getAccountsByNetwork
       parameters:
-      - name: networkId
-        in: path
-        required: true
-        schema:
-          type: integer
-          format: int64
+        - name: networkId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
       responses:
         "200":
           description: OK
           content:
-            '*/*':
+            "*/*":
               schema:
                 type: array
                 items:
@@ -1480,45 +1372,45 @@ paths:
   /api/account-networks/has-access:
     get:
       tags:
-      - account-network-controller
+        - account-network-controller
       operationId: checkAccess
       parameters:
-      - name: accountId
-        in: query
-        required: true
-        schema:
-          type: integer
-          format: int64
-      - name: networkId
-        in: query
-        required: true
-        schema:
-          type: integer
-          format: int64
+        - name: accountId
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: networkId
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int64
       responses:
         "200":
           description: OK
           content:
-            '*/*':
+            "*/*":
               schema:
                 type: boolean
   /api/account-networks/accounts-by-network/{networkId}:
     get:
       tags:
-      - account-network-controller
+        - account-network-controller
       operationId: getAccountEntitiesByNetwork
       parameters:
-      - name: networkId
-        in: path
-        required: true
-        schema:
-          type: integer
-          format: int64
+        - name: networkId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
       responses:
         "200":
           description: OK
           content:
-            '*/*':
+            "*/*":
               schema:
                 type: array
                 items:
@@ -1526,20 +1418,20 @@ paths:
   /api/account-networks/account/{accountId}:
     get:
       tags:
-      - account-network-controller
+        - account-network-controller
       operationId: getNetworksByAccount
       parameters:
-      - name: accountId
-        in: path
-        required: true
-        schema:
-          type: integer
-          format: int64
+        - name: accountId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
       responses:
         "200":
           description: OK
           content:
-            '*/*':
+            "*/*":
               schema:
                 type: array
                 items:
@@ -1547,21 +1439,21 @@ paths:
   /api/account-networks/revoke-access:
     delete:
       tags:
-      - account-network-controller
+        - account-network-controller
       operationId: revokeAccess
       parameters:
-      - name: accountId
-        in: query
-        required: true
-        schema:
-          type: integer
-          format: int64
-      - name: networkId
-        in: query
-        required: true
-        schema:
-          type: integer
-          format: int64
+        - name: accountId
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: networkId
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int64
       responses:
         "200":
           description: OK
@@ -1636,9 +1528,9 @@ components:
         deviceOperationMode:
           type: string
           enum:
-          - UNAUTHORIZED
-          - AUTHORIZED
-          - ALWAYS_ON
+            - UNAUTHORIZED
+            - AUTHORIZED
+            - ALWAYS_ON
     DeviceDto:
       type: object
       properties:
@@ -1662,9 +1554,9 @@ components:
         deviceOperationMode:
           type: string
           enum:
-          - UNAUTHORIZED
-          - AUTHORIZED
-          - ALWAYS_ON
+            - UNAUTHORIZED
+            - AUTHORIZED
+            - ALWAYS_ON
         activeAlertId:
           type: integer
           format: int64
@@ -1677,7 +1569,7 @@ components:
           type: string
         accountTypeId:
           type: integer
-          format: int64
+          format: int32
         password:
           type: string
         fullName:
@@ -1698,6 +1590,9 @@ components:
           format: int64
         username:
           type: string
+        accountTypeId:
+          type: integer
+          format: int32
         accountTypeName:
           type: string
         fullName:
@@ -1743,65 +1638,6 @@ components:
           type: string
         online:
           type: boolean
-    PageNetworkDto:
-      type: object
-      properties:
-        totalElements:
-          type: integer
-          format: int64
-        totalPages:
-          type: integer
-          format: int32
-        size:
-          type: integer
-          format: int32
-        content:
-          type: array
-          items:
-            $ref: "#/components/schemas/NetworkDto"
-        number:
-          type: integer
-          format: int32
-        sort:
-          $ref: "#/components/schemas/SortObject"
-        first:
-          type: boolean
-        last:
-          type: boolean
-        numberOfElements:
-          type: integer
-          format: int32
-        pageable:
-          $ref: "#/components/schemas/PageableObject"
-        empty:
-          type: boolean
-    PageableObject:
-      type: object
-      properties:
-        offset:
-          type: integer
-          format: int64
-        sort:
-          $ref: "#/components/schemas/SortObject"
-        pageNumber:
-          type: integer
-          format: int32
-        paged:
-          type: boolean
-        pageSize:
-          type: integer
-          format: int32
-        unpaged:
-          type: boolean
-    SortObject:
-      type: object
-      properties:
-        empty:
-          type: boolean
-        sorted:
-          type: boolean
-        unsorted:
-          type: boolean
     LogDto:
       type: object
       properties:
@@ -1824,38 +1660,30 @@ components:
         deviceId:
           type: integer
           format: int64
-    PageLogDto:
+    PageMetadata:
       type: object
       properties:
+        size:
+          type: integer
+          format: int64
+        number:
+          type: integer
+          format: int64
         totalElements:
           type: integer
           format: int64
         totalPages:
           type: integer
-          format: int32
-        size:
-          type: integer
-          format: int32
+          format: int64
+    PagedModelLogDto:
+      type: object
+      properties:
         content:
           type: array
           items:
             $ref: "#/components/schemas/LogDto"
-        number:
-          type: integer
-          format: int32
-        sort:
-          $ref: "#/components/schemas/SortObject"
-        first:
-          type: boolean
-        last:
-          type: boolean
-        numberOfElements:
-          type: integer
-          format: int32
-        pageable:
-          $ref: "#/components/schemas/PageableObject"
-        empty:
-          type: boolean
+        page:
+          $ref: "#/components/schemas/PageMetadata"
     DeviceStatusHistoryDto:
       type: object
       properties:
@@ -1875,38 +1703,6 @@ components:
         timestamp:
           type: string
           format: date-time
-    PageDeviceDto:
-      type: object
-      properties:
-        totalElements:
-          type: integer
-          format: int64
-        totalPages:
-          type: integer
-          format: int32
-        size:
-          type: integer
-          format: int32
-        content:
-          type: array
-          items:
-            $ref: "#/components/schemas/DeviceDto"
-        number:
-          type: integer
-          format: int32
-        sort:
-          $ref: "#/components/schemas/SortObject"
-        first:
-          type: boolean
-        last:
-          type: boolean
-        numberOfElements:
-          type: integer
-          format: int32
-        pageable:
-          $ref: "#/components/schemas/PageableObject"
-        empty:
-          type: boolean
     DeviceStats:
       type: object
       properties:
@@ -1919,38 +1715,15 @@ components:
         offline:
           type: integer
           format: int64
-    PageDeviceStatusHistoryDto:
+    PagedModelDeviceStatusHistoryDto:
       type: object
       properties:
-        totalElements:
-          type: integer
-          format: int64
-        totalPages:
-          type: integer
-          format: int32
-        size:
-          type: integer
-          format: int32
         content:
           type: array
           items:
             $ref: "#/components/schemas/DeviceStatusHistoryDto"
-        number:
-          type: integer
-          format: int32
-        sort:
-          $ref: "#/components/schemas/SortObject"
-        first:
-          type: boolean
-        last:
-          type: boolean
-        numberOfElements:
-          type: integer
-          format: int32
-        pageable:
-          $ref: "#/components/schemas/PageableObject"
-        empty:
-          type: boolean
+        page:
+          $ref: "#/components/schemas/PageMetadata"
     AlertDto:
       type: object
       properties:
@@ -1966,9 +1739,9 @@ components:
         alertType:
           type: string
           enum:
-          - NETWORK_DOWN
-          - DEVICE_DOWN
-          - DEVICE_UNAUTHORIZED
+            - NETWORK_DOWN
+            - DEVICE_DOWN
+            - DEVICE_UNAUTHORIZED
         message:
           type: string
         timestamp:
@@ -1977,67 +1750,3 @@ components:
         closureTimestamp:
           type: string
           format: date-time
-    PageAccountDto:
-      type: object
-      properties:
-        totalElements:
-          type: integer
-          format: int64
-        totalPages:
-          type: integer
-          format: int32
-        size:
-          type: integer
-          format: int32
-        content:
-          type: array
-          items:
-            $ref: "#/components/schemas/AccountDto"
-        number:
-          type: integer
-          format: int32
-        sort:
-          $ref: "#/components/schemas/SortObject"
-        first:
-          type: boolean
-        last:
-          type: boolean
-        numberOfElements:
-          type: integer
-          format: int32
-        pageable:
-          $ref: "#/components/schemas/PageableObject"
-        empty:
-          type: boolean
-    PageAccountNetworkDto:
-      type: object
-      properties:
-        totalElements:
-          type: integer
-          format: int64
-        totalPages:
-          type: integer
-          format: int32
-        size:
-          type: integer
-          format: int32
-        content:
-          type: array
-          items:
-            $ref: "#/components/schemas/AccountNetworkDto"
-        number:
-          type: integer
-          format: int32
-        sort:
-          $ref: "#/components/schemas/SortObject"
-        first:
-          type: boolean
-        last:
-          type: boolean
-        numberOfElements:
-          type: integer
-          format: int32
-        pageable:
-          $ref: "#/components/schemas/PageableObject"
-        empty:
-          type: boolean

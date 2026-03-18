@@ -22,11 +22,12 @@ class AlertListTile extends StatelessWidget {
         color: color,
       ),
       title: Text(
-        alert.message ?? '<no message>',
+        _alertTypeLabel(alert.alertType),
         overflow: TextOverflow.ellipsis,
       ),
       subtitle: Text(
-        '${_alertTypeLabel(alert.alertType)}  ·  ${_fmt.format(alert.timestamp.toLocal())}',
+        _fmt.format(alert.timestamp.toLocal()) +
+            (alert.message != null ? '  ·  ${alert.message}' : ''),
       ),
       trailing: Chip(
         label: Text(isOpen ? 'Open' : 'Closed'),
