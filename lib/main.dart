@@ -45,8 +45,8 @@ class NetmonApp extends StatelessWidget {
 
     return MaterialApp(
       title: 'netmon2',
-      theme: AppTheme.lightTheme,
-      darkTheme: AppTheme.darkTheme,
+      theme: AppTheme.light,
+      darkTheme: AppTheme.dark,
       themeMode: themeMode,
       // Detail screens are handled by the inner Navigator inside
       // MainScaffold so the nav rail / drawer stays visible at all times.
