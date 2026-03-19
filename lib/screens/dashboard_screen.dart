@@ -10,6 +10,7 @@ import '../services/device_service.dart';
 import '../utils/constants.dart';
 import '../widgets/error_display.dart';
 import '../widgets/network_card.dart';
+import '../widgets/shell_menu_leading.dart';
 
 class _NetworkStats {
   final int online;
@@ -88,34 +89,45 @@ class _DashboardScreenState extends State<DashboardScreen> {
     final networkProvider = context.watch<NetworkProvider>();
     final networks = networkProvider.networks;
 
+    final Widget body;
     if (networkProvider.loading && networks.isEmpty) {
-      return const Center(child: CircularProgressIndicator());
-    }
-    if (networkProvider.error != null && networks.isEmpty) {
-      return ErrorDisplay(message: networkProvider.error!);
+      body = const Center(child: CircularProgressIndicator());
+    } else if (networkProvider.error != null && networks.isEmpty) {
+      body = ErrorDisplay(message: networkProvider.error!);
+    } else {
+      body = RefreshIndicator(
+        onRefresh: _loadStats,
+        child: ListView.builder(
+          padding: const EdgeInsets.all(16),
+          itemCount: networks.length,
+          itemBuilder: (ctx, i) {
+            final n = networks[i];
+            final stats = _stats[n.id];
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 12),
+              child: NetworkCard(
+                network: n,
+                onlineCount: stats?.online,
+                offlineCount: stats?.offline,
+                alertCount: stats?.alerts,
+                onTap: () => Navigator.of(
+                  context,
+                ).pushNamed('/network', arguments: n.id),
+              ),
+            );
+          },
+        ),
+      );
     }
 
-    return RefreshIndicator(
-      onRefresh: _loadStats,
-      child: ListView.builder(
-        padding: const EdgeInsets.all(16),
-        itemCount: networks.length,
-        itemBuilder: (ctx, i) {
-          final n = networks[i];
-          final stats = _stats[n.id];
-          return Padding(
-            padding: const EdgeInsets.only(bottom: 12),
-            child: NetworkCard(
-              network: n,
-              onlineCount: stats?.online,
-              offlineCount: stats?.offline,
-              alertCount: stats?.alerts,
-              onTap: () =>
-                  Navigator.of(context).pushNamed('/network', arguments: n.id),
-            ),
-          );
-        },
+    return Scaffold(
+      appBar: AppBar(
+        leading: ShellScope.maybeOf(context) != null
+            ? const ShellMenuLeading()
+            : null,
+        title: const Text('Dashboard'),
       ),
+      body: body,
     );
   }
 }

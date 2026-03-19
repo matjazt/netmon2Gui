@@ -5,6 +5,7 @@ import '../services/history_service.dart';
 import '../utils/constants.dart';
 import '../widgets/error_display.dart';
 import '../widgets/history_list_tile.dart';
+import '../widgets/shell_menu_leading.dart';
 
 /// Shows paginated device-status-history for all networks the user can access.
 class HistoryScreen extends StatefulWidget {
@@ -66,37 +67,46 @@ class _HistoryScreenState extends State<HistoryScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final Widget body;
     if (_error != null) {
-      return ErrorDisplay(message: _error!, onRetry: () => _load(reset: true));
-    }
-    if (_entries.isEmpty && _loading) {
-      return const Center(child: CircularProgressIndicator());
-    }
-    if (_entries.isEmpty) {
-      return const Center(child: Text('No history'));
+      body = ErrorDisplay(message: _error!, onRetry: () => _load(reset: true));
+    } else if (_entries.isEmpty && _loading) {
+      body = const Center(child: CircularProgressIndicator());
+    } else if (_entries.isEmpty) {
+      body = const Center(child: Text('No history'));
+    } else {
+      body = RefreshIndicator(
+        onRefresh: () => _load(reset: true),
+        child: ListView.separated(
+          itemCount: _entries.length + (_hasMore ? 1 : 0),
+          separatorBuilder: (_, __) => const Divider(height: 1),
+          itemBuilder: (ctx, i) {
+            if (i == _entries.length) {
+              // Load-more trigger — deferred to avoid setState during build.
+              if (!_loading) {
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  if (mounted && !_loading) _load();
+                });
+              }
+              return const Padding(
+                padding: EdgeInsets.all(16),
+                child: Center(child: CircularProgressIndicator()),
+              );
+            }
+            return HistoryListTile(entry: _entries[i]);
+          },
+        ),
+      );
     }
 
-    return RefreshIndicator(
-      onRefresh: () => _load(reset: true),
-      child: ListView.separated(
-        itemCount: _entries.length + (_hasMore ? 1 : 0),
-        separatorBuilder: (_, __) => const Divider(height: 1),
-        itemBuilder: (ctx, i) {
-          if (i == _entries.length) {
-            // Load-more trigger — deferred to avoid setState during build.
-            if (!_loading) {
-              WidgetsBinding.instance.addPostFrameCallback((_) {
-                if (mounted && !_loading) _load();
-              });
-            }
-            return const Padding(
-              padding: EdgeInsets.all(16),
-              child: Center(child: CircularProgressIndicator()),
-            );
-          }
-          return HistoryListTile(entry: _entries[i]);
-        },
+    return Scaffold(
+      appBar: AppBar(
+        leading: ShellScope.maybeOf(context) != null
+            ? const ShellMenuLeading()
+            : null,
+        title: const Text('History'),
       ),
+      body: body,
     );
   }
 }

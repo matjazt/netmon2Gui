@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+
 import '../../models/account.dart';
 import '../../services/account_service.dart';
-import '../../widgets/error_display.dart';
-import '../../widgets/confirm_dialog.dart';
 import '../../utils/constants.dart';
+import '../../widgets/confirm_dialog.dart';
+import '../../widgets/error_display.dart';
+import '../../widgets/shell_menu_leading.dart';
 import 'admin_account_form.dart';
 
 /// Admin screen listing all accounts with create / edit / delete actions.
@@ -87,7 +89,12 @@ class _AdminAccountsScreenState extends State<AdminAccountsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Accounts')),
+      appBar: AppBar(
+        leading: ShellScope.maybeOf(context) != null
+            ? const ShellMenuLeading()
+            : null,
+        title: const Text('Accounts'),
+      ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => _openForm(),
         icon: const Icon(Icons.person_add),

@@ -15,6 +15,7 @@ import 'screens/logs_screen.dart';
 import 'screens/network_detail_screen.dart';
 import 'screens/settings_screen.dart';
 import 'utils/theme.dart';
+import 'widgets/shell_menu_leading.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -47,20 +48,9 @@ class NetmonApp extends StatelessWidget {
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
       themeMode: themeMode,
-      // Named routes for simple imperative navigation.
-      routes: {
-        '/': (_) => const AppShell(),
-        '/network': (ctx) {
-          final id = ModalRoute.of(ctx)!.settings.arguments as int;
-          return NetworkDetailScreen(networkId: id);
-        },
-        '/device': (ctx) {
-          final id = ModalRoute.of(ctx)!.settings.arguments as int;
-          return DeviceDetailScreen(deviceId: id);
-        },
-        '/admin/accounts': (_) => const AdminAccountsScreen(),
-        '/admin/networks': (_) => const AdminNetworksScreen(),
-      },
+      // Detail screens are handled by the inner Navigator inside
+      // MainScaffold so the nav rail / drawer stays visible at all times.
+      routes: {'/': (_) => const AppShell()},
     );
   }
 }
@@ -125,6 +115,9 @@ class MainScaffold extends StatefulWidget {
 
 class _MainScaffoldState extends State<MainScaffold> {
   int _selectedIndex = 0;
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
+  final _navigatorKey = GlobalKey<NavigatorState>();
+  bool _isAdmin = false;
 
   List<_NavItem> _navItems(bool isAdmin) => [
     const _NavItem(Icons.dashboard_outlined, Icons.dashboard, 'Dashboard'),
@@ -141,7 +134,7 @@ class _MainScaffoldState extends State<MainScaffold> {
     const _NavItem(Icons.settings_outlined, Icons.settings, 'Settings'),
   ];
 
-  Widget _body(bool isAdmin, int index) {
+  Widget _tabBody(bool isAdmin, int index) {
     final items = _navItems(isAdmin);
     final label = items[index].label;
     return switch (label) {
@@ -155,13 +148,52 @@ class _MainScaffoldState extends State<MainScaffold> {
     };
   }
 
+  void _onDestinationSelected(int i) {
+    setState(() => _selectedIndex = i);
+    // Reset the inner navigator stack to the new tab's home screen.
+    _navigatorKey.currentState?.pushNamedAndRemoveUntil('/', (_) => false);
+  }
+
+  Route? _generateRoute(RouteSettings settings) {
+    final safeIndex = _selectedIndex.clamp(0, _navItems(_isAdmin).length - 1);
+    switch (settings.name) {
+      case '/':
+        // No transition animation for tab switches.
+        return PageRouteBuilder(
+          pageBuilder: (_, __, ___) => _tabBody(_isAdmin, safeIndex),
+          settings: settings,
+          transitionDuration: Duration.zero,
+          reverseTransitionDuration: Duration.zero,
+        );
+      case '/network':
+        return MaterialPageRoute(
+          builder: (_) =>
+              NetworkDetailScreen(networkId: settings.arguments as int),
+          settings: settings,
+        );
+      case '/device':
+        return MaterialPageRoute(
+          builder: (_) =>
+              DeviceDetailScreen(deviceId: settings.arguments as int),
+          settings: settings,
+        );
+    }
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
     final isAdmin = context.watch<AuthProvider>().isAdmin;
+    _isAdmin = isAdmin;
     final items = _navItems(isAdmin);
-    // Clamp in case items count shifts after login state change.
     final safeIndex = _selectedIndex.clamp(0, items.length - 1);
     final isWide = MediaQuery.of(context).size.width >= 600;
+
+    final innerNav = Navigator(
+      key: _navigatorKey,
+      initialRoute: '/',
+      onGenerateRoute: _generateRoute,
+    );
 
     if (isWide) {
       return Scaffold(
@@ -169,7 +201,7 @@ class _MainScaffoldState extends State<MainScaffold> {
           children: [
             NavigationRail(
               selectedIndex: safeIndex,
-              onDestinationSelected: (i) => setState(() => _selectedIndex = i),
+              onDestinationSelected: _onDestinationSelected,
               labelType: NavigationRailLabelType.all,
               destinations: [
                 for (final item in items)
@@ -181,50 +213,48 @@ class _MainScaffoldState extends State<MainScaffold> {
               ],
             ),
             const VerticalDivider(width: 1),
-            Expanded(
-              child: AnimatedSwitcher(
-                duration: const Duration(milliseconds: 200),
-                child: KeyedSubtree(
-                  key: ValueKey('$isAdmin/$safeIndex'),
-                  child: _body(isAdmin, safeIndex),
-                ),
-              ),
-            ),
+            Expanded(child: innerNav),
           ],
         ),
       );
     }
 
-    // Narrow layout uses a Drawer.
-    return Scaffold(
-      appBar: AppBar(title: const Text('netmon2')),
-      drawer: NavigationDrawer(
-        selectedIndex: safeIndex,
-        onDestinationSelected: (i) {
-          Navigator.of(context).pop(); // close drawer
-          setState(() => _selectedIndex = i);
-        },
-        children: [
-          const Padding(
-            padding: EdgeInsets.fromLTRB(28, 16, 16, 10),
-            child: Text(
-              'netmon2',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+    // Narrow layout: drawer-based navigation.
+    // PopScope intercepts the system back button to pop the inner navigator.
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, _) {
+        if (!didPop && (_navigatorKey.currentState?.canPop() ?? false)) {
+          _navigatorKey.currentState?.pop();
+        }
+      },
+      child: Scaffold(
+        key: _scaffoldKey,
+        drawer: NavigationDrawer(
+          selectedIndex: safeIndex,
+          onDestinationSelected: (i) {
+            Navigator.of(context).pop(); // close drawer
+            _onDestinationSelected(i);
+          },
+          children: [
+            const Padding(
+              padding: EdgeInsets.fromLTRB(28, 16, 16, 10),
+              child: Text(
+                'netmon2',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+              ),
             ),
-          ),
-          for (final item in items)
-            NavigationDrawerDestination(
-              icon: Icon(item.icon),
-              selectedIcon: Icon(item.selectedIcon),
-              label: Text(item.label),
-            ),
-        ],
-      ),
-      body: AnimatedSwitcher(
-        duration: const Duration(milliseconds: 200),
-        child: KeyedSubtree(
-          key: ValueKey('$isAdmin/$safeIndex'),
-          child: _body(isAdmin, safeIndex),
+            for (final item in items)
+              NavigationDrawerDestination(
+                icon: Icon(item.icon),
+                selectedIcon: Icon(item.selectedIcon),
+                label: Text(item.label),
+              ),
+          ],
+        ),
+        body: ShellScope(
+          openDrawer: () => _scaffoldKey.currentState?.openDrawer(),
+          child: innerNav,
         ),
       ),
     );
