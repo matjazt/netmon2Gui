@@ -38,7 +38,7 @@ class LogListTile extends StatelessWidget {
       onTap: () => Navigator.of(
         context,
       ).push(MaterialPageRoute(builder: (_) => LogDetailScreen(entry: entry))),
-      title: Text(entry.message, overflow: TextOverflow.ellipsis),
+      title: Text(entry.message, overflow: TextOverflow.fade),
       subtitle: Text(
         [
           _fmt.format(entry.timestamp.toLocal()),
