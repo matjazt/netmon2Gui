@@ -16,7 +16,7 @@ class HistoryDetailScreen extends StatelessWidget {
     final color = entry.online ? Colors.green : Colors.red;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Status Event'),
+        title: Text("Status Event #${entry.id}"),
         actions: const [ShellMenuAction()],
       ),
       body: ListView(

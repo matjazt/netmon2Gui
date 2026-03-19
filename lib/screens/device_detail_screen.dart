@@ -235,7 +235,7 @@ class _DeviceDetailScreenState extends State<DeviceDetailScreen>
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(_device?.name ?? 'Device'),
+        title: Text("Device #${_device?.id}: ${_device?.name ?? 'Unknown'}"),
         actions: const [ShellMenuAction()],
         bottom: TabBar(
           controller: _tabs,

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../models/alert.dart';
+import '../screens/alert_detail_screen.dart';
 
 final _fmt = DateFormat('yyyy-MM-dd HH:mm:ss');
 
@@ -38,6 +39,9 @@ class AlertListTile extends StatelessWidget {
         backgroundColor: color.withValues(alpha: 0.15),
         labelStyle: TextStyle(color: color, fontSize: 12),
         visualDensity: VisualDensity.compact,
+      ),
+      onTap: () => Navigator.of(context).push(
+        MaterialPageRoute(builder: (_) => AlertDetailScreen(alert: alert)),
       ),
     );
   }

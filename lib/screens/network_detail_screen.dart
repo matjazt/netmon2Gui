@@ -192,7 +192,7 @@ class _NetworkDetailScreenState extends State<NetworkDetailScreen>
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(_network?.name ?? 'Network'),
+        title: Text("Network #${_network?.id}: ${_network?.name ?? 'Unknown'}"),
         actions: const [ShellMenuAction()],
         bottom: TabBar(
           controller: _tabs,

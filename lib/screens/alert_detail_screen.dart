@@ -1,23 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-import '../models/log_entry.dart';
-import '../utils/constants.dart';
+import '../models/alert.dart';
 import '../widgets/shell_menu_leading.dart';
 
 final _fmt = DateFormat('yyyy-MM-dd HH:mm:ss');
 
-class LogDetailScreen extends StatelessWidget {
-  final LogEntry entry;
+class AlertDetailScreen extends StatelessWidget {
+  final Alert alert;
 
-  const LogDetailScreen({super.key, required this.entry});
+  const AlertDetailScreen({super.key, required this.alert});
 
   @override
   Widget build(BuildContext context) {
-    final levelColor = _levelColor(entry.level);
+    final isOpen = alert.isOpen;
+    final colorScheme = Theme.of(context).colorScheme;
+    final statusColor = isOpen ? colorScheme.error : colorScheme.tertiary;
+
     return Scaffold(
       appBar: AppBar(
-        title: Text("Log Entry #${entry.id}"),
+        title: Text("Alert #${alert.id}: ${_alertTypeLabel(alert.alertType)}"),
         actions: const [ShellMenuAction()],
       ),
       body: ListView(
@@ -26,46 +28,47 @@ class LogDetailScreen extends StatelessWidget {
           _DetailCard(
             children: [
               _Row(
-                label: 'Level',
+                label: 'Status',
                 child: Container(
                   padding: const EdgeInsets.symmetric(
                     vertical: 3,
                     horizontal: 8,
                   ),
                   decoration: BoxDecoration(
-                    color: levelColor.withValues(alpha: 0.12),
+                    color: statusColor.withValues(alpha: 0.12),
                     borderRadius: BorderRadius.circular(6),
                   ),
                   child: Text(
-                    logLevelName(entry.level),
+                    isOpen ? 'Open' : 'Closed',
                     style: TextStyle(
-                      color: levelColor,
+                      color: statusColor,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),
               ),
+              _Row(label: 'Type', value: _alertTypeLabel(alert.alertType)),
+              _Row(label: 'ID', value: '${alert.id}'),
               _Row(
-                label: 'Timestamp',
-                value: _fmt.format(entry.timestamp.toLocal()),
+                label: 'Opened',
+                value: _fmt.format(alert.timestamp.toLocal()),
               ),
-              _Row(label: 'Origin', value: entry.origin, softWrap: true),
-              _Row(label: 'Network', value: entry.networkName, softWrap: true),
-              if (entry.deviceNameOrVendor != null)
+              if (alert.closureTimestamp != null)
                 _Row(
-                  label: 'Device',
-                  value: entry.deviceNameOrVendor,
-                  softWrap: true,
+                  label: 'Closed',
+                  value: _fmt.format(alert.closureTimestamp!.toLocal()),
                 ),
             ],
           ),
-          const SizedBox(height: 12),
-          _DetailCard(
-            children: [
-              _Row(label: 'Message', value: entry.message, softWrap: true),
-            ],
-          ),
-          if (entry.networkId != null || entry.deviceId != null) ...[
+          if (alert.message != null) ...[
+            const SizedBox(height: 12),
+            _DetailCard(
+              children: [
+                _Row(label: 'Message', value: alert.message, softWrap: true),
+              ],
+            ),
+          ],
+          if (alert.networkId != null || alert.deviceId != null) ...[
             const SizedBox(height: 12),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 4),
@@ -73,21 +76,21 @@ class LogDetailScreen extends StatelessWidget {
                 spacing: 8,
                 runSpacing: 8,
                 children: [
-                  if (entry.networkId != null)
+                  if (alert.networkId != null)
                     OutlinedButton.icon(
                       icon: const Icon(Icons.lan_outlined, size: 16),
                       label: const Text('Show network'),
                       onPressed: () => Navigator.of(
                         context,
-                      ).pushNamed('/network', arguments: entry.networkId),
+                      ).pushNamed('/network', arguments: alert.networkId),
                     ),
-                  if (entry.deviceId != null)
+                  if (alert.deviceId != null)
                     OutlinedButton.icon(
                       icon: const Icon(Icons.devices_outlined, size: 16),
                       label: const Text('Show device'),
                       onPressed: () => Navigator.of(
                         context,
-                      ).pushNamed('/device', arguments: entry.deviceId),
+                      ).pushNamed('/device', arguments: alert.deviceId),
                     ),
                 ],
               ),
@@ -98,17 +101,15 @@ class LogDetailScreen extends StatelessWidget {
     );
   }
 
-  Color _levelColor(int level) => switch (level) {
-    kLogLevelTrace => Colors.grey,
-    kLogLevelDebug => Colors.blueGrey,
-    kLogLevelInfo => Colors.blue,
-    kLogLevelWarn => Colors.orange,
-    kLogLevelError => Colors.red,
-    _ => Colors.grey,
+  String _alertTypeLabel(AlertType t) => switch (t) {
+    AlertType.networkDown => 'Network down',
+    AlertType.deviceDown => 'Device down',
+    AlertType.deviceUnauthorized => 'Unauthorized device',
+    AlertType.unknown => 'Unknown',
   };
 }
 
-// ─── Shared layout helpers ───────────────────────────────────────────────────
+// ─── Shared layout helpers ────────────────────────────────────────────────────
 
 class _DetailCard extends StatelessWidget {
   final List<Widget> children;
@@ -140,24 +141,29 @@ class _Row extends StatelessWidget {
     this.value,
     this.child,
     this.softWrap = false,
-  }) : assert(value != null || child != null);
+  });
 
   @override
   Widget build(BuildContext context) {
-    final labelStyle = Theme.of(context).textTheme.bodySmall?.copyWith(
-      color: Theme.of(context).colorScheme.onSurfaceVariant,
-    );
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(width: 90, child: Text(label, style: labelStyle)),
+          SizedBox(
+            width: 100,
+            child: Text(
+              label,
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+              ),
+            ),
+          ),
           Expanded(
             child:
                 child ??
                 Text(
-                  value!,
+                  value ?? '-',
                   softWrap: softWrap,
                   overflow: softWrap
                       ? TextOverflow.visible
