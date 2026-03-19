@@ -266,37 +266,49 @@ class _DeviceDetailScreenState extends State<DeviceDetailScreen>
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
-        Row(
-          children: [
-            Icon(
-              d.online ? Icons.circle : Icons.circle_outlined,
-              color: onlineColor,
+        Card(
+          margin: EdgeInsets.zero,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _infoChildRow(
+                  'Status',
+                  Row(
+                    children: [
+                      Icon(
+                        d.online ? Icons.circle : Icons.circle_outlined,
+                        color: onlineColor,
+                        size: 16,
+                      ),
+                      const SizedBox(width: 6),
+                      Text(
+                        d.online ? 'Online' : 'Offline',
+                        style: TextStyle(color: onlineColor),
+                      ),
+                    ],
+                  ),
+                ),
+                _infoRow('Name', d.name),
+                _infoRow('MAC address', d.macAddress),
+                if (d.ipAddress != null) _infoRow('IP address', d.ipAddress!),
+                if (d.vendor != null) _infoRow('Vendor', d.vendor!),
+                _infoRow('Operation mode', d.deviceOperationMode ?? '-'),
+                _infoRow('Last seen', d.lastSeen?.toLocal().toString() ?? '-'),
+              ],
             ),
-            const SizedBox(width: 8),
-            Text(
-              d.online ? 'Online' : 'Offline',
-              style: TextStyle(color: onlineColor),
-            ),
-          ],
+          ),
         ),
         const SizedBox(height: 12),
-        _infoRow('Name', d.name),
-        _infoRow('MAC address', d.macAddress),
-        if (d.ipAddress != null) _infoRow('IP address', d.ipAddress!),
-        if (d.vendor != null) _infoRow('Vendor', d.vendor!),
-        _infoRow('Operation mode', d.deviceOperationMode ?? '-'),
-        _infoRow('Last seen', d.lastSeen?.toLocal().toString() ?? '-'),
         Align(
           alignment: Alignment.centerLeft,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 4),
-            child: OutlinedButton.icon(
-              icon: const Icon(Icons.lan_outlined, size: 16),
-              label: const Text('Show network'),
-              onPressed: () => Navigator.of(
-                context,
-              ).pushNamed('/network', arguments: d.networkId),
-            ),
+          child: OutlinedButton.icon(
+            icon: const Icon(Icons.lan_outlined, size: 16),
+            label: const Text('Show network'),
+            onPressed: () => Navigator.of(
+              context,
+            ).pushNamed('/network', arguments: d.networkId),
           ),
         ),
       ],
@@ -360,7 +372,10 @@ class _DeviceDetailScreenState extends State<DeviceDetailScreen>
     );
   }
 
-  Widget _infoRow(String label, String value) => Padding(
+  Widget _infoRow(String label, String value) =>
+      _infoChildRow(label, Text(value));
+
+  Widget _infoChildRow(String label, Widget child) => Padding(
     padding: const EdgeInsets.symmetric(vertical: 6),
     child: Row(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -369,10 +384,12 @@ class _DeviceDetailScreenState extends State<DeviceDetailScreen>
           width: 160,
           child: Text(
             label,
-            style: const TextStyle(fontWeight: FontWeight.w500),
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
+            ),
           ),
         ),
-        Expanded(child: Text(value)),
+        Expanded(child: child),
       ],
     ),
   );

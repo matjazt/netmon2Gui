@@ -308,25 +308,44 @@ class _NetworkDetailScreenState extends State<NetworkDetailScreen>
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
-        _infoRow('Name', n.name),
-        _infoRow('First seen', n.firstSeen?.toLocal().toString() ?? '-'),
-        _infoRow('Last seen', n.lastSeen?.toLocal().toString() ?? '-'),
-        _infoRow('Timezone', cfg.timezone),
-        _infoRow(
-          'Reporting interval',
-          cfg.reportingInterval != null ? '${cfg.reportingInterval} s' : '-',
-        ),
-        _infoRow(
-          'Alerting delay',
-          cfg.alertingDelay != null ? '${cfg.alertingDelay} s' : '-',
-        ),
-        _infoRow('Notification email', cfg.notificationEmailAddress ?? '-'),
-        _infoRow('Reminder time', cfg.reminderTimeOfDay ?? '-'),
-        _infoRow(
-          'Reminder interval',
-          cfg.reminderIntervalDays != null
-              ? '${cfg.reminderIntervalDays} days'
-              : '-',
+        Card(
+          margin: EdgeInsets.zero,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _infoRow('Name', n.name),
+                _infoRow(
+                  'First seen',
+                  n.firstSeen?.toLocal().toString() ?? '-',
+                ),
+                _infoRow('Last seen', n.lastSeen?.toLocal().toString() ?? '-'),
+                _infoRow('Timezone', cfg.timezone),
+                _infoRow(
+                  'Reporting interval',
+                  cfg.reportingInterval != null
+                      ? '${cfg.reportingInterval} s'
+                      : '-',
+                ),
+                _infoRow(
+                  'Alerting delay',
+                  cfg.alertingDelay != null ? '${cfg.alertingDelay} s' : '-',
+                ),
+                _infoRow(
+                  'Notification email',
+                  cfg.notificationEmailAddress ?? '-',
+                ),
+                _infoRow('Reminder time', cfg.reminderTimeOfDay ?? '-'),
+                _infoRow(
+                  'Reminder interval',
+                  cfg.reminderIntervalDays != null
+                      ? '${cfg.reminderIntervalDays} days'
+                      : '-',
+                ),
+              ],
+            ),
+          ),
         ),
       ],
     );
@@ -341,7 +360,9 @@ class _NetworkDetailScreenState extends State<NetworkDetailScreen>
           width: 180,
           child: Text(
             label,
-            style: const TextStyle(fontWeight: FontWeight.w500),
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
+            ),
           ),
         ),
         Expanded(child: Text(value)),
