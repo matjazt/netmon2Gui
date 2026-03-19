@@ -46,6 +46,13 @@ class LogDetailScreen extends StatelessWidget {
                 value: _fmt.format(entry.timestamp.toLocal()),
               ),
               _Row(label: 'Origin', value: entry.origin, softWrap: true),
+              _Row(label: 'Network', value: entry.networkName, softWrap: true),
+              if (entry.deviceNameOrVendor != null)
+                _Row(
+                  label: 'Device',
+                  value: entry.deviceNameOrVendor,
+                  softWrap: true,
+                ),
             ],
           ),
           const SizedBox(height: 12),
@@ -58,38 +65,30 @@ class LogDetailScreen extends StatelessWidget {
             const SizedBox(height: 12),
             _DetailCard(
               children: [
-                if (entry.networkId != null)
-                  _Row(
-                    label: 'Network',
-                    child: TextButton(
-                      style: TextButton.styleFrom(
-                        padding: EdgeInsets.zero,
-                        minimumSize: Size.zero,
-                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      ),
+                if (entry.networkId != null) ...[
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 4),
+                    child: OutlinedButton.icon(
+                      icon: const Icon(Icons.lan_outlined, size: 16),
+                      label: const Text('Show network'),
                       onPressed: () => Navigator.of(
                         context,
                       ).pushNamed('/network', arguments: entry.networkId),
-                      child: Text(entry.networkName ?? '#${entry.networkId}'),
                     ),
                   ),
-                if (entry.deviceId != null)
-                  _Row(
-                    label: 'Device',
-                    child: TextButton(
-                      style: TextButton.styleFrom(
-                        padding: EdgeInsets.zero,
-                        minimumSize: Size.zero,
-                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      ),
+                ],
+                if (entry.deviceId != null) ...[
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 4),
+                    child: OutlinedButton.icon(
+                      icon: const Icon(Icons.devices_outlined, size: 16),
+                      label: const Text('Show device'),
                       onPressed: () => Navigator.of(
                         context,
                       ).pushNamed('/device', arguments: entry.deviceId),
-                      child: Text(
-                        entry.deviceNameOrVendor ?? '#${entry.deviceId}',
-                      ),
                     ),
                   ),
+                ],
               ],
             ),
           ],

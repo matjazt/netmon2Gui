@@ -42,6 +42,9 @@ class HistoryDetailScreen extends StatelessWidget {
                   ],
                 ),
               ),
+              _Row(label: 'Network', value: entry.networkName),
+              if (entry.deviceNameOrVendor != null)
+                _Row(label: 'Device', value: entry.deviceNameOrVendor),
               _Row(
                 label: 'Timestamp',
                 value: _fmt.format(entry.timestamp.toLocal()),
@@ -53,32 +56,24 @@ class HistoryDetailScreen extends StatelessWidget {
           const SizedBox(height: 12),
           _DetailCard(
             children: [
-              _Row(
-                label: 'Network',
-                child: TextButton(
-                  style: TextButton.styleFrom(
-                    padding: EdgeInsets.zero,
-                    minimumSize: Size.zero,
-                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  ),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 4),
+                child: OutlinedButton.icon(
+                  icon: const Icon(Icons.lan_outlined, size: 16),
+                  label: const Text('Show network'),
                   onPressed: () => Navigator.of(
                     context,
                   ).pushNamed('/network', arguments: entry.networkId),
-                  child: Text(entry.networkName ?? '#${entry.networkId}'),
                 ),
               ),
-              _Row(
-                label: 'Device',
-                child: TextButton(
-                  style: TextButton.styleFrom(
-                    padding: EdgeInsets.zero,
-                    minimumSize: Size.zero,
-                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  ),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 4),
+                child: OutlinedButton.icon(
+                  icon: const Icon(Icons.devices_outlined, size: 16),
+                  label: const Text('Show device'),
                   onPressed: () => Navigator.of(
                     context,
                   ).pushNamed('/device', arguments: entry.deviceId),
-                  child: Text(entry.deviceNameOrVendor ?? '#${entry.deviceId}'),
                 ),
               ),
             ],
