@@ -224,6 +224,13 @@ class _DeviceDetailScreenState extends State<DeviceDetailScreen>
         if (d.vendor != null) _infoRow('Vendor', d.vendor!),
         _infoRow('Operation mode', d.deviceOperationMode ?? '-'),
         _infoRow('Last seen', d.lastSeen?.toLocal().toString() ?? '-'),
+        _infoRowLink(
+          '',
+          'Show Network',
+          onTap: () => Navigator.of(
+            context,
+          ).pushNamed('/network', arguments: d.networkId),
+        ),
       ],
     );
   }
@@ -268,6 +275,38 @@ class _DeviceDetailScreenState extends State<DeviceDetailScreen>
           ),
         ),
         Expanded(child: Text(value)),
+      ],
+    ),
+  );
+
+  Widget _infoRowLink(
+    String label,
+    String linkText, {
+    required VoidCallback onTap,
+  }) => Padding(
+    padding: const EdgeInsets.symmetric(vertical: 6),
+    child: Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SizedBox(
+          width: 160,
+          child: Text(
+            label,
+            style: const TextStyle(fontWeight: FontWeight.w500),
+          ),
+        ),
+        Expanded(
+          child: GestureDetector(
+            onTap: onTap,
+            child: Text(
+              linkText,
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.primary,
+                decoration: TextDecoration.underline,
+              ),
+            ),
+          ),
+        ),
       ],
     ),
   );
