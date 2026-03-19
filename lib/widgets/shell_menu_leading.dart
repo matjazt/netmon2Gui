@@ -33,3 +33,20 @@ class ShellMenuLeading extends StatelessWidget {
     );
   }
 }
+
+/// An [AppBar] action widget that opens the global navigation drawer when the
+/// app runs in narrow layout.
+class ShellMenuAction extends StatelessWidget {
+  const ShellMenuAction({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final shell = ShellScope.maybeOf(context);
+    if (shell == null) return const SizedBox.shrink();
+    return IconButton(
+      icon: const Icon(Icons.menu),
+      tooltip: 'Open navigation menu',
+      onPressed: shell.openDrawer,
+    );
+  }
+}

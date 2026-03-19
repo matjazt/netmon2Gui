@@ -19,6 +19,7 @@ import '../widgets/error_display.dart';
 import '../widgets/history_list_tile.dart';
 import '../widgets/log_list_tile.dart';
 import '../widgets/network_config_form.dart';
+import '../widgets/shell_menu_leading.dart';
 
 class NetworkDetailScreen extends StatefulWidget {
   final int networkId;
@@ -192,6 +193,7 @@ class _NetworkDetailScreenState extends State<NetworkDetailScreen>
       appBar: AppBar(
         title: Text(_network?.name ?? 'Network'),
         actions: [
+          const ShellMenuAction(),
           if (isAdmin)
             IconButton(
               icon: const Icon(Icons.settings_outlined),

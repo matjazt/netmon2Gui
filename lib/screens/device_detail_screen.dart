@@ -15,6 +15,7 @@ import '../widgets/alert_list_tile.dart';
 import '../widgets/error_display.dart';
 import '../widgets/history_list_tile.dart';
 import '../widgets/log_list_tile.dart';
+import '../widgets/shell_menu_leading.dart';
 
 class DeviceDetailScreen extends StatefulWidget {
   final int deviceId;
@@ -212,6 +213,7 @@ class _DeviceDetailScreenState extends State<DeviceDetailScreen>
       appBar: AppBar(
         title: Text(_device?.name ?? 'Device'),
         actions: [
+          const ShellMenuAction(),
           if (isAdmin) ...[
             IconButton(
               icon: const Icon(Icons.drive_file_rename_outline),

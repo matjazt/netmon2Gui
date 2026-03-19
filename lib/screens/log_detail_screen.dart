@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 
 import '../models/log_entry.dart';
 import '../utils/constants.dart';
+import '../widgets/shell_menu_leading.dart';
 
 final _fmt = DateFormat('yyyy-MM-dd HH:mm:ss');
 
@@ -15,7 +16,10 @@ class LogDetailScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final levelColor = _levelColor(entry.level);
     return Scaffold(
-      appBar: AppBar(title: const Text('Log Entry')),
+      appBar: AppBar(
+        title: const Text('Log Entry'),
+        actions: const [ShellMenuAction()],
+      ),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [

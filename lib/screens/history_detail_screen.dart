@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../models/device_status_history.dart';
+import '../widgets/shell_menu_leading.dart';
 
 final _fmt = DateFormat('yyyy-MM-dd HH:mm:ss');
 
@@ -14,7 +15,10 @@ class HistoryDetailScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final color = entry.online ? Colors.green : Colors.red;
     return Scaffold(
-      appBar: AppBar(title: const Text('Status Event')),
+      appBar: AppBar(
+        title: const Text('Status Event'),
+        actions: const [ShellMenuAction()],
+      ),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
