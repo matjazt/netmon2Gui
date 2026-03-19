@@ -8,11 +8,13 @@ class NetworkConfigForm extends StatefulWidget {
   /// Pre-populated from an existing network, or defaults when creating.
   final NetworkConfiguration initial;
   final void Function(NetworkConfiguration config) onSave;
+  final VoidCallback? onCancel;
 
   const NetworkConfigForm({
     super.key,
     required this.initial,
     required this.onSave,
+    this.onCancel,
   });
 
   @override
@@ -117,7 +119,19 @@ class _NetworkConfigFormState extends State<NetworkConfigForm> {
             validator: (v) => (v == null || v.isEmpty) ? 'Required' : null,
           ),
           const SizedBox(height: 24),
-          FilledButton(onPressed: _submit, child: const Text('Save')),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              if (widget.onCancel != null) ...[
+                TextButton(
+                  onPressed: widget.onCancel,
+                  child: const Text('Cancel'),
+                ),
+                const SizedBox(width: 8),
+              ],
+              FilledButton(onPressed: _submit, child: const Text('Save')),
+            ],
+          ),
         ],
       ),
     );

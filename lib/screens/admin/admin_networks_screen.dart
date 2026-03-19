@@ -82,10 +82,8 @@ class _AdminNetworksScreenState extends State<AdminNetworksScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: ShellScope.maybeOf(context) != null
-            ? const ShellMenuLeading()
-            : null,
         title: const Text('Networks'),
+        actions: const [ShellMenuAction()],
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => _openForm(),

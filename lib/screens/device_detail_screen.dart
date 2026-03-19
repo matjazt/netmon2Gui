@@ -192,6 +192,30 @@ class _DeviceDetailScreenState extends State<DeviceDetailScreen>
     }
   }
 
+  Future<void> _showModeDialog() async {
+    final mode = await showDialog<String>(
+      context: context,
+      builder: (ctx) => SimpleDialog(
+        title: const Text('Set operation mode'),
+        children: [
+          SimpleDialogOption(
+            onPressed: () => Navigator.of(ctx).pop('AUTHORIZED'),
+            child: const Text('Authorized'),
+          ),
+          SimpleDialogOption(
+            onPressed: () => Navigator.of(ctx).pop('UNAUTHORIZED'),
+            child: const Text('Unauthorized'),
+          ),
+          SimpleDialogOption(
+            onPressed: () => Navigator.of(ctx).pop('ALWAYS_ON'),
+            child: const Text('Always On'),
+          ),
+        ],
+      ),
+    );
+    if (mode != null) _changeMode(mode);
+  }
+
   Future<void> _changeMode(String mode) async {
     try {
       final updated = await _deviceService.updateDeviceMode(_device!.id, mode);
@@ -212,30 +236,7 @@ class _DeviceDetailScreenState extends State<DeviceDetailScreen>
     return Scaffold(
       appBar: AppBar(
         title: Text(_device?.name ?? 'Device'),
-        actions: [
-          const ShellMenuAction(),
-          if (isAdmin) ...[
-            IconButton(
-              icon: const Icon(Icons.drive_file_rename_outline),
-              tooltip: 'Rename',
-              onPressed: _changeName,
-            ),
-            if (_device != null)
-              PopupMenuButton<String>(
-                icon: const Icon(Icons.security),
-                tooltip: 'Set operation mode',
-                onSelected: _changeMode,
-                itemBuilder: (_) => const [
-                  PopupMenuItem(value: 'AUTHORIZED', child: Text('Authorized')),
-                  PopupMenuItem(
-                    value: 'UNAUTHORIZED',
-                    child: Text('Unauthorized'),
-                  ),
-                  PopupMenuItem(value: 'ALWAYS_ON', child: Text('Always On')),
-                ],
-              ),
-          ],
-        ],
+        actions: const [ShellMenuAction()],
         bottom: TabBar(
           controller: _tabs,
           tabs: const [
@@ -253,7 +254,7 @@ class _DeviceDetailScreenState extends State<DeviceDetailScreen>
           : TabBarView(
               controller: _tabs,
               children: [
-                _buildInfo(),
+                _buildInfo(isAdmin),
                 _buildAlerts(),
                 _buildLogs(),
                 _buildHistory(),
@@ -262,7 +263,7 @@ class _DeviceDetailScreenState extends State<DeviceDetailScreen>
     );
   }
 
-  Widget _buildInfo() {
+  Widget _buildInfo(bool isAdmin) {
     final d = _device!;
     final onlineColor = d.online ? Colors.green : Colors.red;
     return ListView(
@@ -304,15 +305,30 @@ class _DeviceDetailScreenState extends State<DeviceDetailScreen>
           ),
         ),
         const SizedBox(height: 12),
-        Align(
-          alignment: Alignment.centerLeft,
-          child: OutlinedButton.icon(
-            icon: const Icon(Icons.lan_outlined, size: 16),
-            label: const Text('Show network'),
-            onPressed: () => Navigator.of(
-              context,
-            ).pushNamed('/network', arguments: d.networkId),
-          ),
+        Wrap(
+          spacing: 8,
+          runSpacing: 8,
+          children: [
+            OutlinedButton.icon(
+              icon: const Icon(Icons.lan_outlined, size: 16),
+              label: const Text('Show network'),
+              onPressed: () => Navigator.of(
+                context,
+              ).pushNamed('/network', arguments: d.networkId),
+            ),
+            if (isAdmin) ...[
+              OutlinedButton.icon(
+                icon: const Icon(Icons.drive_file_rename_outline, size: 16),
+                label: const Text('Rename device'),
+                onPressed: _changeName,
+              ),
+              OutlinedButton.icon(
+                icon: const Icon(Icons.security, size: 16),
+                label: const Text('Set operation mode'),
+                onPressed: _showModeDialog,
+              ),
+            ],
+          ],
         ),
       ],
     );

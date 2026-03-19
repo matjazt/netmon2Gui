@@ -122,10 +122,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        leading: ShellScope.maybeOf(context) != null
-            ? const ShellMenuLeading()
-            : null,
         title: const Text('Dashboard'),
+        actions: const [ShellMenuAction()],
       ),
       body: body,
     );

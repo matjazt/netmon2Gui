@@ -124,10 +124,8 @@ class _LogsScreenState extends State<LogsScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        leading: ShellScope.maybeOf(context) != null
-            ? const ShellMenuLeading()
-            : null,
         title: const Text('Logs'),
+        actions: const [ShellMenuAction()],
       ),
       body: body,
     );

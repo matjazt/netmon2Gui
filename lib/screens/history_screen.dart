@@ -101,10 +101,8 @@ class _HistoryScreenState extends State<HistoryScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        leading: ShellScope.maybeOf(context) != null
-            ? const ShellMenuLeading()
-            : null,
         title: const Text('History'),
+        actions: const [ShellMenuAction()],
       ),
       body: body,
     );

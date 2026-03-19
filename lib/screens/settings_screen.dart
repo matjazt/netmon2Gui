@@ -22,10 +22,8 @@ class SettingsScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        leading: ShellScope.maybeOf(context) != null
-            ? const ShellMenuLeading()
-            : null,
         title: const Text('Settings'),
+        actions: const [ShellMenuAction()],
       ),
       body: ListView(
         padding: const EdgeInsets.all(16),

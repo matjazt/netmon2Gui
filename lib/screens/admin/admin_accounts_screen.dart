@@ -90,10 +90,8 @@ class _AdminAccountsScreenState extends State<AdminAccountsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: ShellScope.maybeOf(context) != null
-            ? const ShellMenuLeading()
-            : null,
         title: const Text('Accounts'),
+        actions: const [ShellMenuAction()],
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => _openForm(),

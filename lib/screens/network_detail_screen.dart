@@ -163,6 +163,7 @@ class _NetworkDetailScreenState extends State<NetworkDetailScreen>
           width: 420,
           child: NetworkConfigForm(
             initial: _network!.config,
+            onCancel: () => Navigator.of(ctx).pop(),
             onSave: (cfg) async {
               Navigator.of(ctx).pop();
               try {
@@ -192,15 +193,7 @@ class _NetworkDetailScreenState extends State<NetworkDetailScreen>
     return Scaffold(
       appBar: AppBar(
         title: Text(_network?.name ?? 'Network'),
-        actions: [
-          const ShellMenuAction(),
-          if (isAdmin)
-            IconButton(
-              icon: const Icon(Icons.settings_outlined),
-              tooltip: 'Edit configuration',
-              onPressed: _editConfig,
-            ),
-        ],
+        actions: const [ShellMenuAction()],
         bottom: TabBar(
           controller: _tabs,
           tabs: const [
@@ -219,7 +212,7 @@ class _NetworkDetailScreenState extends State<NetworkDetailScreen>
           : TabBarView(
               controller: _tabs,
               children: [
-                _buildInfo(),
+                _buildInfo(isAdmin),
                 _buildDeviceList(),
                 _buildAlertList(),
                 _buildLogs(),
@@ -304,7 +297,7 @@ class _NetworkDetailScreenState extends State<NetworkDetailScreen>
     );
   }
 
-  Widget _buildInfo() {
+  Widget _buildInfo(bool isAdmin) {
     final n = _network!;
     final cfg = n.config;
     return ListView(
@@ -350,6 +343,17 @@ class _NetworkDetailScreenState extends State<NetworkDetailScreen>
             ),
           ),
         ),
+        if (isAdmin) ...[
+          const SizedBox(height: 12),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: OutlinedButton.icon(
+              icon: const Icon(Icons.settings_outlined, size: 16),
+              label: const Text('Edit configuration'),
+              onPressed: _editConfig,
+            ),
+          ),
+        ],
       ],
     );
   }
