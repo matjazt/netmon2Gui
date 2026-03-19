@@ -63,33 +63,30 @@ class LogDetailScreen extends StatelessWidget {
           ),
           if (entry.networkId != null || entry.deviceId != null) ...[
             const SizedBox(height: 12),
-            _DetailCard(
-              children: [
-                if (entry.networkId != null) ...[
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 4),
-                    child: OutlinedButton.icon(
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 4),
+              child: Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: [
+                  if (entry.networkId != null)
+                    OutlinedButton.icon(
                       icon: const Icon(Icons.lan_outlined, size: 16),
                       label: const Text('Show network'),
                       onPressed: () => Navigator.of(
                         context,
                       ).pushNamed('/network', arguments: entry.networkId),
                     ),
-                  ),
-                ],
-                if (entry.deviceId != null) ...[
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 4),
-                    child: OutlinedButton.icon(
+                  if (entry.deviceId != null)
+                    OutlinedButton.icon(
                       icon: const Icon(Icons.devices_outlined, size: 16),
                       label: const Text('Show device'),
                       onPressed: () => Navigator.of(
                         context,
                       ).pushNamed('/device', arguments: entry.deviceId),
                     ),
-                  ),
                 ],
-              ],
+              ),
             ),
           ],
         ],

@@ -286,14 +286,17 @@ class _DeviceDetailScreenState extends State<DeviceDetailScreen>
         if (d.vendor != null) _infoRow('Vendor', d.vendor!),
         _infoRow('Operation mode', d.deviceOperationMode ?? '-'),
         _infoRow('Last seen', d.lastSeen?.toLocal().toString() ?? '-'),
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 4),
-          child: OutlinedButton.icon(
-            icon: const Icon(Icons.lan_outlined, size: 16),
-            label: const Text('Show network'),
-            onPressed: () => Navigator.of(
-              context,
-            ).pushNamed('/network', arguments: d.networkId),
+        Align(
+          alignment: Alignment.centerLeft,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 4),
+            child: OutlinedButton.icon(
+              icon: const Icon(Icons.lan_outlined, size: 16),
+              label: const Text('Show network'),
+              onPressed: () => Navigator.of(
+                context,
+              ).pushNamed('/network', arguments: d.networkId),
+            ),
           ),
         ),
       ],
