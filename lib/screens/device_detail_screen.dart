@@ -291,6 +291,7 @@ class _DeviceDetailScreenState extends State<DeviceDetailScreen>
                   ),
                 ),
                 _infoRow('Name', d.name),
+                _infoRow('ID', '${d.id}'),
                 _infoRow('MAC address', d.macAddress),
                 if (d.ipAddress != null) _infoRow('IP address', d.ipAddress!),
                 if (d.vendor != null) _infoRow('Vendor', d.vendor!),

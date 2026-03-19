@@ -316,6 +316,7 @@ class _NetworkDetailScreenState extends State<NetworkDetailScreen>
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 _infoRow('Name', n.name),
+                _infoRow('ID', '${n.id}'),
                 _infoRow(
                   'First seen',
                   n.firstSeen?.toLocal().toString() ?? '-',
