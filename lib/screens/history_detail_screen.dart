@@ -1,0 +1,137 @@
+import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+
+import '../models/device_status_history.dart';
+
+final _fmt = DateFormat('yyyy-MM-dd HH:mm:ss');
+
+class HistoryDetailScreen extends StatelessWidget {
+  final DeviceStatusHistory entry;
+
+  const HistoryDetailScreen({super.key, required this.entry});
+
+  @override
+  Widget build(BuildContext context) {
+    final color = entry.online ? Colors.green : Colors.red;
+    return Scaffold(
+      appBar: AppBar(title: const Text('Status Event')),
+      body: ListView(
+        padding: const EdgeInsets.all(16),
+        children: [
+          _DetailCard(
+            children: [
+              _Row(
+                label: 'Status',
+                child: Row(
+                  children: [
+                    Icon(
+                      entry.online ? Icons.circle : Icons.circle_outlined,
+                      color: color,
+                      size: 14,
+                    ),
+                    const SizedBox(width: 6),
+                    Text(
+                      entry.online
+                          ? 'Device came online'
+                          : 'Device went offline',
+                      style: TextStyle(
+                        color: color,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              _Row(
+                label: 'Timestamp',
+                value: _fmt.format(entry.timestamp.toLocal()),
+              ),
+              if (entry.ipAddress != null)
+                _Row(label: 'IP Address', value: entry.ipAddress!),
+            ],
+          ),
+          const SizedBox(height: 12),
+          _DetailCard(
+            children: [
+              _Row(
+                label: 'Network',
+                child: TextButton(
+                  style: TextButton.styleFrom(
+                    padding: EdgeInsets.zero,
+                    minimumSize: Size.zero,
+                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  ),
+                  onPressed: () => Navigator.of(
+                    context,
+                  ).pushNamed('/network', arguments: entry.networkId),
+                  child: Text(entry.networkName ?? '#${entry.networkId}'),
+                ),
+              ),
+              _Row(
+                label: 'Device',
+                child: TextButton(
+                  style: TextButton.styleFrom(
+                    padding: EdgeInsets.zero,
+                    minimumSize: Size.zero,
+                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  ),
+                  onPressed: () => Navigator.of(
+                    context,
+                  ).pushNamed('/device', arguments: entry.deviceId),
+                  child: Text(entry.deviceNameOrVendor ?? '#${entry.deviceId}'),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ─── Shared layout helpers ───────────────────────────────────────────────────
+
+class _DetailCard extends StatelessWidget {
+  final List<Widget> children;
+  const _DetailCard({required this.children});
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      margin: EdgeInsets.zero,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: children,
+        ),
+      ),
+    );
+  }
+}
+
+class _Row extends StatelessWidget {
+  final String label;
+  final String? value;
+  final Widget? child;
+
+  const _Row({required this.label, this.value, this.child})
+    : assert(value != null || child != null);
+
+  @override
+  Widget build(BuildContext context) {
+    final labelStyle = Theme.of(context).textTheme.bodySmall?.copyWith(
+      color: Theme.of(context).colorScheme.onSurfaceVariant,
+    );
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 6),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(width: 90, child: Text(label, style: labelStyle)),
+          Expanded(child: child ?? Text(value!)),
+        ],
+      ),
+    );
+  }
+}

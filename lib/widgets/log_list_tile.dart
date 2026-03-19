@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../models/log_entry.dart';
+import '../screens/log_detail_screen.dart';
 import '../utils/constants.dart';
 
 final _fmt = DateFormat('yyyy-MM-dd HH:mm:ss');
@@ -34,6 +35,9 @@ class LogListTile extends StatelessWidget {
           textAlign: TextAlign.center,
         ),
       ),
+      onTap: () => Navigator.of(
+        context,
+      ).push(MaterialPageRoute(builder: (_) => LogDetailScreen(entry: entry))),
       title: Text(entry.message, overflow: TextOverflow.ellipsis),
       subtitle: Text(
         [
