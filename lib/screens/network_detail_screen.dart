@@ -44,6 +44,16 @@ class _NetworkDetailScreenState extends State<NetworkDetailScreen>
   bool _loading = true;
   String? _error;
 
+  // Pagination state for logs tab
+  int _logPage = 0;
+  bool _logHasMore = true;
+  bool _logLoading = false;
+
+  // Pagination state for history tab
+  int _historyPage = 0;
+  bool _historyHasMore = true;
+  bool _historyLoading = false;
+
   late TabController _tabs;
 
   @override
@@ -73,12 +83,18 @@ class _NetworkDetailScreenState extends State<NetworkDetailScreen>
         _historyService.getByNetwork(widget.networkId, size: 50),
       ]);
       if (mounted) {
+        final logPage = results[3] as PageResult<LogEntry>;
+        final historyPage = results[4] as PageResult<DeviceStatusHistory>;
         setState(() {
           _network = results[0] as Network;
           _alerts = results[1] as List<Alert>;
           _devices = results[2] as List<Device>;
-          _logs = (results[3] as PageResult<LogEntry>).content;
-          _history = (results[4] as PageResult<DeviceStatusHistory>).content;
+          _logs = logPage.content;
+          _logPage = logPage.number + 1;
+          _logHasMore = !logPage.last;
+          _history = historyPage.content;
+          _historyPage = historyPage.number + 1;
+          _historyHasMore = !historyPage.last;
           _loading = false;
         });
       }
@@ -89,6 +105,50 @@ class _NetworkDetailScreenState extends State<NetworkDetailScreen>
           _loading = false;
         });
       }
+    }
+  }
+
+  Future<void> _loadMoreLogs() async {
+    if (_logLoading || !_logHasMore) return;
+    setState(() => _logLoading = true);
+    try {
+      final result = await _logService.getLogsByNetwork(
+        widget.networkId,
+        page: _logPage,
+        size: 50,
+      );
+      if (mounted) {
+        setState(() {
+          _logs.addAll(result.content);
+          _logPage = result.number + 1;
+          _logHasMore = !result.last;
+          _logLoading = false;
+        });
+      }
+    } catch (_) {
+      if (mounted) setState(() => _logLoading = false);
+    }
+  }
+
+  Future<void> _loadMoreHistory() async {
+    if (_historyLoading || !_historyHasMore) return;
+    setState(() => _historyLoading = true);
+    try {
+      final result = await _historyService.getByNetwork(
+        widget.networkId,
+        page: _historyPage,
+        size: 50,
+      );
+      if (mounted) {
+        setState(() {
+          _history.addAll(result.content);
+          _historyPage = result.number + 1;
+          _historyHasMore = !result.last;
+          _historyLoading = false;
+        });
+      }
+    } catch (_) {
+      if (mounted) setState(() => _historyLoading = false);
     }
   }
 
@@ -195,20 +255,50 @@ class _NetworkDetailScreenState extends State<NetworkDetailScreen>
   }
 
   Widget _buildLogs() {
-    if (_logs.isEmpty) return const Center(child: Text('No logs'));
+    if (_logs.isEmpty && !_logLoading) {
+      return const Center(child: Text('No logs'));
+    }
     return ListView.separated(
-      itemCount: _logs.length,
+      itemCount: _logs.length + (_logHasMore ? 1 : 0),
       separatorBuilder: (_, __) => const Divider(height: 1),
-      itemBuilder: (ctx, i) => LogListTile(entry: _logs[i]),
+      itemBuilder: (ctx, i) {
+        if (i == _logs.length) {
+          if (!_logLoading) {
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              if (mounted) _loadMoreLogs();
+            });
+          }
+          return const Padding(
+            padding: EdgeInsets.all(16),
+            child: Center(child: CircularProgressIndicator()),
+          );
+        }
+        return LogListTile(entry: _logs[i]);
+      },
     );
   }
 
   Widget _buildHistory() {
-    if (_history.isEmpty) return const Center(child: Text('No history'));
+    if (_history.isEmpty && !_historyLoading) {
+      return const Center(child: Text('No history'));
+    }
     return ListView.separated(
-      itemCount: _history.length,
+      itemCount: _history.length + (_historyHasMore ? 1 : 0),
       separatorBuilder: (_, __) => const Divider(height: 1),
-      itemBuilder: (ctx, i) => HistoryListTile(entry: _history[i]),
+      itemBuilder: (ctx, i) {
+        if (i == _history.length) {
+          if (!_historyLoading) {
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              if (mounted) _loadMoreHistory();
+            });
+          }
+          return const Padding(
+            padding: EdgeInsets.all(16),
+            child: Center(child: CircularProgressIndicator()),
+          );
+        }
+        return HistoryListTile(entry: _history[i]);
+      },
     );
   }
 
