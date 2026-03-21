@@ -22,8 +22,9 @@ class NetworkCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    final hasAlert =
-        (alertCount != null && alertCount! > 0) || network.hasActiveAlert;
+    final hasAlert = alertCount != null
+        ? alertCount! > 0
+        : network.hasActiveAlert;
 
     return Card(
       clipBehavior: Clip.antiAlias,

@@ -37,7 +37,7 @@ const String kPrefSelectedNetworkId = 'selectedNetworkId';
 
 // ─── Dashboard refresh interval ─────────────────────────────────────────────
 
-const Duration kDashboardRefreshInterval = Duration(seconds: 30);
+const Duration kDashboardRefreshInterval = Duration(seconds: 20);
 
 // ─── Pagination defaults ─────────────────────────────────────────────────────
 

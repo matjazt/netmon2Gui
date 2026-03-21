@@ -14,7 +14,7 @@ class HistoryListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = entry.online ? Colors.green : Colors.red;
+    //final color = entry.online ? Colors.green : Colors.red;
     final parts = [
       _fmt.format(entry.timestamp.toLocal()),
       if (entry.deviceNameOrVendor != null && entry.networkName != null)
@@ -30,12 +30,12 @@ class HistoryListTile extends StatelessWidget {
       ),
       leading: Icon(
         entry.online ? Icons.circle : Icons.circle_outlined,
-        color: color,
+        //color: color,
         size: 16,
       ),
       title: Text(
         entry.online ? 'Device came online' : 'Device went offline',
-        style: TextStyle(color: color),
+        //style: TextStyle(color: color),
       ),
       subtitle: Text(parts.join('  ·  '), style: const TextStyle(fontSize: 11)),
     );
