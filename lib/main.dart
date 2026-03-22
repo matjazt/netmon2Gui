@@ -6,7 +6,6 @@ import 'providers/auth_provider.dart';
 import 'providers/network_provider.dart';
 import 'providers/settings_provider.dart';
 import 'screens/admin/admin_accounts_screen.dart';
-import 'screens/admin/admin_networks_screen.dart';
 import 'screens/dashboard_screen.dart';
 import 'screens/device_detail_screen.dart';
 import 'screens/history_screen.dart';
@@ -129,7 +128,6 @@ class _MainScaffoldState extends State<MainScaffold> {
         Icons.manage_accounts,
         'Accounts',
       ),
-      const _NavItem(Icons.lan_outlined, Icons.lan, 'Networks'),
     ],
     const _NavItem(Icons.settings_outlined, Icons.settings, 'Settings'),
   ];
@@ -142,7 +140,6 @@ class _MainScaffoldState extends State<MainScaffold> {
       'Logs' => const LogsScreen(),
       'History' => const HistoryScreen(),
       'Accounts' => const AdminAccountsScreen(),
-      'Networks' => const AdminNetworksScreen(),
       'Settings' => const SettingsScreen(),
       _ => const SizedBox.shrink(),
     };

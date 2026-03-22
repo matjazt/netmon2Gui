@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../../models/account.dart';
 import '../../services/account_service.dart';
 import '../../utils/constants.dart';
@@ -79,7 +80,11 @@ class _AdminAccountFormScreenState extends State<AdminAccountFormScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(_isEdit ? 'Edit account' : 'New account')),
+      appBar: AppBar(
+        title: Text(
+          _isEdit ? 'Edit account #${widget.account!.id}' : 'New account',
+        ),
+      ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(24),
         child: ConstrainedBox(
