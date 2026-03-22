@@ -33,6 +33,16 @@ class DeviceService {
     return Device.fromJson(r.data as Map<String, dynamic>);
   }
 
+  /// Quickly renames a device.
+  /// [name] must be a non-empty string.
+  Future<Device> renameDevice(int id, String name) async {
+    final r = await _dio.put(
+      '/api/devices/$id/name',
+      queryParameters: {'name': name},
+    );
+    return Device.fromJson(r.data as Map<String, dynamic>);
+  }
+
   Future<DeviceStats> getDeviceStats(int networkId) async {
     final r = await _dio.get('/api/devices/network/$networkId/stats');
     return DeviceStats.fromJson(r.data as Map<String, dynamic>);

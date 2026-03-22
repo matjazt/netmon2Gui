@@ -174,13 +174,7 @@ class _DeviceDetailScreenState extends State<DeviceDetailScreen>
     );
     if (newName != null && newName.isNotEmpty && mounted) {
       try {
-        final updated = await _deviceService.updateDevice(
-          _device!.id,
-          SaveDeviceRequest(
-            name: newName,
-            deviceOperationMode: _device!.deviceOperationMode,
-          ),
-        );
+        final updated = await _deviceService.renameDevice(_device!.id, newName);
         if (mounted) setState(() => _device = updated);
       } catch (_) {
         if (mounted) {
