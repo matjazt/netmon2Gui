@@ -275,9 +275,17 @@ class _NetworkDetailScreenState extends State<NetworkDetailScreen>
       separatorBuilder: (_, __) => const Divider(height: 1),
       itemBuilder: (ctx, i) => DeviceListTile(
         device: _devices[i],
-        onTap: () => Navigator.of(
-          context,
-        ).pushNamed('/device', arguments: _devices[i].id),
+        onTap: () async {
+          await Navigator.of(
+            context,
+          ).pushNamed('/device', arguments: _devices[i].id);
+          if (mounted) {
+            final updated = await _deviceService.getDevicesByNetwork(
+              widget.networkId,
+            );
+            if (mounted) setState(() => _devices = updated);
+          }
+        },
       ),
     );
   }
