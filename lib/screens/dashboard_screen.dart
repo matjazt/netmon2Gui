@@ -4,12 +4,16 @@ import 'package:flutter/material.dart';
 import 'package:netmon2_gui/models/device.dart';
 import 'package:provider/provider.dart';
 
+import '../models/network.dart';
+import '../providers/auth_provider.dart';
 import '../providers/network_provider.dart';
 import '../services/alert_service.dart';
 import '../services/device_service.dart';
+import '../services/network_service.dart';
 import '../utils/constants.dart';
 import '../widgets/error_display.dart';
 import '../widgets/network_card.dart';
+import '../widgets/network_config_form.dart';
 import '../widgets/shell_menu_leading.dart';
 
 class _NetworkStats {
@@ -35,6 +39,7 @@ class DashboardScreen extends StatefulWidget {
 class _DashboardScreenState extends State<DashboardScreen> {
   final _deviceService = DeviceService();
   final _alertService = AlertService();
+  final _networkService = NetworkService();
   Map<int, _NetworkStats> _stats = {};
   Timer? _refreshTimer;
 
@@ -84,8 +89,76 @@ class _DashboardScreenState extends State<DashboardScreen> {
     }
   }
 
+  Future<void> _addNetwork() async {
+    final nameCtrl = TextEditingController();
+    await showDialog<void>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Add network'),
+        content: SizedBox(
+          width: 460,
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                TextField(
+                  controller: nameCtrl,
+                  autofocus: true,
+                  decoration: const InputDecoration(
+                    labelText: 'Network name *',
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                NetworkConfigForm(
+                  initial: const NetworkConfiguration(),
+                  onCancel: () => Navigator.of(ctx).pop(),
+                  onSave: (cfg) async {
+                    final name = nameCtrl.text.trim();
+                    if (name.isEmpty) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Network name is required.'),
+                        ),
+                      );
+                      return;
+                    }
+                    Navigator.of(ctx).pop();
+                    try {
+                      await _networkService.createNetwork(
+                        SaveNetworkRequest(name: name, configuration: cfg),
+                      );
+                      if (mounted) {
+                        final auth = context.read<AuthProvider>();
+                        await context.read<NetworkProvider>().loadNetworks(
+                          isAdmin: auth.isAdmin,
+                          accountId: auth.currentUser!.id,
+                        );
+                        _loadStats();
+                      }
+                    } catch (_) {
+                      if (mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Failed to create network.'),
+                          ),
+                        );
+                      }
+                    }
+                  },
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    final isAdmin = context.watch<AuthProvider>().isAdmin;
     final networkProvider = context.watch<NetworkProvider>();
     final networks = networkProvider.networks;
 
@@ -126,6 +199,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
         actions: const [ShellMenuAction()],
       ),
       body: body,
+      floatingActionButton: isAdmin
+          ? FloatingActionButton.extended(
+              onPressed: _addNetwork,
+              icon: const Icon(Icons.add),
+              label: const Text('Add network'),
+            )
+          : null,
     );
   }
 }
