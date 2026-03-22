@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
 import '../models/network.dart';
 import '../services/network_service.dart';
 import '../utils/constants.dart';
@@ -36,6 +37,9 @@ class NetworkProvider extends ChangeNotifier {
       } else {
         _networks = await _networkService.getNetworksByAccount(accountId);
       }
+      _networks.sort(
+        (a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()),
+      );
 
       // Restore persisted selection.
       final prefs = await SharedPreferences.getInstance();

@@ -35,6 +35,9 @@ class _AdminAccountsScreenState extends State<AdminAccountsScreen> {
     });
     try {
       final accounts = await _service.getAllAccounts();
+      accounts.sort(
+        (a, b) => a.username.toLowerCase().compareTo(b.username.toLowerCase()),
+      );
       if (mounted) {
         setState(() {
           _accounts = accounts;
