@@ -153,6 +153,50 @@ class _NetworkDetailScreenState extends State<NetworkDetailScreen>
     }
   }
 
+  Future<void> _rename() async {
+    if (_network == null) return;
+    final ctrl = TextEditingController(text: _network!.name);
+    final newName = await showDialog<String>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Rename network'),
+        content: TextField(
+          controller: ctrl,
+          decoration: const InputDecoration(
+            labelText: 'Name',
+            border: OutlineInputBorder(),
+          ),
+          autofocus: true,
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(),
+            child: const Text('Cancel'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.of(ctx).pop(ctrl.text.trim()),
+            child: const Text('Save'),
+          ),
+        ],
+      ),
+    );
+    if (newName != null && newName.isNotEmpty && mounted) {
+      try {
+        final updated = await _networkService.updateNetwork(
+          _network!.id,
+          SaveNetworkRequest(name: newName, configuration: _network!.config),
+        );
+        if (mounted) setState(() => _network = updated);
+      } catch (_) {
+        if (mounted) {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(const SnackBar(content: Text('Rename failed.')));
+        }
+      }
+    }
+  }
+
   Future<void> _editConfig() async {
     if (_network == null) return;
     await showDialog(
@@ -345,13 +389,20 @@ class _NetworkDetailScreenState extends State<NetworkDetailScreen>
         ),
         if (isAdmin) ...[
           const SizedBox(height: 12),
-          Align(
-            alignment: Alignment.centerLeft,
-            child: OutlinedButton.icon(
-              icon: const Icon(Icons.settings_outlined, size: 16),
-              label: const Text('Edit configuration'),
-              onPressed: _editConfig,
-            ),
+          Wrap(
+            spacing: 8,
+            children: [
+              OutlinedButton.icon(
+                icon: const Icon(Icons.drive_file_rename_outline, size: 16),
+                label: const Text('Rename network'),
+                onPressed: _rename,
+              ),
+              OutlinedButton.icon(
+                icon: const Icon(Icons.settings_outlined, size: 16),
+                label: const Text('Edit configuration'),
+                onPressed: _editConfig,
+              ),
+            ],
           ),
         ],
       ],
