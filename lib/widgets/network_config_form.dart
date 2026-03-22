@@ -2,6 +2,135 @@ import 'package:flutter/material.dart';
 
 import '../models/network.dart';
 
+/// Common IANA timezone identifiers, used to drive the timezone autocomplete.
+const _kTimezones = [
+  'UTC',
+  'Africa/Abidjan',
+  'Africa/Accra',
+  'Africa/Addis_Ababa',
+  'Africa/Algiers',
+  'Africa/Cairo',
+  'Africa/Casablanca',
+  'Africa/Johannesburg',
+  'Africa/Lagos',
+  'Africa/Nairobi',
+  'Africa/Tripoli',
+  'Africa/Tunis',
+  'America/Anchorage',
+  'America/Argentina/Buenos_Aires',
+  'America/Bogota',
+  'America/Caracas',
+  'America/Chicago',
+  'America/Denver',
+  'America/Halifax',
+  'America/Lima',
+  'America/Los_Angeles',
+  'America/Mexico_City',
+  'America/New_York',
+  'America/Phoenix',
+  'America/Santiago',
+  'America/Sao_Paulo',
+  'America/St_Johns',
+  'America/Toronto',
+  'America/Vancouver',
+  'America/Winnipeg',
+  'Asia/Almaty',
+  'Asia/Amman',
+  'Asia/Baghdad',
+  'Asia/Baku',
+  'Asia/Bangkok',
+  'Asia/Beirut',
+  'Asia/Colombo',
+  'Asia/Dhaka',
+  'Asia/Dubai',
+  'Asia/Hong_Kong',
+  'Asia/Jakarta',
+  'Asia/Jerusalem',
+  'Asia/Kabul',
+  'Asia/Karachi',
+  'Asia/Kathmandu',
+  'Asia/Kolkata',
+  'Asia/Kuala_Lumpur',
+  'Asia/Kuwait',
+  'Asia/Makassar',
+  'Asia/Manila',
+  'Asia/Muscat',
+  'Asia/Nicosia',
+  'Asia/Novosibirsk',
+  'Asia/Omsk',
+  'Asia/Qatar',
+  'Asia/Riyadh',
+  'Asia/Seoul',
+  'Asia/Shanghai',
+  'Asia/Singapore',
+  'Asia/Taipei',
+  'Asia/Tashkent',
+  'Asia/Tehran',
+  'Asia/Tbilisi',
+  'Asia/Tokyo',
+  'Asia/Ulaanbaatar',
+  'Asia/Vladivostok',
+  'Asia/Yakutsk',
+  'Asia/Yekaterinburg',
+  'Asia/Yerevan',
+  'Atlantic/Azores',
+  'Atlantic/Cape_Verde',
+  'Atlantic/Reykjavik',
+  'Australia/Adelaide',
+  'Australia/Brisbane',
+  'Australia/Darwin',
+  'Australia/Hobart',
+  'Australia/Melbourne',
+  'Australia/Perth',
+  'Australia/Sydney',
+  'Europe/Amsterdam',
+  'Europe/Athens',
+  'Europe/Belgrade',
+  'Europe/Berlin',
+  'Europe/Brussels',
+  'Europe/Bucharest',
+  'Europe/Budapest',
+  'Europe/Copenhagen',
+  'Europe/Dublin',
+  'Europe/Helsinki',
+  'Europe/Istanbul',
+  'Europe/Kiev',
+  'Europe/Lisbon',
+  'Europe/Ljubljana',
+  'Europe/London',
+  'Europe/Luxembourg',
+  'Europe/Madrid',
+  'Europe/Minsk',
+  'Europe/Moscow',
+  'Europe/Oslo',
+  'Europe/Paris',
+  'Europe/Prague',
+  'Europe/Riga',
+  'Europe/Rome',
+  'Europe/Samara',
+  'Europe/Sarajevo',
+  'Europe/Skopje',
+  'Europe/Sofia',
+  'Europe/Stockholm',
+  'Europe/Tallinn',
+  'Europe/Tirane',
+  'Europe/Vienna',
+  'Europe/Vilnius',
+  'Europe/Warsaw',
+  'Europe/Zagreb',
+  'Europe/Zurich',
+  'Indian/Maldives',
+  'Indian/Mauritius',
+  'Pacific/Auckland',
+  'Pacific/Fiji',
+  'Pacific/Guam',
+  'Pacific/Honolulu',
+  'Pacific/Midway',
+  'Pacific/Noumea',
+  'Pacific/Port_Moresby',
+  'Pacific/Tongatapu',
+];
+
 /// A structured form for editing all fields inside [NetworkConfiguration].
 /// Wraps state inside the widget (no external provider needed for form state).
 class NetworkConfigForm extends StatefulWidget {
@@ -28,7 +157,8 @@ class _NetworkConfigFormState extends State<NetworkConfigForm> {
   late final TextEditingController _email;
   late final TextEditingController _reminderTime;
   late final TextEditingController _reminderDays;
-  late final TextEditingController _timezone;
+  late String _selectedTimezone;
+  String? _timezoneError;
 
   @override
   void initState() {
@@ -45,7 +175,7 @@ class _NetworkConfigFormState extends State<NetworkConfigForm> {
     _reminderDays = TextEditingController(
       text: c.reminderIntervalDays?.toString() ?? '',
     );
-    _timezone = TextEditingController(text: c.timezone);
+    _selectedTimezone = c.timezone;
   }
 
   @override
@@ -56,7 +186,6 @@ class _NetworkConfigFormState extends State<NetworkConfigForm> {
       _email,
       _reminderTime,
       _reminderDays,
-      _timezone,
     ]) {
       c.dispose();
     }
@@ -64,7 +193,11 @@ class _NetworkConfigFormState extends State<NetworkConfigForm> {
   }
 
   void _submit() {
-    if (!_formKey.currentState!.validate()) return;
+    final tzOk = _selectedTimezone.isNotEmpty;
+    if (!_formKey.currentState!.validate() | !tzOk) {
+      if (!tzOk) setState(() => _timezoneError = 'Required');
+      return;
+    }
     widget.onSave(
       NetworkConfiguration(
         reportingInterval: int.tryParse(_reportingInterval.text),
@@ -74,7 +207,7 @@ class _NetworkConfigFormState extends State<NetworkConfigForm> {
             ? _reminderTime.text
             : null,
         reminderIntervalDays: int.tryParse(_reminderDays.text),
-        timezone: _timezone.text.isEmpty ? 'UTC' : _timezone.text,
+        timezone: _selectedTimezone,
       ),
     );
   }
@@ -110,13 +243,39 @@ class _NetworkConfigFormState extends State<NetworkConfigForm> {
           const SizedBox(height: 12),
           _intField(_reminderDays, 'Reminder interval (days)'),
           const SizedBox(height: 12),
-          TextFormField(
-            controller: _timezone,
-            decoration: const InputDecoration(
-              labelText: 'Timezone (IANA)',
-              hintText: 'Europe/Ljubljana',
-            ),
-            validator: (v) => (v == null || v.isEmpty) ? 'Required' : null,
+          Autocomplete<String>(
+            initialValue: TextEditingValue(text: _selectedTimezone),
+            optionsBuilder: (TextEditingValue tv) {
+              if (tv.text.isEmpty) return _kTimezones;
+              final q = tv.text.toLowerCase();
+              return _kTimezones.where((tz) => tz.toLowerCase().contains(q));
+            },
+            onSelected: (tz) => setState(() {
+              _selectedTimezone = tz;
+              _timezoneError = null;
+            }),
+            fieldViewBuilder: (ctx, ctrl, focusNode, onSubmit) {
+              ctrl.addListener(() {
+                // Keep _selectedTimezone in sync with free text so a valid
+                // manually-typed IANA id is not rejected.
+                if (_selectedTimezone != ctrl.text) {
+                  _selectedTimezone = ctrl.text.trim();
+                  if (_timezoneError != null && _selectedTimezone.isNotEmpty) {
+                    setState(() => _timezoneError = null);
+                  }
+                }
+              });
+              return TextFormField(
+                controller: ctrl,
+                focusNode: focusNode,
+                decoration: InputDecoration(
+                  labelText: 'Timezone (IANA)',
+                  hintText: 'Europe/Ljubljana',
+                  errorText: _timezoneError,
+                ),
+                onFieldSubmitted: (_) => onSubmit(),
+              );
+            },
           ),
           const SizedBox(height: 24),
           Row(
