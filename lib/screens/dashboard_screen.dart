@@ -49,7 +49,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) => _loadStats());
     _refreshTimer = Timer.periodic(kDashboardRefreshInterval, (_) {
-      _loadStats();
+      _refreshAll();
     });
   }
 
@@ -57,6 +57,20 @@ class _DashboardScreenState extends State<DashboardScreen> {
   void dispose() {
     _refreshTimer?.cancel();
     super.dispose();
+  }
+
+  /// Refreshes the current user profile, network list, and per-network stats.
+  /// Used by the periodic timer and pull-to-refresh.
+  Future<void> _refreshAll() async {
+    if (!mounted) return;
+    final auth = context.read<AuthProvider>();
+    await auth.refreshCurrentUser();
+    if (!mounted) return;
+    await context.read<NetworkProvider>().loadNetworks(
+      isAdmin: auth.isAdmin,
+      accountId: auth.currentUser!.id,
+    );
+    await _loadStats();
   }
 
   Future<void> _loadStats() async {
@@ -172,7 +186,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       body = ErrorDisplay(message: networkProvider.error!);
     } else {
       body = RefreshIndicator(
-        onRefresh: _loadStats,
+        onRefresh: _refreshAll,
         child: ListView.builder(
           padding: const EdgeInsets.all(16),
           itemCount: networks.length,

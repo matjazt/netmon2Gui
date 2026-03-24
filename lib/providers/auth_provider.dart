@@ -63,6 +63,21 @@ class AuthProvider extends ChangeNotifier {
     }
   }
 
+  /// Silently re-fetches the current user's profile from the backend.
+  /// Updates [isAdmin] and other account properties in the background.
+  /// Ignores errors so transient failures don't disrupt the session.
+  Future<void> refreshCurrentUser() async {
+    if (_currentUser == null) return;
+    try {
+      final account = await _accountService.getMe();
+      if (account.accountTypeId == kAccountTypeDevice) return;
+      _currentUser = account;
+      notifyListeners();
+    } catch (_) {
+      // Best-effort; session validity is enforced by actual API calls.
+    }
+  }
+
   /// Reads saved credentials and tries to restore the previous session silently.
   /// Returns true when the session was restored.
   Future<bool> tryRestoreSession() async {
