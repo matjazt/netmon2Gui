@@ -190,8 +190,18 @@ class _NetworkDetailScreenState extends State<NetworkDetailScreen>
         if (mounted) setState(() => _network = updated);
       } catch (e) {
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Rename failed: ${errorMessage(e)}')),
+          showDialog(
+            context: context,
+            builder: (ctx) => AlertDialog(
+              title: const Text('Rename failed'),
+              content: Text(errorMessage(e)),
+              actions: [
+                FilledButton(
+                  onPressed: () => Navigator.of(ctx).pop(),
+                  child: const Text('OK'),
+                ),
+              ],
+            ),
           );
         }
       }
@@ -219,8 +229,18 @@ class _NetworkDetailScreenState extends State<NetworkDetailScreen>
                 if (mounted) setState(() => _network = updated);
               } catch (e) {
                 if (mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Save failed: ${errorMessage(e)}')),
+                  showDialog(
+                    context: context,
+                    builder: (ctx) => AlertDialog(
+                      title: const Text('Save failed'),
+                      content: Text(errorMessage(e)),
+                      actions: [
+                        FilledButton(
+                          onPressed: () => Navigator.of(ctx).pop(),
+                          child: const Text('OK'),
+                        ),
+                      ],
+                    ),
                   );
                 }
               }

@@ -179,8 +179,18 @@ class _DeviceDetailScreenState extends State<DeviceDetailScreen>
         if (mounted) setState(() => _device = updated);
       } catch (e) {
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Rename failed: ${errorMessage(e)}')),
+          showDialog(
+            context: context,
+            builder: (ctx) => AlertDialog(
+              title: const Text('Rename failed'),
+              content: Text(errorMessage(e)),
+              actions: [
+                FilledButton(
+                  onPressed: () => Navigator.of(ctx).pop(),
+                  child: const Text('OK'),
+                ),
+              ],
+            ),
           );
         }
       }
@@ -217,8 +227,18 @@ class _DeviceDetailScreenState extends State<DeviceDetailScreen>
       if (mounted) setState(() => _device = updated);
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Mode change failed: ${errorMessage(e)}')),
+        showDialog(
+          context: context,
+          builder: (ctx) => AlertDialog(
+            title: const Text('Mode change failed'),
+            content: Text(errorMessage(e)),
+            actions: [
+              FilledButton(
+                onPressed: () => Navigator.of(ctx).pop(),
+                child: const Text('OK'),
+              ),
+            ],
+          ),
         );
       }
     }
