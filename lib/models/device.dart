@@ -27,7 +27,7 @@ class Device {
   factory Device.fromJson(Map<String, dynamic> json) => Device(
     id: json['id'] as int,
     networkId: json['networkId'] as int,
-    name: json['name'] as String,
+    name: json['name'] != null ? json['name'] as String : '<unnamed>',
     macAddress: json['macAddress'] as String,
     ipAddress: json['ipAddress'] as String?,
     online: json['online'] as bool? ?? false,
