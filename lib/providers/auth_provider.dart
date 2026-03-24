@@ -1,9 +1,11 @@
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
 import '../models/account.dart';
-import '../services/api_client.dart';
 import '../services/account_service.dart';
+import '../services/api_client.dart';
 import '../utils/constants.dart';
+import '../utils/errors.dart';
 
 /// Manages the currently authenticated user.
 ///
@@ -54,7 +56,7 @@ class AuthProvider extends ChangeNotifier {
     } catch (e) {
       ApiClient.instance.clear();
       _currentUser = null;
-      _error = 'Login failed. Check your credentials.';
+      _error = 'Login failed: ${errorMessage(e)}';
       _loading = false;
       notifyListeners();
       return false;

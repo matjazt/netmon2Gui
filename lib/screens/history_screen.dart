@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../models/device_status_history.dart';
 import '../services/history_service.dart';
 import '../utils/constants.dart';
+import '../utils/errors.dart';
 import '../widgets/error_display.dart';
 import '../widgets/history_list_tile.dart';
 import '../widgets/shell_menu_leading.dart';
@@ -55,10 +56,10 @@ class _HistoryScreenState extends State<HistoryScreen> {
           _loading = false;
         });
       }
-    } catch (_) {
+    } catch (e) {
       if (mounted) {
         setState(() {
-          _error = 'Failed to load history.';
+          _error = 'Failed to load history.\n${errorMessage(e)}';
           _loading = false;
         });
       }

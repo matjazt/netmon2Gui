@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../models/account.dart';
 import '../../services/account_service.dart';
 import '../../utils/constants.dart';
+import '../../utils/errors.dart';
 import '../../widgets/confirm_dialog.dart';
 import '../../widgets/error_display.dart';
 import '../../widgets/shell_menu_leading.dart';
@@ -44,10 +45,10 @@ class _AdminAccountsScreenState extends State<AdminAccountsScreen> {
           _loading = false;
         });
       }
-    } catch (_) {
+    } catch (e) {
       if (mounted) {
         setState(() {
-          _error = 'Failed to load accounts.';
+          _error = 'Failed to load accounts.\n${errorMessage(e)}';
           _loading = false;
         });
       }
@@ -73,11 +74,11 @@ class _AdminAccountsScreenState extends State<AdminAccountsScreen> {
     try {
       await _service.deleteAccount(account.id);
       _load();
-    } catch (_) {
+    } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(const SnackBar(content: Text('Delete failed.')));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Delete failed: ${errorMessage(e)}')),
+        );
       }
     }
   }

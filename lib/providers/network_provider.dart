@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../models/network.dart';
 import '../services/network_service.dart';
 import '../utils/constants.dart';
+import '../utils/errors.dart';
 
 /// Holds the list of networks the current user can see and tracks which one
 /// is selected. The selected network is persisted in SharedPreferences so the
@@ -50,7 +51,7 @@ class NetworkProvider extends ChangeNotifier {
       // Fall back to first network if saved id is no longer accessible.
       _selectedNetwork ??= _networks.isNotEmpty ? _networks.first : null;
     } catch (e) {
-      _error = 'Failed to load networks.';
+      _error = 'Failed to load networks.\n${errorMessage(e)}';
     }
 
     _loading = false;

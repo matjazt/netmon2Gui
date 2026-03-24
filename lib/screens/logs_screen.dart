@@ -7,6 +7,7 @@ import '../providers/auth_provider.dart';
 import '../providers/network_provider.dart';
 import '../services/log_service.dart';
 import '../utils/constants.dart';
+import '../utils/errors.dart';
 import '../widgets/error_display.dart';
 import '../widgets/log_list_tile.dart';
 import '../widgets/shell_menu_leading.dart';
@@ -78,10 +79,10 @@ class _LogsScreenState extends State<LogsScreen> {
           _loading = false;
         });
       }
-    } catch (_) {
+    } catch (e) {
       if (mounted) {
         setState(() {
-          _error = 'Failed to load logs.';
+          _error = 'Failed to load logs.\n${errorMessage(e)}';
           _loading = false;
         });
       }

@@ -11,6 +11,7 @@ import '../services/alert_service.dart';
 import '../services/device_service.dart';
 import '../services/history_service.dart';
 import '../services/log_service.dart';
+import '../utils/errors.dart';
 import '../widgets/alert_list_tile.dart';
 import '../widgets/error_display.dart';
 import '../widgets/history_list_tile.dart';
@@ -91,10 +92,10 @@ class _DeviceDetailScreenState extends State<DeviceDetailScreen>
           _loading = false;
         });
       }
-    } catch (_) {
+    } catch (e) {
       if (mounted) {
         setState(() {
-          _error = 'Failed to load device.';
+          _error = 'Failed to load device.\n${errorMessage(e)}';
           _loading = false;
         });
       }
@@ -176,11 +177,11 @@ class _DeviceDetailScreenState extends State<DeviceDetailScreen>
       try {
         final updated = await _deviceService.renameDevice(_device!.id, newName);
         if (mounted) setState(() => _device = updated);
-      } catch (_) {
+      } catch (e) {
         if (mounted) {
           ScaffoldMessenger.of(
             context,
-          ).showSnackBar(const SnackBar(content: Text('Rename failed.')));
+          ).showSnackBar(SnackBar(content: Text('Rename failed: ${errorMessage(e)}')));
         }
       }
     }
@@ -214,11 +215,11 @@ class _DeviceDetailScreenState extends State<DeviceDetailScreen>
     try {
       final updated = await _deviceService.updateDeviceMode(_device!.id, mode);
       if (mounted) setState(() => _device = updated);
-    } catch (_) {
+    } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(
           context,
-        ).showSnackBar(const SnackBar(content: Text('Mode change failed.')));
+        ).showSnackBar(SnackBar(content: Text('Mode change failed: ${errorMessage(e)}')));
       }
     }
   }

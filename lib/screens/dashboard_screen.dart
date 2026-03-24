@@ -11,6 +11,7 @@ import '../services/alert_service.dart';
 import '../services/device_service.dart';
 import '../services/network_service.dart';
 import '../utils/constants.dart';
+import '../utils/errors.dart';
 import '../widgets/error_display.dart';
 import '../widgets/network_card.dart';
 import '../widgets/network_config_form.dart';
@@ -137,11 +138,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         );
                         _loadStats();
                       }
-                    } catch (_) {
+                    } catch (e) {
                       if (mounted) {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Failed to create network.'),
+                          SnackBar(
+                            content: Text(
+                              'Failed to create network: ${errorMessage(e)}',
+                            ),
                           ),
                         );
                       }

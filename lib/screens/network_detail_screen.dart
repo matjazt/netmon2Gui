@@ -13,6 +13,7 @@ import '../services/device_service.dart';
 import '../services/history_service.dart';
 import '../services/log_service.dart';
 import '../services/network_service.dart';
+import '../utils/errors.dart';
 import '../widgets/alert_list_tile.dart';
 import '../widgets/device_list_tile.dart';
 import '../widgets/error_display.dart';
@@ -102,7 +103,7 @@ class _NetworkDetailScreenState extends State<NetworkDetailScreen>
     } catch (e) {
       if (mounted) {
         setState(() {
-          _error = 'Failed to load network.';
+          _error = 'Failed to load network.\n${errorMessage(e)}';
           _loading = false;
         });
       }
@@ -187,11 +188,11 @@ class _NetworkDetailScreenState extends State<NetworkDetailScreen>
           SaveNetworkRequest(name: newName, configuration: _network!.config),
         );
         if (mounted) setState(() => _network = updated);
-      } catch (_) {
+      } catch (e) {
         if (mounted) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(const SnackBar(content: Text('Rename failed.')));
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Rename failed: ${errorMessage(e)}')),
+          );
         }
       }
     }
@@ -216,11 +217,11 @@ class _NetworkDetailScreenState extends State<NetworkDetailScreen>
                   SaveNetworkRequest(name: _network!.name, configuration: cfg),
                 );
                 if (mounted) setState(() => _network = updated);
-              } catch (_) {
+              } catch (e) {
                 if (mounted) {
-                  ScaffoldMessenger.of(
-                    context,
-                  ).showSnackBar(const SnackBar(content: Text('Save failed.')));
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Save failed: ${errorMessage(e)}')),
+                  );
                 }
               }
             },

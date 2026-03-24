@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../models/account.dart';
 import '../../services/account_service.dart';
 import '../../utils/constants.dart';
+import '../../utils/errors.dart';
 
 /// Create or edit a single account.
 class AdminAccountFormScreen extends StatefulWidget {
@@ -67,11 +68,11 @@ class _AdminAccountFormScreenState extends State<AdminAccountFormScreen> {
         await _service.createAccount(req);
       }
       if (mounted) Navigator.of(context).pop(true);
-    } catch (_) {
+    } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(const SnackBar(content: Text('Save failed.')));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Save failed: ${errorMessage(e)}')),
+        );
         setState(() => _saving = false);
       }
     }
