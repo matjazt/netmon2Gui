@@ -142,6 +142,10 @@ class _AdminAccountFormScreenState extends State<AdminAccountFormScreen> {
                       child: Text('User'),
                     ),
                     DropdownMenuItem(
+                      value: kAccountTypeViewer,
+                      child: Text('Viewer'),
+                    ),
+                    DropdownMenuItem(
                       value: kAccountTypeDevice,
                       child: Text('Device'),
                     ),

@@ -315,18 +315,16 @@ class _DeviceDetailScreenState extends State<DeviceDetailScreen>
                 context,
               ).pushNamed('/network', arguments: d.networkId),
             ),
-            if (isAdmin) ...[
-              OutlinedButton.icon(
-                icon: const Icon(Icons.drive_file_rename_outline, size: 16),
-                label: const Text('Rename device'),
-                onPressed: _changeName,
-              ),
-              OutlinedButton.icon(
-                icon: const Icon(Icons.security, size: 16),
-                label: const Text('Set operation mode'),
-                onPressed: _showModeDialog,
-              ),
-            ],
+            OutlinedButton.icon(
+              icon: const Icon(Icons.drive_file_rename_outline, size: 16),
+              label: const Text('Rename device'),
+              onPressed: _changeName,
+            ),
+            OutlinedButton.icon(
+              icon: const Icon(Icons.security, size: 16),
+              label: const Text('Set operation mode'),
+              onPressed: _showModeDialog,
+            ),
           ],
         ),
       ],

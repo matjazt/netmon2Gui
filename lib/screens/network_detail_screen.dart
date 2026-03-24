@@ -396,24 +396,25 @@ class _NetworkDetailScreenState extends State<NetworkDetailScreen>
             ),
           ),
         ),
-        if (isAdmin) ...[
-          const SizedBox(height: 12),
-          Wrap(
-            spacing: 8,
-            children: [
+
+        const SizedBox(height: 12),
+        Wrap(
+          spacing: 8,
+          children: [
+            if (isAdmin) ...[
               OutlinedButton.icon(
                 icon: const Icon(Icons.drive_file_rename_outline, size: 16),
                 label: const Text('Rename network'),
                 onPressed: _rename,
               ),
-              OutlinedButton.icon(
-                icon: const Icon(Icons.settings_outlined, size: 16),
-                label: const Text('Edit configuration'),
-                onPressed: _editConfig,
-              ),
             ],
-          ),
-        ],
+            OutlinedButton.icon(
+              icon: const Icon(Icons.settings_outlined, size: 16),
+              label: const Text('Edit configuration'),
+              onPressed: _editConfig,
+            ),
+          ],
+        ),
       ],
     );
   }

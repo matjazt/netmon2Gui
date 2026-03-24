@@ -21,11 +21,15 @@ const int kAccountTypeUser = 2;
 /// These accounts can be managed by admins but cannot log in to the GUI.
 const int kAccountTypeDevice = 3;
 
+/// Viewer — read-only access to assigned networks; cannot perform writes.
+const int kAccountTypeViewer = 4;
+
 /// Human-readable labels for account type IDs.
 const Map<int, String> kAccountTypeLabels = {
   kAccountTypeAdmin: 'Admin',
   kAccountTypeUser: 'User',
   kAccountTypeDevice: 'Device',
+  kAccountTypeViewer: 'Viewer',
 };
 
 // ─── SharedPreferences keys ──────────────────────────────────────────────────

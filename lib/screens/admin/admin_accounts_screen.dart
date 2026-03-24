@@ -87,6 +87,7 @@ class _AdminAccountsScreenState extends State<AdminAccountsScreen> {
     kAccountTypeAdmin => 'Admin',
     kAccountTypeUser => 'User',
     kAccountTypeDevice => 'Device',
+    kAccountTypeViewer => 'Viewer',
     _ => 'Unknown',
   };
 
