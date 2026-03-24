@@ -6,6 +6,7 @@ class Device {
   final String macAddress;
   final String? ipAddress;
   final bool online;
+  final DateTime? firstSeen;
   final DateTime? lastSeen;
   final String? deviceOperationMode;
   final int? activeAlertId;
@@ -18,6 +19,7 @@ class Device {
     required this.macAddress,
     this.ipAddress,
     this.online = false,
+    this.firstSeen,
     this.lastSeen,
     this.deviceOperationMode,
     this.activeAlertId,
@@ -31,6 +33,9 @@ class Device {
     macAddress: json['macAddress'] as String,
     ipAddress: json['ipAddress'] as String?,
     online: json['online'] as bool? ?? false,
+    firstSeen: json['firstSeen'] != null
+        ? DateTime.parse(json['firstSeen'] as String)
+        : null,
     lastSeen: json['lastSeen'] != null
         ? DateTime.parse(json['lastSeen'] as String)
         : null,

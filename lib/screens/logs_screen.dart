@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 import '../models/log_entry.dart';
 import '../models/page_result.dart';
-import '../providers/auth_provider.dart';
-import '../providers/network_provider.dart';
 import '../services/log_service.dart';
 import '../utils/constants.dart';
 import '../utils/errors.dart';
@@ -49,27 +46,13 @@ class _LogsScreenState extends State<LogsScreen> {
     });
 
     try {
-      final auth = context.read<AuthProvider>();
-      final network = context.read<NetworkProvider>().selectedNetwork;
+      // final auth = context.read<AuthProvider>();
+      // final network = context.read<NetworkProvider>().selectedNetwork;
 
-      PageResult<LogEntry> result;
-      if (auth.isAdmin) {
-        result = await _service.getAllLogsPaginated(
-          page: _page,
-          size: kLogPageSize,
-        );
-      } else if (network != null) {
-        result = await _service.getLogsByNetwork(
-          network.id,
-          page: _page,
-          size: kLogPageSize,
-        );
-      } else {
-        setState(() {
-          _loading = false;
-        });
-        return;
-      }
+      PageResult<LogEntry> result = await _service.getAllLogsPaginated(
+        page: _page,
+        size: kLogPageSize,
+      );
 
       if (mounted) {
         setState(() {

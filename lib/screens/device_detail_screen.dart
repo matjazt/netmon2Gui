@@ -179,9 +179,9 @@ class _DeviceDetailScreenState extends State<DeviceDetailScreen>
         if (mounted) setState(() => _device = updated);
       } catch (e) {
         if (mounted) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text('Rename failed: ${errorMessage(e)}')));
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Rename failed: ${errorMessage(e)}')),
+          );
         }
       }
     }
@@ -217,9 +217,9 @@ class _DeviceDetailScreenState extends State<DeviceDetailScreen>
       if (mounted) setState(() => _device = updated);
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('Mode change failed: ${errorMessage(e)}')));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Mode change failed: ${errorMessage(e)}')),
+        );
       }
     }
   }
@@ -294,6 +294,10 @@ class _DeviceDetailScreenState extends State<DeviceDetailScreen>
                 if (d.ipAddress != null) _infoRow('IP address', d.ipAddress!),
                 if (d.vendor != null) _infoRow('Vendor', d.vendor!),
                 _infoRow('Operation mode', d.deviceOperationMode ?? '-'),
+                _infoRow(
+                  'First seen',
+                  d.firstSeen?.toLocal().toString() ?? '-',
+                ),
                 _infoRow('Last seen', d.lastSeen?.toLocal().toString() ?? '-'),
               ],
             ),

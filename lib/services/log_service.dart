@@ -12,7 +12,7 @@ class LogService {
     int size = 50,
   }) async {
     final r = await _dio.get(
-      '/api/logs/paginated',
+      '/api/logs/my',
       queryParameters: {'page': page, 'size': size},
     );
     return PageResult.fromJson(
