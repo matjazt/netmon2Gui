@@ -120,6 +120,30 @@ paths:
       responses:
         "200":
           description: OK
+  /api/devices/{id}/name:
+    put:
+      tags:
+        - device-controller
+      operationId: updateDeviceName
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: name
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/DeviceDto"
   /api/devices/{id}/mode:
     put:
       tags:
@@ -205,63 +229,6 @@ paths:
       responses:
         "200":
           description: OK
-  /api/account-networks/{id}:
-    get:
-      tags:
-        - account-network-controller
-      operationId: getAccountNetworkById
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: integer
-            format: int64
-      responses:
-        "200":
-          description: OK
-          content:
-            "*/*":
-              schema:
-                $ref: "#/components/schemas/AccountNetworkDto"
-    put:
-      tags:
-        - account-network-controller
-      operationId: updateAccountNetwork
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: integer
-            format: int64
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/SaveAccountNetworkRequest"
-        required: true
-      responses:
-        "200":
-          description: OK
-          content:
-            "*/*":
-              schema:
-                $ref: "#/components/schemas/AccountNetworkDto"
-    delete:
-      tags:
-        - account-network-controller
-      operationId: deleteAccountNetwork
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: integer
-            format: int64
-      responses:
-        "200":
-          description: OK
   /api/networks:
     get:
       tags:
@@ -324,24 +291,6 @@ paths:
             "*/*":
               schema:
                 $ref: "#/components/schemas/DeviceDto"
-  /api/devices/mqtt-update:
-    post:
-      tags:
-        - device-controller
-      operationId: processMqttUpdate
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/MqttDeviceUpdateRequest"
-        required: true
-      responses:
-        "200":
-          description: OK
-          content:
-            "*/*":
-              schema:
-                $ref: "#/components/schemas/DeviceDto"
   /api/accounts:
     get:
       tags:
@@ -373,37 +322,6 @@ paths:
             "*/*":
               schema:
                 $ref: "#/components/schemas/AccountDto"
-  /api/account-networks:
-    get:
-      tags:
-        - account-network-controller
-      operationId: getAllAccountNetworks
-      responses:
-        "200":
-          description: OK
-          content:
-            "*/*":
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/AccountNetworkDto"
-    post:
-      tags:
-        - account-network-controller
-      operationId: createAccountNetwork
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/SaveAccountNetworkRequest"
-        required: true
-      responses:
-        "200":
-          description: OK
-          content:
-            "*/*":
-              schema:
-                $ref: "#/components/schemas/AccountNetworkDto"
   /api/account-networks/grant-access:
     post:
       tags:
@@ -429,72 +347,6 @@ paths:
             "*/*":
               schema:
                 $ref: "#/components/schemas/AccountNetworkDto"
-  /api/networks/without-active-alerts:
-    get:
-      tags:
-        - network-controller
-      operationId: getNetworksWithoutActiveAlerts
-      responses:
-        "200":
-          description: OK
-          content:
-            "*/*":
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/NetworkDto"
-  /api/networks/with-active-alerts:
-    get:
-      tags:
-        - network-controller
-      operationId: getNetworksWithActiveAlerts
-      responses:
-        "200":
-          description: OK
-          content:
-            "*/*":
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/NetworkDto"
-  /api/networks/search:
-    get:
-      tags:
-        - network-controller
-      operationId: searchNetworksByName
-      parameters:
-        - name: name
-          in: query
-          required: true
-          schema:
-            type: string
-      responses:
-        "200":
-          description: OK
-          content:
-            "*/*":
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/NetworkDto"
-  /api/networks/name/{name}:
-    get:
-      tags:
-        - network-controller
-      operationId: getNetworkByName
-      parameters:
-        - name: name
-          in: path
-          required: true
-          schema:
-            type: string
-      responses:
-        "200":
-          description: OK
-          content:
-            "*/*":
-              schema:
-                $ref: "#/components/schemas/NetworkDto"
   /api/networks/exists:
     get:
       tags:
@@ -637,6 +489,33 @@ paths:
             "*/*":
               schema:
                 $ref: "#/components/schemas/PagedModelLogDto"
+  /api/logs/my:
+    get:
+      tags:
+        - log-controller
+      operationId: getMyLogs
+      parameters:
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 0
+        - name: size
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 50
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/PagedModelLogDto"
   /api/logs/device/{deviceId}:
     get:
       tags:
@@ -754,34 +633,6 @@ paths:
             "*/*":
               schema:
                 $ref: "#/components/schemas/PagedModelLogDto"
-  /api/devices/{id}/history:
-    get:
-      tags:
-        - device-controller
-      operationId: getDeviceHistory
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: integer
-            format: int64
-        - name: limit
-          in: query
-          required: false
-          schema:
-            type: integer
-            format: int32
-            default: 50
-      responses:
-        "200":
-          description: OK
-          content:
-            "*/*":
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/DeviceStatusHistoryDto"
   /api/devices/network/{networkId}:
     get:
       tags:
@@ -822,59 +673,6 @@ paths:
             "*/*":
               schema:
                 $ref: "#/components/schemas/DeviceStats"
-  /api/devices/network/{networkId}/online:
-    get:
-      tags:
-        - device-controller
-      operationId: getOnlineDevices
-      parameters:
-        - name: networkId
-          in: path
-          required: true
-          schema:
-            type: integer
-            format: int64
-      responses:
-        "200":
-          description: OK
-          content:
-            "*/*":
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/DeviceDto"
-  /api/devices/needing-alerts:
-    get:
-      tags:
-        - device-controller
-      operationId: getDevicesNeedingAlerts
-      responses:
-        "200":
-          description: OK
-          content:
-            "*/*":
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/DeviceDto"
-  /api/devices/mac/{macAddress}:
-    get:
-      tags:
-        - device-controller
-      operationId: getDeviceByMac
-      parameters:
-        - name: macAddress
-          in: path
-          required: true
-          schema:
-            type: string
-      responses:
-        "200":
-          description: OK
-          content:
-            "*/*":
-              schema:
-                $ref: "#/components/schemas/DeviceDto"
   /api/devices/exists:
     get:
       tags:
@@ -1002,6 +800,33 @@ paths:
           schema:
             type: string
             format: date-time
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 0
+        - name: size
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 50
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/PagedModelDeviceStatusHistoryDto"
+  /api/device-status-history/my:
+    get:
+      tags:
+        - device-status-history-controller
+      operationId: getMyHistory
+      parameters:
         - name: page
           in: query
           required: false
@@ -1327,6 +1152,39 @@ paths:
             "*/*":
               schema:
                 type: boolean
+  /api/account-networks:
+    get:
+      tags:
+        - account-network-controller
+      operationId: getAllAccountNetworks
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AccountNetworkDto"
+  /api/account-networks/{id}:
+    get:
+      tags:
+        - account-network-controller
+      operationId: getAccountNetworkById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/AccountNetworkDto"
   /api/account-networks/networks-by-account/{accountId}:
     get:
       tags:
@@ -1548,6 +1406,9 @@ components:
           type: string
         online:
           type: boolean
+        firstSeen:
+          type: string
+          format: date-time
         lastSeen:
           type: string
           format: date-time
@@ -1605,15 +1466,6 @@ components:
         lastSeen:
           type: string
           format: date-time
-    SaveAccountNetworkRequest:
-      type: object
-      properties:
-        accountId:
-          type: integer
-          format: int64
-        networkId:
-          type: integer
-          format: int64
     AccountNetworkDto:
       type: object
       properties:
@@ -1626,18 +1478,6 @@ components:
         networkId:
           type: integer
           format: int64
-    MqttDeviceUpdateRequest:
-      type: object
-      properties:
-        networkId:
-          type: integer
-          format: int64
-        macAddress:
-          type: string
-        ipAddress:
-          type: string
-        online:
-          type: boolean
     LogDto:
       type: object
       properties:
@@ -1688,6 +1528,18 @@ components:
             $ref: "#/components/schemas/LogDto"
         page:
           $ref: "#/components/schemas/PageMetadata"
+    DeviceStats:
+      type: object
+      properties:
+        total:
+          type: integer
+          format: int64
+        online:
+          type: integer
+          format: int64
+        offline:
+          type: integer
+          format: int64
     DeviceStatusHistoryDto:
       type: object
       properties:
@@ -1711,18 +1563,6 @@ components:
           type: string
         deviceNameOrVendor:
           type: string
-    DeviceStats:
-      type: object
-      properties:
-        total:
-          type: integer
-          format: int64
-        online:
-          type: integer
-          format: int64
-        offline:
-          type: integer
-          format: int64
     PagedModelDeviceStatusHistoryDto:
       type: object
       properties:

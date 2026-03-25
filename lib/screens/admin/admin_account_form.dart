@@ -70,8 +70,18 @@ class _AdminAccountFormScreenState extends State<AdminAccountFormScreen> {
       if (mounted) Navigator.of(context).pop(true);
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Save failed: ${errorMessage(e)}')),
+        showDialog(
+          context: context,
+          builder: (ctx) => AlertDialog(
+            title: Text(_isEdit ? 'Update failed' : 'Create failed'),
+            content: Text(errorMessage(e)),
+            actions: [
+              FilledButton(
+                onPressed: () => Navigator.of(ctx).pop(),
+                child: const Text('OK'),
+              ),
+            ],
+          ),
         );
         setState(() => _saving = false);
       }
