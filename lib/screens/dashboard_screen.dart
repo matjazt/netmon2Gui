@@ -154,11 +154,17 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       }
                     } catch (e) {
                       if (mounted) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(
-                              'Failed to create network: ${errorMessage(e)}',
-                            ),
+                        showDialog(
+                          context: context,
+                          builder: (ctx) => AlertDialog(
+                            title: const Text('Failed to create network'),
+                            content: Text(errorMessage(e)),
+                            actions: [
+                              FilledButton(
+                                onPressed: () => Navigator.of(ctx).pop(),
+                                child: const Text('OK'),
+                              ),
+                            ],
                           ),
                         );
                       }
