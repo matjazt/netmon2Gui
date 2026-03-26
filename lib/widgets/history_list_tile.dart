@@ -17,12 +17,11 @@ class HistoryListTile extends StatelessWidget {
     //final color = entry.online ? Colors.green : Colors.red;
     final parts = [
       _fmt.format(entry.timestamp.toLocal()),
-      if (entry.deviceNameOrVendor != null && entry.networkName != null)
-        '${entry.deviceNameOrVendor!} @ ${entry.networkName!}',
-      if (entry.deviceNameOrVendor == null && entry.networkName != null)
-        entry.networkName!,
+      if (entry.networkName != null) entry.networkName!,
       if (entry.ipAddress != null) entry.ipAddress!,
     ];
+
+    final device = entry.deviceNameOrVendor ?? 'Device ${entry.deviceId}';
     return ListTile(
       dense: true,
       onTap: () => Navigator.of(context).push(
@@ -34,7 +33,7 @@ class HistoryListTile extends StatelessWidget {
         size: 16,
       ),
       title: Text(
-        entry.online ? 'Device came online' : 'Device went offline',
+        device + (entry.online ? ' came online' : ' went offline'),
         //style: TextStyle(color: color),
       ),
       subtitle: Text(parts.join('  ·  '), style: const TextStyle(fontSize: 11)),
