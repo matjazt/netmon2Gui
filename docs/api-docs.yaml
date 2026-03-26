@@ -1598,3 +1598,7 @@ components:
         closureTimestamp:
           type: string
           format: date-time
+        networkName:
+          type: string
+        deviceNameOrVendor:
+          type: string
