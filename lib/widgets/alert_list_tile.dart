@@ -17,13 +17,17 @@ class AlertListTile extends StatelessWidget {
     final isOpen = alert.isOpen;
     final color = isOpen ? Colors.orange : Colors.green;
 
+    final subject =
+        (alert.deviceNameOrVendor != null && alert.networkName != null)
+        ? '${alert.deviceNameOrVendor!} @ ${alert.networkName!}'
+        : alert.deviceNameOrVendor ?? alert.networkName ?? '';
     return ListTile(
       leading: Icon(
         isOpen ? Icons.warning_amber_rounded : Icons.check_circle_outline,
         color: color,
       ),
       title: Text(
-        _alertTypeLabel(alert.alertType),
+        '${_alertTypeLabel(alert.alertType)}${subject.isNotEmpty ? ': $subject' : ''}',
         overflow: TextOverflow.ellipsis,
       ),
       subtitle: Text(

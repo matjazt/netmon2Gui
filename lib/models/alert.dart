@@ -22,6 +22,8 @@ class Alert {
   final String? message;
   final DateTime timestamp;
   final DateTime? closureTimestamp;
+  final String? networkName;
+  final String? deviceNameOrVendor;
 
   const Alert({
     required this.id,
@@ -31,6 +33,8 @@ class Alert {
     this.message,
     required this.timestamp,
     this.closureTimestamp,
+    this.networkName,
+    this.deviceNameOrVendor,
   });
 
   factory Alert.fromJson(Map<String, dynamic> json) => Alert(
@@ -43,6 +47,8 @@ class Alert {
     closureTimestamp: json['closureTimestamp'] != null
         ? DateTime.parse(json['closureTimestamp'] as String)
         : null,
+    networkName: json['networkName'] as String?,
+    deviceNameOrVendor: json['deviceNameOrVendor'] as String?,
   );
 
   bool get isOpen => closureTimestamp == null;

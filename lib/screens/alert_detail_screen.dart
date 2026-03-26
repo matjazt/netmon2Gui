@@ -48,6 +48,18 @@ class AlertDetailScreen extends StatelessWidget {
                 ),
               ),
               _Row(label: 'Type', value: _alertTypeLabel(alert.alertType)),
+              if (alert.networkName != null)
+                _Row(
+                  label: 'Network',
+                  value: alert.networkName,
+                  softWrap: true,
+                ),
+              if (alert.deviceNameOrVendor != null)
+                _Row(
+                  label: 'Device',
+                  value: alert.deviceNameOrVendor,
+                  softWrap: true,
+                ),
               _Row(label: 'ID', value: '${alert.id}'),
               _Row(
                 label: 'Opened',
