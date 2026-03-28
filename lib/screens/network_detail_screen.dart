@@ -55,12 +55,12 @@ class _NetworkDetailScreenState extends State<NetworkDetailScreen>
   String? _alertsError;
 
   // ── Logs tab ───────────────────────────────────────────────────────────────
-  final List<LogEntry> _logs = [];
-  bool _logsLoaded = false;
+  final List<LogEntry> _log = [];
+  bool _logLoaded = false;
   int _logPage = 0;
   bool _logHasMore = true;
   bool _logLoading = false;
-  String? _logsError;
+  String? _logError;
 
   // ── History tab ────────────────────────────────────────────────────────────
   final List<DeviceStatusHistory> _history = [];
@@ -102,7 +102,7 @@ class _NetworkDetailScreenState extends State<NetworkDetailScreen>
       case _tabAlerts:
         if (!_alertsLoaded) _loadAlerts();
       case _tabLogs:
-        if (!_logsLoaded) _loadLogs();
+        if (!_logLoaded) _loadLogs();
       case _tabHistory:
         if (!_historyLoaded) _loadHistory();
     }
@@ -194,13 +194,13 @@ class _NetworkDetailScreenState extends State<NetworkDetailScreen>
   Future<void> _loadLogs({bool reset = false}) async {
     if (_logLoading) return;
     if (reset) {
-      _logs.clear();
+      _log.clear();
       _logPage = 0;
       _logHasMore = true;
     }
     setState(() {
       _logLoading = true;
-      _logsError = null;
+      _logError = null;
     });
     try {
       final result = await _logService.getLogsByNetwork(
@@ -210,17 +210,17 @@ class _NetworkDetailScreenState extends State<NetworkDetailScreen>
       );
       if (mounted) {
         setState(() {
-          _logs.addAll(result.content);
+          _log.addAll(result.content);
           _logPage = result.number + 1;
           _logHasMore = !result.last;
-          _logsLoaded = true;
+          _logLoaded = true;
           _logLoading = false;
         });
       }
     } catch (e) {
       if (mounted) {
         setState(() {
-          _logsError = 'Failed to load logs.\n${errorMessage(e)}';
+          _logError = 'Failed to load logs.\n${errorMessage(e)}';
           _logLoading = false;
         });
       }
@@ -538,16 +538,16 @@ class _NetworkDetailScreenState extends State<NetworkDetailScreen>
   }
 
   Widget _buildLogs() {
-    if (_logLoading && !_logsLoaded) {
+    if (_logLoading && !_logLoaded) {
       return const Center(child: CircularProgressIndicator());
     }
-    if (_logsError != null) {
+    if (_logError != null) {
       return ErrorDisplay(
-        message: _logsError!,
+        message: _logError!,
         onRetry: () => _loadLogs(reset: true),
       );
     }
-    if (_logs.isEmpty) {
+    if (_log.isEmpty) {
       return RefreshIndicator(
         onRefresh: () => _loadLogs(reset: true),
         child: ListView(
@@ -567,10 +567,10 @@ class _NetworkDetailScreenState extends State<NetworkDetailScreen>
       onRefresh: () => _loadLogs(reset: true),
       child: ListView.separated(
         physics: const AlwaysScrollableScrollPhysics(),
-        itemCount: _logs.length + (_logHasMore ? 1 : 0),
+        itemCount: _log.length + (_logHasMore ? 1 : 0),
         separatorBuilder: (_, _) => const Divider(height: 1),
         itemBuilder: (ctx, i) {
-          if (i == _logs.length) {
+          if (i == _log.length) {
             if (!_logLoading) {
               WidgetsBinding.instance.addPostFrameCallback((_) {
                 if (mounted) _loadMoreLogs();
@@ -581,7 +581,7 @@ class _NetworkDetailScreenState extends State<NetworkDetailScreen>
               child: Center(child: CircularProgressIndicator()),
             );
           }
-          return LogListTile(entry: _logs[i]);
+          return LogListTile(entry: _log[i]);
         },
       ),
     );

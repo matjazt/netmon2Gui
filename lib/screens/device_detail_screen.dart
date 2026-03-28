@@ -44,7 +44,7 @@ class _DeviceDetailScreenState extends State<DeviceDetailScreen>
   String? _alertsError;
 
   // ── Logs tab ───────────────────────────────────────────────────────────────
-  final List<LogEntry> _logs = [];
+  final List<LogEntry> _log = [];
   bool _logLoaded = false;
   int _logPage = 0;
   bool _logHasMore = true;
@@ -151,7 +151,7 @@ class _DeviceDetailScreenState extends State<DeviceDetailScreen>
   Future<void> _loadLogs({bool reset = false}) async {
     if (_logLoading) return;
     if (reset) {
-      _logs.clear();
+      _log.clear();
       _logPage = 0;
       _logHasMore = true;
     }
@@ -167,7 +167,7 @@ class _DeviceDetailScreenState extends State<DeviceDetailScreen>
       );
       if (mounted) {
         setState(() {
-          _logs.addAll(result.content);
+          _log.addAll(result.content);
           _logPage = result.number + 1;
           _logHasMore = !result.last;
           _logLoaded = true;
@@ -498,7 +498,7 @@ class _DeviceDetailScreenState extends State<DeviceDetailScreen>
     }
     return RefreshIndicator(
       onRefresh: () => _loadLogs(reset: true),
-      child: _logs.isEmpty && !_logLoading
+      child: _log.isEmpty && !_logLoading
           ? ListView(
               physics: const AlwaysScrollableScrollPhysics(),
               children: const [
@@ -508,10 +508,10 @@ class _DeviceDetailScreenState extends State<DeviceDetailScreen>
             )
           : ListView.separated(
               physics: const AlwaysScrollableScrollPhysics(),
-              itemCount: _logs.length + (_logHasMore ? 1 : 0),
+              itemCount: _log.length + (_logHasMore ? 1 : 0),
               separatorBuilder: (_, _) => const Divider(height: 1),
               itemBuilder: (ctx, i) {
-                if (i == _logs.length) {
+                if (i == _log.length) {
                   if (!_logLoading) {
                     WidgetsBinding.instance.addPostFrameCallback((_) {
                       if (mounted) _loadMoreLogs();
@@ -522,7 +522,7 @@ class _DeviceDetailScreenState extends State<DeviceDetailScreen>
                     child: Center(child: CircularProgressIndicator()),
                   );
                 }
-                return LogListTile(entry: _logs[i]);
+                return LogListTile(entry: _log[i]);
               },
             ),
     );
