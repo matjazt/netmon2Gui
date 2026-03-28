@@ -18,95 +18,111 @@ class HistoryScreen extends StatefulWidget {
 
 class _HistoryScreenState extends State<HistoryScreen> {
   final _service = HistoryService();
-  final List<DeviceStatusHistory> _entries = [];
-  int _page = 0;
-  bool _hasMore = true;
-  bool _loading = false;
-  String? _error;
+  final List<DeviceStatusHistory> _history = [];
+  int _historyPage = 0;
+  bool _historyHasMore = true;
+  bool _historyLoading = false;
+  String? _historyError;
 
   @override
   void initState() {
     super.initState();
-    _load();
+    _loadHistory();
   }
 
-  Future<void> _load({bool reset = false}) async {
-    if (_loading) return;
+  Future<void> _loadHistory({bool reset = false}) async {
+    if (_historyLoading) return;
     if (reset) {
-      _entries.clear();
-      _page = 0;
-      _hasMore = true;
+      _history.clear();
+      _historyPage = 0;
+      _historyHasMore = true;
     }
     setState(() {
-      _loading = true;
-      _error = null;
+      _historyLoading = true;
+      _historyError = null;
     });
 
     try {
       final result = await _service.getAllPaginated(
-        page: _page,
+        page: _historyPage,
         size: kLogPageSize,
       );
 
       if (mounted) {
         setState(() {
-          _entries.addAll(result.content);
-          _hasMore = !result.last;
-          _page = result.number + 1;
-          _loading = false;
+          _history.addAll(result.content);
+          _historyHasMore = !result.last;
+          _historyPage = result.number + 1;
+          _historyLoading = false;
         });
       }
     } catch (e) {
       if (mounted) {
         setState(() {
-          _error = 'Failed to load history.\n${errorMessage(e)}';
-          _loading = false;
+          _historyError = 'Failed to load history.\n${errorMessage(e)}';
+          _historyLoading = false;
         });
       }
     }
   }
 
+  Future<void> _loadMoreHistory() async {
+    if (_historyLoading || !_historyHasMore) return;
+    _loadHistory();
+  }
+
   @override
   Widget build(BuildContext context) {
-    final Widget body;
-    if (_error != null) {
-      body = ErrorDisplay(message: _error!, onRetry: () => _load(reset: true));
-    } else if (_entries.isEmpty && _loading) {
-      body = const Center(child: CircularProgressIndicator());
-    } else if (_entries.isEmpty) {
-      body = const Center(child: Text('No history'));
-    } else {
-      body = RefreshIndicator(
-        onRefresh: () => _load(reset: true),
-        child: ListView.separated(
-          physics: const AlwaysScrollableScrollPhysics(),
-          itemCount: _entries.length + (_hasMore ? 1 : 0),
-          separatorBuilder: (_, _) => const Divider(height: 1),
-          itemBuilder: (ctx, i) {
-            if (i == _entries.length) {
-              // Load-more trigger — deferred to avoid setState during build.
-              if (!_loading) {
-                WidgetsBinding.instance.addPostFrameCallback((_) {
-                  if (mounted && !_loading) _load();
-                });
-              }
-              return const Padding(
-                padding: EdgeInsets.all(16),
-                child: Center(child: CircularProgressIndicator()),
-              );
-            }
-            return HistoryListTile(entry: _entries[i]);
-          },
-        ),
-      );
-    }
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('History'),
-        actions: const [ShellMenuAction()],
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.refresh),
+            tooltip: 'Refresh',
+            onPressed: () => _loadHistory(reset: true),
+          ),
+          const ShellMenuAction(),
+        ],
       ),
-      body: body,
+      body: _historyLoading && _history.isEmpty
+          ? const Center(child: CircularProgressIndicator())
+          : _historyError != null
+          ? ErrorDisplay(
+              message: _historyError!,
+              onRetry: () => _loadHistory(reset: true),
+            )
+          : RefreshIndicator(
+              onRefresh: () => _loadHistory(reset: true),
+              child: _history.isEmpty
+                  ? ListView(
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      children: const [
+                        SizedBox(height: 120),
+                        Center(child: Text('No history')),
+                      ],
+                    )
+                  : ListView.separated(
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      itemCount: _history.length + (_historyHasMore ? 1 : 0),
+                      separatorBuilder: (_, __) => const Divider(height: 1),
+                      itemBuilder: (ctx, i) {
+                        if (i == _history.length) {
+                          if (!_historyLoading) {
+                            WidgetsBinding.instance.addPostFrameCallback((_) {
+                              if (mounted && !_historyLoading)
+                                _loadMoreHistory();
+                            });
+                          }
+                          return const Padding(
+                            padding: EdgeInsets.all(16),
+                            child: Center(child: CircularProgressIndicator()),
+                          );
+                        }
+                        return HistoryListTile(entry: _history[i]);
+                      },
+                    ),
+            ),
     );
   }
 }

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../models/log_entry.dart';
-import '../models/page_result.dart';
 import '../services/log_service.dart';
 import '../utils/constants.dart';
 import '../utils/errors.dart';
@@ -21,98 +20,107 @@ class LogsScreen extends StatefulWidget {
 
 class _LogsScreenState extends State<LogsScreen> {
   final _service = LogService();
-  final List<LogEntry> _entries = [];
-  int _page = 0;
-  bool _hasMore = true;
-  bool _loading = false;
-  String? _error;
+  final List<LogEntry> _log = [];
+  int _logPage = 0;
+  bool _logHasMore = true;
+  bool _logLoading = false;
+  String? _logError;
 
   @override
   void initState() {
     super.initState();
-    _load();
+    _loadLogs();
   }
 
-  Future<void> _load({bool reset = false}) async {
-    if (_loading) return;
+  Future<void> _loadLogs({bool reset = false}) async {
+    if (_logLoading) return;
     if (reset) {
-      _entries.clear();
-      _page = 0;
-      _hasMore = true;
+      _log.clear();
+      _logPage = 0;
+      _logHasMore = true;
     }
     setState(() {
-      _loading = true;
-      _error = null;
+      _logLoading = true;
+      _logError = null;
     });
 
     try {
-      // final auth = context.read<AuthProvider>();
-      // final network = context.read<NetworkProvider>().selectedNetwork;
-
-      PageResult<LogEntry> result = await _service.getAllLogsPaginated(
-        page: _page,
+      final result = await _service.getAllLogsPaginated(
+        page: _logPage,
         size: kLogPageSize,
       );
 
       if (mounted) {
         setState(() {
-          _entries.addAll(result.content);
-          _hasMore = !result.last;
-          _page = result.number + 1;
-          _loading = false;
+          _log.addAll(result.content);
+          _logHasMore = !result.last;
+          _logPage = result.number + 1;
+          _logLoading = false;
         });
       }
     } catch (e) {
       if (mounted) {
         setState(() {
-          _error = 'Failed to load logs.\n${errorMessage(e)}';
-          _loading = false;
+          _logError = 'Failed to load logs.\n${errorMessage(e)}';
+          _logLoading = false;
         });
       }
     }
   }
 
+  Future<void> _loadMoreLogs() async {
+    if (_logLoading || !_logHasMore) return;
+    _loadLogs();
+  }
+
   @override
   Widget build(BuildContext context) {
-    final Widget body;
-    if (_error != null) {
-      body = ErrorDisplay(message: _error!, onRetry: () => _load(reset: true));
-    } else if (_entries.isEmpty && _loading) {
-      body = const Center(child: CircularProgressIndicator());
-    } else if (_entries.isEmpty) {
-      body = const Center(child: Text('No logs'));
-    } else {
-      body = RefreshIndicator(
-        onRefresh: () => _load(reset: true),
-        child: ListView.separated(
-          physics: const AlwaysScrollableScrollPhysics(),
-          itemCount: _entries.length + (_hasMore ? 1 : 0),
-          separatorBuilder: (_, _) => const Divider(height: 1),
-          itemBuilder: (ctx, i) {
-            if (i == _entries.length) {
-              // Load-more trigger — deferred to avoid setState during build.
-              if (!_loading) {
-                WidgetsBinding.instance.addPostFrameCallback((_) {
-                  if (mounted && !_loading) _load();
-                });
-              }
-              return const Padding(
-                padding: EdgeInsets.all(16),
-                child: Center(child: CircularProgressIndicator()),
-              );
-            }
-            return LogListTile(entry: _entries[i]);
-          },
-        ),
-      );
-    }
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('Logs'),
-        actions: const [ShellMenuAction()],
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.refresh),
+            tooltip: 'Refresh',
+            onPressed: () => _loadLogs(reset: true),
+          ),
+          const ShellMenuAction(),
+        ],
       ),
-      body: body,
+      body: _logLoading && _log.isEmpty
+          ? const Center(child: CircularProgressIndicator())
+          : _logError != null
+          ? ErrorDisplay(message: _logError!, onRetry: () => _loadLogs(reset: true))
+          : RefreshIndicator(
+              onRefresh: () => _loadLogs(reset: true),
+              child: _log.isEmpty
+                  ? ListView(
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      children: const [
+                        SizedBox(height: 120),
+                        Center(child: Text('No logs')),
+                      ],
+                    )
+                  : ListView.separated(
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      itemCount: _log.length + (_logHasMore ? 1 : 0),
+                      separatorBuilder: (_, __) => const Divider(height: 1),
+                      itemBuilder: (ctx, i) {
+                        if (i == _log.length) {
+                          if (!_logLoading) {
+                            WidgetsBinding.instance.addPostFrameCallback((_) {
+                              if (mounted && !_logLoading) _loadMoreLogs();
+                            });
+                          }
+                          return const Padding(
+                            padding: EdgeInsets.all(16),
+                            child: Center(child: CircularProgressIndicator()),
+                          );
+                        }
+                        return LogListTile(entry: _log[i]);
+                      },
+                    ),
+            ),
     );
   }
 }
