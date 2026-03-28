@@ -157,7 +157,7 @@ class _MainScaffoldState extends State<MainScaffold> {
       case '/':
         // No transition animation for tab switches.
         return PageRouteBuilder(
-          pageBuilder: (_, __, ___) => _tabBody(_isAdmin, safeIndex),
+          pageBuilder: (_, _, _) => _tabBody(_isAdmin, safeIndex),
           settings: settings,
           transitionDuration: Duration.zero,
           reverseTransitionDuration: Duration.zero,

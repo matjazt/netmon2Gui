@@ -85,8 +85,9 @@ class _LogsScreenState extends State<LogsScreen> {
       body = RefreshIndicator(
         onRefresh: () => _load(reset: true),
         child: ListView.separated(
+          physics: const AlwaysScrollableScrollPhysics(),
           itemCount: _entries.length + (_hasMore ? 1 : 0),
-          separatorBuilder: (_, __) => const Divider(height: 1),
+          separatorBuilder: (_, _) => const Divider(height: 1),
           itemBuilder: (ctx, i) {
             if (i == _entries.length) {
               // Load-more trigger — deferred to avoid setState during build.

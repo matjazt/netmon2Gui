@@ -6,7 +6,6 @@ import '../models/device.dart';
 import '../models/device_status_history.dart';
 import '../models/log_entry.dart';
 import '../models/network.dart';
-import '../models/page_result.dart';
 import '../providers/auth_provider.dart';
 import '../services/alert_service.dart';
 import '../services/device_service.dart';
@@ -38,65 +37,89 @@ class _NetworkDetailScreenState extends State<NetworkDetailScreen>
   final _historyService = HistoryService();
   final _logService = LogService();
 
+  // ── Info (always loaded first) ─────────────────────────────────────────────
   Network? _network;
-  List<Alert> _alerts = [];
-  List<Device> _devices = [];
-  List<LogEntry> _logs = [];
-  List<DeviceStatusHistory> _history = [];
   bool _loading = true;
   String? _error;
 
-  // Pagination state for logs tab
+  // ── Devices tab ────────────────────────────────────────────────────────────
+  List<Device> _devices = [];
+  bool _devicesLoaded = false;
+  bool _devicesLoading = false;
+  String? _devicesError;
+
+  // ── Alerts tab ─────────────────────────────────────────────────────────────
+  List<Alert> _alerts = [];
+  bool _alertsLoaded = false;
+  bool _alertsLoading = false;
+  String? _alertsError;
+
+  // ── Logs tab ───────────────────────────────────────────────────────────────
+  final List<LogEntry> _logs = [];
+  bool _logsLoaded = false;
   int _logPage = 0;
   bool _logHasMore = true;
   bool _logLoading = false;
+  String? _logsError;
 
-  // Pagination state for history tab
+  // ── History tab ────────────────────────────────────────────────────────────
+  final List<DeviceStatusHistory> _history = [];
+  bool _historyLoaded = false;
   int _historyPage = 0;
   bool _historyHasMore = true;
   bool _historyLoading = false;
+  String? _historyError;
 
   late TabController _tabs;
+
+  // Tab indices
+  static const int _tabInfo = 0;
+  static const int _tabDevices = 1;
+  static const int _tabAlerts = 2;
+  static const int _tabLogs = 3;
+  static const int _tabHistory = 4;
 
   @override
   void initState() {
     super.initState();
     _tabs = TabController(length: 5, vsync: this);
-    _load();
+    _tabs.addListener(_onTabChanged);
+    _loadInfo();
   }
 
   @override
   void dispose() {
+    _tabs.removeListener(_onTabChanged);
     _tabs.dispose();
     super.dispose();
   }
 
-  Future<void> _load() async {
+  void _onTabChanged() {
+    if (_tabs.indexIsChanging) return;
+    switch (_tabs.index) {
+      case _tabDevices:
+        if (!_devicesLoaded) _loadDevices();
+      case _tabAlerts:
+        if (!_alertsLoaded) _loadAlerts();
+      case _tabLogs:
+        if (!_logsLoaded) _loadLogs();
+      case _tabHistory:
+        if (!_historyLoaded) _loadHistory();
+    }
+  }
+
+  // ── Info ───────────────────────────────────────────────────────────────────
+
+  Future<void> _loadInfo() async {
     setState(() {
       _loading = true;
       _error = null;
     });
     try {
-      final results = await Future.wait([
-        _networkService.getNetworkById(widget.networkId),
-        _alertService.getAlertsByNetwork(widget.networkId),
-        _deviceService.getDevicesByNetwork(widget.networkId),
-        _logService.getLogsByNetwork(widget.networkId, size: 50),
-        _historyService.getByNetwork(widget.networkId, size: 50),
-      ]);
+      final network = await _networkService.getNetworkById(widget.networkId);
       if (mounted) {
-        final logPage = results[3] as PageResult<LogEntry>;
-        final historyPage = results[4] as PageResult<DeviceStatusHistory>;
         setState(() {
-          _network = results[0] as Network;
-          _alerts = results[1] as List<Alert>;
-          _devices = results[2] as List<Device>;
-          _logs = logPage.content;
-          _logPage = logPage.number + 1;
-          _logHasMore = !logPage.last;
-          _history = historyPage.content;
-          _historyPage = historyPage.number + 1;
-          _historyHasMore = !historyPage.last;
+          _network = network;
           _loading = false;
         });
       }
@@ -110,9 +133,75 @@ class _NetworkDetailScreenState extends State<NetworkDetailScreen>
     }
   }
 
-  Future<void> _loadMoreLogs() async {
-    if (_logLoading || !_logHasMore) return;
-    setState(() => _logLoading = true);
+  // ── Devices ────────────────────────────────────────────────────────────────
+
+  Future<void> _loadDevices() async {
+    if (_devicesLoading) return;
+    setState(() {
+      _devicesLoading = true;
+      _devicesError = null;
+    });
+    try {
+      final devices = await _deviceService.getDevicesByNetwork(
+        widget.networkId,
+      );
+      if (mounted) {
+        setState(() {
+          _devices = devices;
+          _devicesLoaded = true;
+          _devicesLoading = false;
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _devicesError = 'Failed to load devices.\n${errorMessage(e)}';
+          _devicesLoading = false;
+        });
+      }
+    }
+  }
+
+  // ── Alerts ─────────────────────────────────────────────────────────────────
+
+  Future<void> _loadAlerts() async {
+    if (_alertsLoading) return;
+    setState(() {
+      _alertsLoading = true;
+      _alertsError = null;
+    });
+    try {
+      final alerts = await _alertService.getAlertsByNetwork(widget.networkId);
+      if (mounted) {
+        setState(() {
+          _alerts = alerts;
+          _alertsLoaded = true;
+          _alertsLoading = false;
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _alertsError = 'Failed to load alerts.\n${errorMessage(e)}';
+          _alertsLoading = false;
+        });
+      }
+    }
+  }
+
+  // ── Logs ───────────────────────────────────────────────────────────────────
+
+  Future<void> _loadLogs({bool reset = false}) async {
+    if (_logLoading) return;
+    if (reset) {
+      _logs.clear();
+      _logPage = 0;
+      _logHasMore = true;
+    }
+    setState(() {
+      _logLoading = true;
+      _logsError = null;
+    });
     try {
       final result = await _logService.getLogsByNetwork(
         widget.networkId,
@@ -124,17 +213,38 @@ class _NetworkDetailScreenState extends State<NetworkDetailScreen>
           _logs.addAll(result.content);
           _logPage = result.number + 1;
           _logHasMore = !result.last;
+          _logsLoaded = true;
           _logLoading = false;
         });
       }
-    } catch (_) {
-      if (mounted) setState(() => _logLoading = false);
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _logsError = 'Failed to load logs.\n${errorMessage(e)}';
+          _logLoading = false;
+        });
+      }
     }
   }
 
-  Future<void> _loadMoreHistory() async {
-    if (_historyLoading || !_historyHasMore) return;
-    setState(() => _historyLoading = true);
+  Future<void> _loadMoreLogs() async {
+    if (_logLoading || !_logHasMore) return;
+    _loadLogs();
+  }
+
+  // ── History ────────────────────────────────────────────────────────────────
+
+  Future<void> _loadHistory({bool reset = false}) async {
+    if (_historyLoading) return;
+    if (reset) {
+      _history.clear();
+      _historyPage = 0;
+      _historyHasMore = true;
+    }
+    setState(() {
+      _historyLoading = true;
+      _historyError = null;
+    });
     try {
       final result = await _historyService.getByNetwork(
         widget.networkId,
@@ -146,11 +256,41 @@ class _NetworkDetailScreenState extends State<NetworkDetailScreen>
           _history.addAll(result.content);
           _historyPage = result.number + 1;
           _historyHasMore = !result.last;
+          _historyLoaded = true;
           _historyLoading = false;
         });
       }
-    } catch (_) {
-      if (mounted) setState(() => _historyLoading = false);
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _historyError = 'Failed to load history.\n${errorMessage(e)}';
+          _historyLoading = false;
+        });
+      }
+    }
+  }
+
+  Future<void> _loadMoreHistory() async {
+    if (_historyLoading || !_historyHasMore) return;
+    _loadHistory();
+  }
+
+  // ── Refresh current tab ────────────────────────────────────────────────────
+
+  Future<void> _refreshCurrentTab() async {
+    switch (_tabs.index) {
+      case _tabInfo:
+        await _loadInfo();
+      case _tabDevices:
+        _devicesLoaded = false;
+        await _loadDevices();
+      case _tabAlerts:
+        _alertsLoaded = false;
+        await _loadAlerts();
+      case _tabLogs:
+        await _loadLogs(reset: true);
+      case _tabHistory:
+        await _loadHistory(reset: true);
     }
   }
 
@@ -258,7 +398,14 @@ class _NetworkDetailScreenState extends State<NetworkDetailScreen>
     return Scaffold(
       appBar: AppBar(
         title: Text("Network #${_network?.id}: ${_network?.name ?? 'Unknown'}"),
-        actions: const [ShellMenuAction()],
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.refresh),
+            tooltip: 'Refresh',
+            onPressed: _refreshCurrentTab,
+          ),
+          const ShellMenuAction(),
+        ],
         bottom: TabBar(
           controller: _tabs,
           tabs: const [
@@ -273,7 +420,7 @@ class _NetworkDetailScreenState extends State<NetworkDetailScreen>
       body: _loading
           ? const Center(child: CircularProgressIndicator())
           : _error != null
-          ? ErrorDisplay(message: _error!, onRetry: _load)
+          ? ErrorDisplay(message: _error!, onRetry: _loadInfo)
           : TabBarView(
               controller: _tabs,
               children: [
@@ -288,85 +435,205 @@ class _NetworkDetailScreenState extends State<NetworkDetailScreen>
   }
 
   Widget _buildDeviceList() {
-    if (_devices.isEmpty) {
-      return const Center(child: Text('No devices'));
+    if (_devicesLoading && !_devicesLoaded) {
+      return const Center(child: CircularProgressIndicator());
     }
-    return ListView.separated(
-      itemCount: _devices.length,
-      separatorBuilder: (_, __) => const Divider(height: 1),
-      itemBuilder: (ctx, i) => DeviceListTile(
-        device: _devices[i],
-        onTap: () async {
-          await Navigator.of(
-            context,
-          ).pushNamed('/device', arguments: _devices[i].id);
-          if (mounted) {
-            final updated = await _deviceService.getDevicesByNetwork(
-              widget.networkId,
-            );
-            if (mounted) setState(() => _devices = updated);
-          }
+    if (_devicesError != null) {
+      return ErrorDisplay(
+        message: _devicesError!,
+        onRetry: () {
+          _devicesLoaded = false;
+          _loadDevices();
         },
+      );
+    }
+    if (_devices.isEmpty) {
+      return RefreshIndicator(
+        onRefresh: () async {
+          _devicesLoaded = false;
+          await _loadDevices();
+        },
+        child: ListView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          children: const [
+            Center(
+              child: Padding(
+                padding: EdgeInsets.all(32),
+                child: Text('No devices'),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+    return RefreshIndicator(
+      onRefresh: () async {
+        _devicesLoaded = false;
+        await _loadDevices();
+      },
+      child: ListView.separated(
+        physics: const AlwaysScrollableScrollPhysics(),
+        itemCount: _devices.length,
+        separatorBuilder: (_, _) => const Divider(height: 1),
+        itemBuilder: (ctx, i) => DeviceListTile(
+          device: _devices[i],
+          onTap: () async {
+            await Navigator.of(
+              context,
+            ).pushNamed('/device', arguments: _devices[i].id);
+            if (mounted) {
+              _devicesLoaded = false;
+              _loadDevices();
+            }
+          },
+        ),
       ),
     );
   }
 
   Widget _buildAlertList() {
-    if (_alerts.isEmpty) {
-      return const Center(child: Text('No alerts'));
+    if (_alertsLoading && !_alertsLoaded) {
+      return const Center(child: CircularProgressIndicator());
     }
-    return ListView.separated(
-      itemCount: _alerts.length,
-      separatorBuilder: (_, __) => const Divider(height: 1),
-      itemBuilder: (ctx, i) => AlertListTile(alert: _alerts[i]),
+    if (_alertsError != null) {
+      return ErrorDisplay(
+        message: _alertsError!,
+        onRetry: () {
+          _alertsLoaded = false;
+          _loadAlerts();
+        },
+      );
+    }
+    if (_alerts.isEmpty) {
+      return RefreshIndicator(
+        onRefresh: () async {
+          _alertsLoaded = false;
+          await _loadAlerts();
+        },
+        child: ListView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          children: const [
+            Center(
+              child: Padding(
+                padding: EdgeInsets.all(32),
+                child: Text('No alerts'),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+    return RefreshIndicator(
+      onRefresh: () async {
+        _alertsLoaded = false;
+        await _loadAlerts();
+      },
+      child: ListView.separated(
+        physics: const AlwaysScrollableScrollPhysics(),
+        itemCount: _alerts.length,
+        separatorBuilder: (_, _) => const Divider(height: 1),
+        itemBuilder: (ctx, i) => AlertListTile(alert: _alerts[i]),
+      ),
     );
   }
 
   Widget _buildLogs() {
-    if (_logs.isEmpty && !_logLoading) {
-      return const Center(child: Text('No logs'));
+    if (_logLoading && !_logsLoaded) {
+      return const Center(child: CircularProgressIndicator());
     }
-    return ListView.separated(
-      itemCount: _logs.length + (_logHasMore ? 1 : 0),
-      separatorBuilder: (_, __) => const Divider(height: 1),
-      itemBuilder: (ctx, i) {
-        if (i == _logs.length) {
-          if (!_logLoading) {
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              if (mounted) _loadMoreLogs();
-            });
+    if (_logsError != null) {
+      return ErrorDisplay(
+        message: _logsError!,
+        onRetry: () => _loadLogs(reset: true),
+      );
+    }
+    if (_logs.isEmpty) {
+      return RefreshIndicator(
+        onRefresh: () => _loadLogs(reset: true),
+        child: ListView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          children: const [
+            Center(
+              child: Padding(
+                padding: EdgeInsets.all(32),
+                child: Text('No logs'),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+    return RefreshIndicator(
+      onRefresh: () => _loadLogs(reset: true),
+      child: ListView.separated(
+        physics: const AlwaysScrollableScrollPhysics(),
+        itemCount: _logs.length + (_logHasMore ? 1 : 0),
+        separatorBuilder: (_, _) => const Divider(height: 1),
+        itemBuilder: (ctx, i) {
+          if (i == _logs.length) {
+            if (!_logLoading) {
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                if (mounted) _loadMoreLogs();
+              });
+            }
+            return const Padding(
+              padding: EdgeInsets.all(16),
+              child: Center(child: CircularProgressIndicator()),
+            );
           }
-          return const Padding(
-            padding: EdgeInsets.all(16),
-            child: Center(child: CircularProgressIndicator()),
-          );
-        }
-        return LogListTile(entry: _logs[i]);
-      },
+          return LogListTile(entry: _logs[i]);
+        },
+      ),
     );
   }
 
   Widget _buildHistory() {
-    if (_history.isEmpty && !_historyLoading) {
-      return const Center(child: Text('No history'));
+    if (_historyLoading && !_historyLoaded) {
+      return const Center(child: CircularProgressIndicator());
     }
-    return ListView.separated(
-      itemCount: _history.length + (_historyHasMore ? 1 : 0),
-      separatorBuilder: (_, __) => const Divider(height: 1),
-      itemBuilder: (ctx, i) {
-        if (i == _history.length) {
-          if (!_historyLoading) {
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              if (mounted) _loadMoreHistory();
-            });
+    if (_historyError != null) {
+      return ErrorDisplay(
+        message: _historyError!,
+        onRetry: () => _loadHistory(reset: true),
+      );
+    }
+    if (_history.isEmpty) {
+      return RefreshIndicator(
+        onRefresh: () => _loadHistory(reset: true),
+        child: ListView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          children: const [
+            Center(
+              child: Padding(
+                padding: EdgeInsets.all(32),
+                child: Text('No history'),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+    return RefreshIndicator(
+      onRefresh: () => _loadHistory(reset: true),
+      child: ListView.separated(
+        physics: const AlwaysScrollableScrollPhysics(),
+        itemCount: _history.length + (_historyHasMore ? 1 : 0),
+        separatorBuilder: (_, _) => const Divider(height: 1),
+        itemBuilder: (ctx, i) {
+          if (i == _history.length) {
+            if (!_historyLoading) {
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                if (mounted) _loadMoreHistory();
+              });
+            }
+            return const Padding(
+              padding: EdgeInsets.all(16),
+              child: Center(child: CircularProgressIndicator()),
+            );
           }
-          return const Padding(
-            padding: EdgeInsets.all(16),
-            child: Center(child: CircularProgressIndicator()),
-          );
-        }
-        return HistoryListTile(entry: _history[i]);
-      },
+          return HistoryListTile(entry: _history[i]);
+        },
+      ),
     );
   }
 
