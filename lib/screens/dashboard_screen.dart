@@ -43,11 +43,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
   final _networkService = NetworkService();
   Map<int, _NetworkStats> _stats = {};
   Timer? _refreshTimer;
+  bool _statsLoadRequested = false;
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) => _loadStats());
     _refreshTimer = Timer.periodic(kDashboardRefreshInterval, (_) {
       _refreshAll();
     });
@@ -184,6 +184,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
     final isAdmin = context.watch<AuthProvider>().isAdmin;
     final networkProvider = context.watch<NetworkProvider>();
     final networks = networkProvider.networks;
+
+    // Trigger stats once networks are available. Using build() as the trigger
+    // handles the race where networks load after DashboardScreen is created.
+    if (networks.isNotEmpty && !_statsLoadRequested) {
+      _statsLoadRequested = true;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) _loadStats();
+      });
+    }
 
     final Widget body;
     if (networkProvider.loading && networks.isEmpty) {
