@@ -15,7 +15,7 @@ class AlertDetailScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final isOpen = alert.isOpen;
     final colorScheme = Theme.of(context).colorScheme;
-    final statusColor = isOpen ? colorScheme.error : colorScheme.tertiary;
+    final statusColor = isOpen ? colorScheme.error : Colors.green;
 
     return Scaffold(
       appBar: AppBar(

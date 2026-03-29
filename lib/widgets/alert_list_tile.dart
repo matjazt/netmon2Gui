@@ -15,7 +15,8 @@ class AlertListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isOpen = alert.isOpen;
-    final color = isOpen ? Colors.orange : Colors.green;
+    final colorScheme = Theme.of(context).colorScheme;
+    final color = isOpen ? colorScheme.error : Colors.green;
 
     final subject =
         (alert.deviceNameOrVendor != null && alert.networkName != null)

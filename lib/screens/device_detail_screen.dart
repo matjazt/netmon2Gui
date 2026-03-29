@@ -389,7 +389,8 @@ class _DeviceDetailScreenState extends State<DeviceDetailScreen>
 
   Widget _buildInfo(bool isAdmin) {
     final d = _device!;
-    final onlineColor = d.online ? Colors.green : Colors.red;
+    final colorScheme = Theme.of(context).colorScheme;
+    final onlineColor = d.online ? Colors.green : colorScheme.error;
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [

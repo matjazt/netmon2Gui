@@ -13,7 +13,8 @@ class HistoryDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = entry.online ? Colors.green : Colors.red;
+    final colorScheme = Theme.of(context).colorScheme;
+    final color = entry.online ? Colors.green : colorScheme.error;
     return Scaffold(
       appBar: AppBar(
         title: Text("Status Event #${entry.id}"),
