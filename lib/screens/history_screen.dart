@@ -105,13 +105,14 @@ class _HistoryScreenState extends State<HistoryScreen> {
                   : ListView.separated(
                       physics: const AlwaysScrollableScrollPhysics(),
                       itemCount: _history.length + (_historyHasMore ? 1 : 0),
-                      separatorBuilder: (_, __) => const Divider(height: 1),
+                      separatorBuilder: (_, _) => const Divider(height: 1),
                       itemBuilder: (ctx, i) {
                         if (i == _history.length) {
                           if (!_historyLoading) {
                             WidgetsBinding.instance.addPostFrameCallback((_) {
-                              if (mounted && !_historyLoading)
+                              if (mounted && !_historyLoading) {
                                 _loadMoreHistory();
+                              }
                             });
                           }
                           return const Padding(

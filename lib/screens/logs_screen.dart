@@ -90,7 +90,10 @@ class _LogsScreenState extends State<LogsScreen> {
       body: _logLoading && _log.isEmpty
           ? const Center(child: CircularProgressIndicator())
           : _logError != null
-          ? ErrorDisplay(message: _logError!, onRetry: () => _loadLogs(reset: true))
+          ? ErrorDisplay(
+              message: _logError!,
+              onRetry: () => _loadLogs(reset: true),
+            )
           : RefreshIndicator(
               onRefresh: () => _loadLogs(reset: true),
               child: _log.isEmpty
@@ -104,7 +107,7 @@ class _LogsScreenState extends State<LogsScreen> {
                   : ListView.separated(
                       physics: const AlwaysScrollableScrollPhysics(),
                       itemCount: _log.length + (_logHasMore ? 1 : 0),
-                      separatorBuilder: (_, __) => const Divider(height: 1),
+                      separatorBuilder: (_, _) => const Divider(height: 1),
                       itemBuilder: (ctx, i) {
                         if (i == _log.length) {
                           if (!_logLoading) {
