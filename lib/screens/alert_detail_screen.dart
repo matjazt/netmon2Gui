@@ -29,22 +29,25 @@ class AlertDetailScreen extends StatelessWidget {
             children: [
               _Row(
                 label: 'Status',
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 3,
-                    horizontal: 8,
-                  ),
-                  decoration: BoxDecoration(
-                    color: statusColor.withValues(alpha: 0.12),
-                    borderRadius: BorderRadius.circular(6),
-                  ),
-                  child: Text(
-                    isOpen ? 'Open' : 'Closed',
-                    style: TextStyle(
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      isOpen
+                          ? Icons.warning_amber_rounded
+                          : Icons.check_circle_outline,
                       color: statusColor,
-                      fontWeight: FontWeight.bold,
+                      size: 18,
                     ),
-                  ),
+                    const SizedBox(width: 6),
+                    Text(
+                      isOpen ? 'Open' : 'Closed',
+                      style: TextStyle(
+                        color: statusColor,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
                 ),
               ),
               _Row(label: 'Type', value: _alertTypeLabel(alert.alertType)),
