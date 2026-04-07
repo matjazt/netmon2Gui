@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../models/alert.dart';
@@ -20,6 +21,8 @@ import '../widgets/history_list_tile.dart';
 import '../widgets/log_list_tile.dart';
 import '../widgets/network_config_form.dart';
 import '../widgets/shell_menu_leading.dart';
+
+final _fmt = DateFormat('yyyy-MM-dd HH:mm:ss');
 
 class NetworkDetailScreen extends StatefulWidget {
   final int networkId;
@@ -654,9 +657,14 @@ class _NetworkDetailScreenState extends State<NetworkDetailScreen>
                 _infoRow('ID', '${n.id}'),
                 _infoRow(
                   'First seen',
-                  n.firstSeen?.toLocal().toString() ?? '-',
+                  n.firstSeen != null
+                      ? _fmt.format(n.firstSeen!.toLocal())
+                      : '-',
                 ),
-                _infoRow('Last seen', n.lastSeen?.toLocal().toString() ?? '-'),
+                _infoRow(
+                  'Last seen',
+                  n.lastSeen != null ? _fmt.format(n.lastSeen!.toLocal()) : '-',
+                ),
                 _infoRow('Timezone', cfg.timezone),
                 _infoRow(
                   'Reporting interval',

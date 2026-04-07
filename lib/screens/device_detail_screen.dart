@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../models/alert.dart';
@@ -16,6 +17,8 @@ import '../widgets/error_display.dart';
 import '../widgets/history_list_tile.dart';
 import '../widgets/log_list_tile.dart';
 import '../widgets/shell_menu_leading.dart';
+
+final _fmt = DateFormat('yyyy-MM-dd HH:mm:ss');
 
 class DeviceDetailScreen extends StatefulWidget {
   final int deviceId;
@@ -426,9 +429,14 @@ class _DeviceDetailScreenState extends State<DeviceDetailScreen>
                 _infoRow('Operation mode', d.deviceOperationMode ?? '-'),
                 _infoRow(
                   'First seen',
-                  d.firstSeen?.toLocal().toString() ?? '-',
+                  d.firstSeen != null
+                      ? _fmt.format(d.firstSeen!.toLocal())
+                      : '-',
                 ),
-                _infoRow('Last seen', d.lastSeen?.toLocal().toString() ?? '-'),
+                _infoRow(
+                  'Last seen',
+                  d.lastSeen != null ? _fmt.format(d.lastSeen!.toLocal()) : '-',
+                ),
               ],
             ),
           ),
