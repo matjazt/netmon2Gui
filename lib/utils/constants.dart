@@ -7,7 +7,10 @@ library;
 // ─── Backend ────────────────────────────────────────────────────────────────
 
 /// Base URL of the NetMon2 REST API (no trailing slash).
-const String kApiBaseUrl = 'http://localhost:8080/netmon2';
+const String kApiBaseUrl = String.fromEnvironment(
+  'API_BASE_URL',
+  defaultValue: 'http://localhost:8080/netmon2',
+);
 
 // ─── Account type IDs (hardcoded, matches schema.sql seed data) ─────────────
 
