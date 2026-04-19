@@ -22,6 +22,7 @@ import '../widgets/error_display.dart';
 import '../widgets/history_list_tile.dart';
 import '../widgets/log_list_tile.dart';
 import '../widgets/network_config_form.dart';
+import '../widgets/paginated_list_view.dart';
 import '../widgets/shell_menu_leading.dart';
 
 class NetworkDetailScreen extends StatefulWidget {
@@ -494,105 +495,27 @@ class _NetworkDetailScreenState extends State<NetworkDetailScreen>
     );
   }
 
-  Widget _buildLogs() {
-    if (_logLoading && !_logLoaded) {
-      return const Center(child: CircularProgressIndicator());
-    }
-    if (_logError != null) {
-      return ErrorDisplay(
-        message: _logError!,
-        onRetry: () => _loadLogs(reset: true),
-      );
-    }
-    if (_log.isEmpty) {
-      return RefreshIndicator(
-        onRefresh: () => _loadLogs(reset: true),
-        child: ListView(
-          physics: const AlwaysScrollableScrollPhysics(),
-          children: const [
-            Center(
-              child: Padding(
-                padding: EdgeInsets.all(32),
-                child: Text('No logs'),
-              ),
-            ),
-          ],
-        ),
-      );
-    }
-    return RefreshIndicator(
-      onRefresh: () => _loadLogs(reset: true),
-      child: ListView.separated(
-        physics: const AlwaysScrollableScrollPhysics(),
-        itemCount: _log.length + (_logHasMore ? 1 : 0),
-        separatorBuilder: (_, _) => const Divider(height: 1),
-        itemBuilder: (ctx, i) {
-          if (i == _log.length) {
-            if (!_logLoading) {
-              WidgetsBinding.instance.addPostFrameCallback((_) {
-                if (mounted) _loadMoreLogs();
-              });
-            }
-            return const Padding(
-              padding: EdgeInsets.all(16),
-              child: Center(child: CircularProgressIndicator()),
-            );
-          }
-          return LogListTile(entry: _log[i]);
-        },
-      ),
-    );
-  }
+  Widget _buildLogs() => PaginatedListView<LogEntry>(
+    items: _log,
+    isLoading: _logLoading,
+    hasMore: _logHasMore,
+    error: _logError,
+    onRefresh: () => _loadLogs(reset: true),
+    onLoadMore: _loadMoreLogs,
+    emptyMessage: 'No logs',
+    itemBuilder: (_, entry) => LogListTile(entry: entry),
+  );
 
-  Widget _buildHistory() {
-    if (_historyLoading && !_historyLoaded) {
-      return const Center(child: CircularProgressIndicator());
-    }
-    if (_historyError != null) {
-      return ErrorDisplay(
-        message: _historyError!,
-        onRetry: () => _loadHistory(reset: true),
-      );
-    }
-    if (_history.isEmpty) {
-      return RefreshIndicator(
-        onRefresh: () => _loadHistory(reset: true),
-        child: ListView(
-          physics: const AlwaysScrollableScrollPhysics(),
-          children: const [
-            Center(
-              child: Padding(
-                padding: EdgeInsets.all(32),
-                child: Text('No history'),
-              ),
-            ),
-          ],
-        ),
-      );
-    }
-    return RefreshIndicator(
-      onRefresh: () => _loadHistory(reset: true),
-      child: ListView.separated(
-        physics: const AlwaysScrollableScrollPhysics(),
-        itemCount: _history.length + (_historyHasMore ? 1 : 0),
-        separatorBuilder: (_, _) => const Divider(height: 1),
-        itemBuilder: (ctx, i) {
-          if (i == _history.length) {
-            if (!_historyLoading) {
-              WidgetsBinding.instance.addPostFrameCallback((_) {
-                if (mounted) _loadMoreHistory();
-              });
-            }
-            return const Padding(
-              padding: EdgeInsets.all(16),
-              child: Center(child: CircularProgressIndicator()),
-            );
-          }
-          return HistoryListTile(entry: _history[i]);
-        },
-      ),
-    );
-  }
+  Widget _buildHistory() => PaginatedListView<DeviceStatusHistory>(
+    items: _history,
+    isLoading: _historyLoading,
+    hasMore: _historyHasMore,
+    error: _historyError,
+    onRefresh: () => _loadHistory(reset: true),
+    onLoadMore: _loadMoreHistory,
+    emptyMessage: 'No history',
+    itemBuilder: (_, entry) => HistoryListTile(entry: entry),
+  );
 
   Widget _buildInfo(bool isAdmin) {
     final n = _network!;

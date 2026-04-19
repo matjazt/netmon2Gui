@@ -4,8 +4,8 @@ import '../models/log_entry.dart';
 import '../services/log_service.dart';
 import '../utils/constants.dart';
 import '../utils/errors.dart';
-import '../widgets/error_display.dart';
 import '../widgets/log_list_tile.dart';
+import '../widgets/paginated_list_view.dart';
 import '../widgets/shell_menu_leading.dart';
 
 /// Shows paginated logs.
@@ -87,43 +87,16 @@ class _LogsScreenState extends State<LogsScreen> {
           const ShellMenuAction(),
         ],
       ),
-      body: _logLoading && _log.isEmpty
-          ? const Center(child: CircularProgressIndicator())
-          : _logError != null
-          ? ErrorDisplay(
-              message: _logError!,
-              onRetry: () => _loadLogs(reset: true),
-            )
-          : RefreshIndicator(
-              onRefresh: () => _loadLogs(reset: true),
-              child: _log.isEmpty
-                  ? ListView(
-                      physics: const AlwaysScrollableScrollPhysics(),
-                      children: const [
-                        SizedBox(height: 120),
-                        Center(child: Text('No logs')),
-                      ],
-                    )
-                  : ListView.separated(
-                      physics: const AlwaysScrollableScrollPhysics(),
-                      itemCount: _log.length + (_logHasMore ? 1 : 0),
-                      separatorBuilder: (_, _) => const Divider(height: 1),
-                      itemBuilder: (ctx, i) {
-                        if (i == _log.length) {
-                          if (!_logLoading) {
-                            WidgetsBinding.instance.addPostFrameCallback((_) {
-                              if (mounted && !_logLoading) _loadMoreLogs();
-                            });
-                          }
-                          return const Padding(
-                            padding: EdgeInsets.all(16),
-                            child: Center(child: CircularProgressIndicator()),
-                          );
-                        }
-                        return LogListTile(entry: _log[i]);
-                      },
-                    ),
-            ),
+      body: PaginatedListView<LogEntry>(
+        items: _log,
+        isLoading: _logLoading,
+        hasMore: _logHasMore,
+        error: _logError,
+        onRefresh: () => _loadLogs(reset: true),
+        onLoadMore: _loadMoreLogs,
+        emptyMessage: 'No logs',
+        itemBuilder: (_, entry) => LogListTile(entry: entry),
+      ),
     );
   }
 }

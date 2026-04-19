@@ -4,8 +4,8 @@ import '../models/device_status_history.dart';
 import '../services/history_service.dart';
 import '../utils/constants.dart';
 import '../utils/errors.dart';
-import '../widgets/error_display.dart';
 import '../widgets/history_list_tile.dart';
+import '../widgets/paginated_list_view.dart';
 import '../widgets/shell_menu_leading.dart';
 
 /// Shows paginated device-status-history for all networks the user can access.
@@ -85,45 +85,16 @@ class _HistoryScreenState extends State<HistoryScreen> {
           const ShellMenuAction(),
         ],
       ),
-      body: _historyLoading && _history.isEmpty
-          ? const Center(child: CircularProgressIndicator())
-          : _historyError != null
-          ? ErrorDisplay(
-              message: _historyError!,
-              onRetry: () => _loadHistory(reset: true),
-            )
-          : RefreshIndicator(
-              onRefresh: () => _loadHistory(reset: true),
-              child: _history.isEmpty
-                  ? ListView(
-                      physics: const AlwaysScrollableScrollPhysics(),
-                      children: const [
-                        SizedBox(height: 120),
-                        Center(child: Text('No history')),
-                      ],
-                    )
-                  : ListView.separated(
-                      physics: const AlwaysScrollableScrollPhysics(),
-                      itemCount: _history.length + (_historyHasMore ? 1 : 0),
-                      separatorBuilder: (_, _) => const Divider(height: 1),
-                      itemBuilder: (ctx, i) {
-                        if (i == _history.length) {
-                          if (!_historyLoading) {
-                            WidgetsBinding.instance.addPostFrameCallback((_) {
-                              if (mounted && !_historyLoading) {
-                                _loadMoreHistory();
-                              }
-                            });
-                          }
-                          return const Padding(
-                            padding: EdgeInsets.all(16),
-                            child: Center(child: CircularProgressIndicator()),
-                          );
-                        }
-                        return HistoryListTile(entry: _history[i]);
-                      },
-                    ),
-            ),
+      body: PaginatedListView<DeviceStatusHistory>(
+        items: _history,
+        isLoading: _historyLoading,
+        hasMore: _historyHasMore,
+        error: _historyError,
+        onRefresh: () => _loadHistory(reset: true),
+        onLoadMore: _loadMoreHistory,
+        emptyMessage: 'No history',
+        itemBuilder: (_, entry) => HistoryListTile(entry: entry),
+      ),
     );
   }
 }
