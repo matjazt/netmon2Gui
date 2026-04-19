@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../../models/account.dart';
 import '../../services/account_service.dart';
 import '../../utils/constants.dart';
-import '../../utils/errors.dart';
+import '../../utils/dialogs.dart';
 
 /// Create or edit a single account.
 class AdminAccountFormScreen extends StatefulWidget {
@@ -70,18 +70,10 @@ class _AdminAccountFormScreenState extends State<AdminAccountFormScreen> {
       if (mounted) Navigator.of(context).pop(true);
     } catch (e) {
       if (mounted) {
-        showDialog(
-          context: context,
-          builder: (ctx) => AlertDialog(
-            title: Text(_isEdit ? 'Update failed' : 'Create failed'),
-            content: Text(errorMessage(e)),
-            actions: [
-              FilledButton(
-                onPressed: () => Navigator.of(ctx).pop(),
-                child: const Text('OK'),
-              ),
-            ],
-          ),
+        showErrorDialog(
+          context,
+          title: _isEdit ? 'Update failed' : 'Create failed',
+          error: e,
         );
         setState(() => _saving = false);
       }

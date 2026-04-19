@@ -12,6 +12,7 @@ import '../services/device_service.dart';
 import '../services/history_service.dart';
 import '../services/log_service.dart';
 import '../services/network_service.dart';
+import '../utils/dialogs.dart';
 import '../utils/errors.dart';
 import '../utils/formatters.dart';
 import '../widgets/alert_list_tile.dart';
@@ -298,30 +299,11 @@ class _NetworkDetailScreenState extends State<NetworkDetailScreen>
 
   Future<void> _rename() async {
     if (_network == null) return;
-    final ctrl = TextEditingController(text: _network!.name);
-    final newName = await showDialog<String>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('Rename network'),
-        content: TextField(
-          controller: ctrl,
-          decoration: const InputDecoration(
-            labelText: 'Name',
-            border: OutlineInputBorder(),
-          ),
-          autofocus: true,
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(),
-            child: const Text('Cancel'),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.of(ctx).pop(ctrl.text.trim()),
-            child: const Text('Save'),
-          ),
-        ],
-      ),
+    final newName = await showTextInputDialog(
+      context,
+      title: 'Rename network',
+      labelText: 'Name',
+      initialValue: _network!.name,
     );
     if (newName != null && newName.isNotEmpty && mounted) {
       try {
@@ -331,21 +313,7 @@ class _NetworkDetailScreenState extends State<NetworkDetailScreen>
         );
         if (mounted) setState(() => _network = updated);
       } catch (e) {
-        if (mounted) {
-          showDialog(
-            context: context,
-            builder: (ctx) => AlertDialog(
-              title: const Text('Rename failed'),
-              content: Text(errorMessage(e)),
-              actions: [
-                FilledButton(
-                  onPressed: () => Navigator.of(ctx).pop(),
-                  child: const Text('OK'),
-                ),
-              ],
-            ),
-          );
-        }
+        if (mounted) showErrorDialog(context, title: 'Rename failed', error: e);
       }
     }
   }
@@ -370,21 +338,8 @@ class _NetworkDetailScreenState extends State<NetworkDetailScreen>
                 );
                 if (mounted) setState(() => _network = updated);
               } catch (e) {
-                if (mounted) {
-                  showDialog(
-                    context: context,
-                    builder: (ctx) => AlertDialog(
-                      title: const Text('Save failed'),
-                      content: Text(errorMessage(e)),
-                      actions: [
-                        FilledButton(
-                          onPressed: () => Navigator.of(ctx).pop(),
-                          child: const Text('OK'),
-                        ),
-                      ],
-                    ),
-                  );
-                }
+                if (mounted)
+                  showErrorDialog(context, title: 'Save failed', error: e);
               }
             },
           ),

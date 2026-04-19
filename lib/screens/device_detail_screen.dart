@@ -10,6 +10,7 @@ import '../services/alert_service.dart';
 import '../services/device_service.dart';
 import '../services/history_service.dart';
 import '../services/log_service.dart';
+import '../utils/dialogs.dart';
 import '../utils/errors.dart';
 import '../utils/formatters.dart';
 import '../widgets/alert_list_tile.dart';
@@ -252,51 +253,18 @@ class _DeviceDetailScreenState extends State<DeviceDetailScreen>
 
   Future<void> _changeName() async {
     if (_device == null) return;
-    final ctrl = TextEditingController(text: _device!.name);
-    final newName = await showDialog<String>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('Rename device'),
-        content: TextField(
-          controller: ctrl,
-          decoration: const InputDecoration(
-            labelText: 'Name',
-            border: OutlineInputBorder(),
-          ),
-          autofocus: true,
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(),
-            child: const Text('Cancel'),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.of(ctx).pop(ctrl.text.trim()),
-            child: const Text('Save'),
-          ),
-        ],
-      ),
+    final newName = await showTextInputDialog(
+      context,
+      title: 'Rename device',
+      labelText: 'Name',
+      initialValue: _device!.name,
     );
     if (newName != null && newName.isNotEmpty && mounted) {
       try {
         final updated = await _deviceService.renameDevice(_device!.id, newName);
         if (mounted) setState(() => _device = updated);
       } catch (e) {
-        if (mounted) {
-          showDialog(
-            context: context,
-            builder: (ctx) => AlertDialog(
-              title: const Text('Rename failed'),
-              content: Text(errorMessage(e)),
-              actions: [
-                FilledButton(
-                  onPressed: () => Navigator.of(ctx).pop(),
-                  child: const Text('OK'),
-                ),
-              ],
-            ),
-          );
-        }
+        if (mounted) showErrorDialog(context, title: 'Rename failed', error: e);
       }
     }
   }
@@ -330,21 +298,8 @@ class _DeviceDetailScreenState extends State<DeviceDetailScreen>
       final updated = await _deviceService.updateDeviceMode(_device!.id, mode);
       if (mounted) setState(() => _device = updated);
     } catch (e) {
-      if (mounted) {
-        showDialog(
-          context: context,
-          builder: (ctx) => AlertDialog(
-            title: const Text('Mode change failed'),
-            content: Text(errorMessage(e)),
-            actions: [
-              FilledButton(
-                onPressed: () => Navigator.of(ctx).pop(),
-                child: const Text('OK'),
-              ),
-            ],
-          ),
-        );
-      }
+      if (mounted)
+        showErrorDialog(context, title: 'Mode change failed', error: e);
     }
   }
 

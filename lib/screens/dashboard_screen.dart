@@ -11,7 +11,7 @@ import '../services/alert_service.dart';
 import '../services/device_service.dart';
 import '../services/network_service.dart';
 import '../utils/constants.dart';
-import '../utils/errors.dart';
+import '../utils/dialogs.dart';
 import '../widgets/error_display.dart';
 import '../widgets/network_card.dart';
 import '../widgets/network_config_form.dart';
@@ -154,18 +154,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       }
                     } catch (e) {
                       if (mounted) {
-                        showDialog(
-                          context: context,
-                          builder: (ctx) => AlertDialog(
-                            title: const Text('Failed to create network'),
-                            content: Text(errorMessage(e)),
-                            actions: [
-                              FilledButton(
-                                onPressed: () => Navigator.of(ctx).pop(),
-                                child: const Text('OK'),
-                              ),
-                            ],
-                          ),
+                        showErrorDialog(
+                          context,
+                          title: 'Failed to create network',
+                          error: e,
                         );
                       }
                     }
