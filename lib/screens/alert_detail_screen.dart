@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../models/alert.dart';
 import '../utils/formatters.dart';
+import '../widgets/detail_card.dart';
 import '../widgets/shell_menu_leading.dart';
 
 class AlertDetailScreen extends StatelessWidget {
@@ -23,9 +24,9 @@ class AlertDetailScreen extends StatelessWidget {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          _DetailCard(
+          DetailCard(
             children: [
-              _Row(
+              DetailRow(
                 label: 'Status',
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
@@ -48,23 +49,26 @@ class AlertDetailScreen extends StatelessWidget {
                   ],
                 ),
               ),
-              _Row(label: 'Type', value: alertTypeLabel(alert.alertType)),
+              DetailRow(label: 'Type', value: alertTypeLabel(alert.alertType)),
               if (alert.networkName != null)
-                _Row(
+                DetailRow(
                   label: 'Network',
                   value: alert.networkName,
                   softWrap: true,
                 ),
               if (alert.deviceNameOrVendor != null)
-                _Row(
+                DetailRow(
                   label: 'Device',
                   value: alert.deviceNameOrVendor,
                   softWrap: true,
                 ),
-              _Row(label: 'ID', value: '${alert.id}'),
-              _Row(label: 'Opened', value: formatDateTime(alert.timestamp)),
+              DetailRow(label: 'ID', value: '${alert.id}'),
+              DetailRow(
+                label: 'Opened',
+                value: formatDateTime(alert.timestamp),
+              ),
               if (alert.closureTimestamp != null)
-                _Row(
+                DetailRow(
                   label: 'Closed',
                   value: formatDateTime(alert.closureTimestamp),
                 ),
@@ -72,9 +76,13 @@ class AlertDetailScreen extends StatelessWidget {
           ),
           if (alert.message != null) ...[
             const SizedBox(height: 12),
-            _DetailCard(
+            DetailCard(
               children: [
-                _Row(label: 'Message', value: alert.message, softWrap: true),
+                DetailRow(
+                  label: 'Message',
+                  value: alert.message,
+                  softWrap: true,
+                ),
               ],
             ),
           ],
@@ -106,73 +114,6 @@ class AlertDetailScreen extends StatelessWidget {
               ),
             ),
           ],
-        ],
-      ),
-    );
-  }
-}
-
-// ─── Shared layout helpers ────────────────────────────────────────────────────
-
-class _DetailCard extends StatelessWidget {
-  final List<Widget> children;
-  const _DetailCard({required this.children});
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      margin: EdgeInsets.zero,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: children,
-        ),
-      ),
-    );
-  }
-}
-
-class _Row extends StatelessWidget {
-  final String label;
-  final String? value;
-  final Widget? child;
-  final bool softWrap;
-
-  const _Row({
-    required this.label,
-    this.value,
-    this.child,
-    this.softWrap = false,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 6),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            width: 100,
-            child: Text(
-              label,
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
-              ),
-            ),
-          ),
-          Expanded(
-            child:
-                child ??
-                Text(
-                  value ?? '-',
-                  softWrap: softWrap,
-                  overflow: softWrap
-                      ? TextOverflow.visible
-                      : TextOverflow.ellipsis,
-                ),
-          ),
         ],
       ),
     );

@@ -13,6 +13,7 @@ import '../services/log_service.dart';
 import '../utils/errors.dart';
 import '../utils/formatters.dart';
 import '../widgets/alert_list_tile.dart';
+import '../widgets/detail_card.dart';
 import '../widgets/error_display.dart';
 import '../widgets/history_list_tile.dart';
 import '../widgets/log_list_tile.dart';
@@ -395,41 +396,57 @@ class _DeviceDetailScreenState extends State<DeviceDetailScreen>
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
-        Card(
-          margin: EdgeInsets.zero,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _infoChildRow(
-                  'Status',
-                  Row(
-                    children: [
-                      Icon(
-                        d.online ? Icons.circle : Icons.circle_outlined,
-                        color: onlineColor,
-                        size: 16,
-                      ),
-                      const SizedBox(width: 6),
-                      Text(
-                        d.online ? 'Online' : 'Offline',
-                        style: TextStyle(color: onlineColor),
-                      ),
-                    ],
+        DetailCard(
+          children: [
+            DetailRow(
+              label: 'Status',
+              labelWidth: 160,
+              child: Row(
+                children: [
+                  Icon(
+                    d.online ? Icons.circle : Icons.circle_outlined,
+                    color: onlineColor,
+                    size: 16,
                   ),
-                ),
-                _infoRow('Name', d.name),
-                _infoRow('ID', '${d.id}'),
-                _infoRow('MAC address', d.macAddress),
-                if (d.ipAddress != null) _infoRow('IP address', d.ipAddress!),
-                if (d.vendor != null) _infoRow('Vendor', d.vendor!),
-                _infoRow('Operation mode', d.deviceOperationMode ?? '-'),
-                _infoRow('First seen', formatDateTime(d.firstSeen)),
-                _infoRow('Last seen', formatDateTime(d.lastSeen)),
-              ],
+                  const SizedBox(width: 6),
+                  Text(
+                    d.online ? 'Online' : 'Offline',
+                    style: TextStyle(color: onlineColor),
+                  ),
+                ],
+              ),
             ),
-          ),
+            DetailRow(label: 'Name', value: d.name, labelWidth: 160),
+            DetailRow(label: 'ID', value: '${d.id}', labelWidth: 160),
+            DetailRow(
+              label: 'MAC address',
+              value: d.macAddress,
+              labelWidth: 160,
+            ),
+            if (d.ipAddress != null)
+              DetailRow(
+                label: 'IP address',
+                value: d.ipAddress!,
+                labelWidth: 160,
+              ),
+            if (d.vendor != null)
+              DetailRow(label: 'Vendor', value: d.vendor!, labelWidth: 160),
+            DetailRow(
+              label: 'Operation mode',
+              value: d.deviceOperationMode ?? '-',
+              labelWidth: 160,
+            ),
+            DetailRow(
+              label: 'First seen',
+              value: formatDateTime(d.firstSeen),
+              labelWidth: 160,
+            ),
+            DetailRow(
+              label: 'Last seen',
+              value: formatDateTime(d.lastSeen),
+              labelWidth: 160,
+            ),
+          ],
         ),
         const SizedBox(height: 12),
         Wrap(
@@ -568,26 +585,4 @@ class _DeviceDetailScreenState extends State<DeviceDetailScreen>
             ),
     );
   }
-
-  Widget _infoRow(String label, String value) =>
-      _infoChildRow(label, Text(value));
-
-  Widget _infoChildRow(String label, Widget child) => Padding(
-    padding: const EdgeInsets.symmetric(vertical: 6),
-    child: Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        SizedBox(
-          width: 160,
-          child: Text(
-            label,
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: Theme.of(context).colorScheme.onSurfaceVariant,
-            ),
-          ),
-        ),
-        Expanded(child: child),
-      ],
-    ),
-  );
 }

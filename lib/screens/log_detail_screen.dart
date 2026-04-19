@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../models/log_entry.dart';
 import '../utils/constants.dart';
 import '../utils/formatters.dart';
+import '../widgets/detail_card.dart';
 import '../widgets/shell_menu_leading.dart';
 
 class LogDetailScreen extends StatelessWidget {
@@ -21,9 +22,9 @@ class LogDetailScreen extends StatelessWidget {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          _DetailCard(
+          DetailCard(
             children: [
-              _Row(
+              DetailRow(
                 label: 'Level',
                 child: Container(
                   padding: const EdgeInsets.symmetric(
@@ -43,14 +44,18 @@ class LogDetailScreen extends StatelessWidget {
                   ),
                 ),
               ),
-              _Row(
+              DetailRow(
                 label: 'Timestamp',
                 value: formatDateTime(entry.timestamp),
               ),
-              _Row(label: 'Origin', value: entry.origin, softWrap: true),
-              _Row(label: 'Network', value: entry.networkName, softWrap: true),
+              DetailRow(label: 'Origin', value: entry.origin, softWrap: true),
+              DetailRow(
+                label: 'Network',
+                value: entry.networkName,
+                softWrap: true,
+              ),
               if (entry.deviceNameOrVendor != null)
-                _Row(
+                DetailRow(
                   label: 'Device',
                   value: entry.deviceNameOrVendor,
                   softWrap: true,
@@ -58,9 +63,9 @@ class LogDetailScreen extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 12),
-          _DetailCard(
+          DetailCard(
             children: [
-              _Row(label: 'Message', value: entry.message, softWrap: true),
+              DetailRow(label: 'Message', value: entry.message, softWrap: true),
             ],
           ),
           if (entry.networkId != null || entry.deviceId != null) ...[
@@ -91,68 +96,6 @@ class LogDetailScreen extends StatelessWidget {
               ),
             ),
           ],
-        ],
-      ),
-    );
-  }
-}
-
-// ─── Shared layout helpers ───────────────────────────────────────────────────
-
-class _DetailCard extends StatelessWidget {
-  final List<Widget> children;
-  const _DetailCard({required this.children});
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      margin: EdgeInsets.zero,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: children,
-        ),
-      ),
-    );
-  }
-}
-
-class _Row extends StatelessWidget {
-  final String label;
-  final String? value;
-  final Widget? child;
-  final bool softWrap;
-
-  const _Row({
-    required this.label,
-    this.value,
-    this.child,
-    this.softWrap = false,
-  }) : assert(value != null || child != null);
-
-  @override
-  Widget build(BuildContext context) {
-    final labelStyle = Theme.of(context).textTheme.bodySmall?.copyWith(
-      color: Theme.of(context).colorScheme.onSurfaceVariant,
-    );
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 6),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(width: 90, child: Text(label, style: labelStyle)),
-          Expanded(
-            child:
-                child ??
-                Text(
-                  value!,
-                  softWrap: softWrap,
-                  overflow: softWrap
-                      ? TextOverflow.visible
-                      : TextOverflow.ellipsis,
-                ),
-          ),
         ],
       ),
     );

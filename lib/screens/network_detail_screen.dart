@@ -15,6 +15,7 @@ import '../services/network_service.dart';
 import '../utils/errors.dart';
 import '../utils/formatters.dart';
 import '../widgets/alert_list_tile.dart';
+import '../widgets/detail_card.dart';
 import '../widgets/device_list_tile.dart';
 import '../widgets/error_display.dart';
 import '../widgets/history_list_tile.dart';
@@ -644,42 +645,51 @@ class _NetworkDetailScreenState extends State<NetworkDetailScreen>
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
-        Card(
-          margin: EdgeInsets.zero,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _infoRow('Name', n.name),
-                _infoRow('ID', '${n.id}'),
-                _infoRow('First seen', formatDateTime(n.firstSeen)),
-                _infoRow('Last seen', formatDateTime(n.lastSeen)),
-                _infoRow('Timezone', cfg.timezone),
-                _infoRow(
-                  'Reporting interval',
-                  cfg.reportingInterval != null
-                      ? '${cfg.reportingInterval} s'
-                      : '-',
-                ),
-                _infoRow(
-                  'Alerting delay',
-                  cfg.alertingDelay != null ? '${cfg.alertingDelay} s' : '-',
-                ),
-                _infoRow(
-                  'Notification email',
-                  cfg.notificationEmailAddress ?? '-',
-                ),
-                _infoRow('Reminder time', cfg.reminderTimeOfDay ?? '-'),
-                _infoRow(
-                  'Reminder interval',
-                  cfg.reminderIntervalDays != null
-                      ? '${cfg.reminderIntervalDays} days'
-                      : '-',
-                ),
-              ],
+        DetailCard(
+          children: [
+            DetailRow(label: 'Name', value: n.name, labelWidth: 180),
+            DetailRow(label: 'ID', value: '${n.id}', labelWidth: 180),
+            DetailRow(
+              label: 'First seen',
+              value: formatDateTime(n.firstSeen),
+              labelWidth: 180,
             ),
-          ),
+            DetailRow(
+              label: 'Last seen',
+              value: formatDateTime(n.lastSeen),
+              labelWidth: 180,
+            ),
+            DetailRow(label: 'Timezone', value: cfg.timezone, labelWidth: 180),
+            DetailRow(
+              label: 'Reporting interval',
+              value: cfg.reportingInterval != null
+                  ? '${cfg.reportingInterval} s'
+                  : '-',
+              labelWidth: 180,
+            ),
+            DetailRow(
+              label: 'Alerting delay',
+              value: cfg.alertingDelay != null ? '${cfg.alertingDelay} s' : '-',
+              labelWidth: 180,
+            ),
+            DetailRow(
+              label: 'Notification email',
+              value: cfg.notificationEmailAddress ?? '-',
+              labelWidth: 180,
+            ),
+            DetailRow(
+              label: 'Reminder time',
+              value: cfg.reminderTimeOfDay ?? '-',
+              labelWidth: 180,
+            ),
+            DetailRow(
+              label: 'Reminder interval',
+              value: cfg.reminderIntervalDays != null
+                  ? '${cfg.reminderIntervalDays} days'
+                  : '-',
+              labelWidth: 180,
+            ),
+          ],
         ),
 
         const SizedBox(height: 12),
@@ -703,23 +713,4 @@ class _NetworkDetailScreenState extends State<NetworkDetailScreen>
       ],
     );
   }
-
-  Widget _infoRow(String label, String value) => Padding(
-    padding: const EdgeInsets.symmetric(vertical: 6),
-    child: Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        SizedBox(
-          width: 180,
-          child: Text(
-            label,
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: Theme.of(context).colorScheme.onSurfaceVariant,
-            ),
-          ),
-        ),
-        Expanded(child: Text(value)),
-      ],
-    ),
-  );
 }

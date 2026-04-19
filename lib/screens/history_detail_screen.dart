@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../models/device_status_history.dart';
 import '../utils/formatters.dart';
+import '../widgets/detail_card.dart';
 import '../widgets/shell_menu_leading.dart';
 
 class HistoryDetailScreen extends StatelessWidget {
@@ -21,9 +22,9 @@ class HistoryDetailScreen extends StatelessWidget {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          _DetailCard(
+          DetailCard(
             children: [
-              _Row(
+              DetailRow(
                 label: 'Status',
                 child: Row(
                   children: [
@@ -45,12 +46,15 @@ class HistoryDetailScreen extends StatelessWidget {
                   ],
                 ),
               ),
-              _Row(label: 'Network', value: entry.networkName),
+              DetailRow(label: 'Network', value: entry.networkName),
               if (entry.deviceNameOrVendor != null)
-                _Row(label: 'Device', value: entry.deviceNameOrVendor),
-              _Row(label: 'Timestamp', value: formatDateTime(entry.timestamp)),
+                DetailRow(label: 'Device', value: entry.deviceNameOrVendor),
+              DetailRow(
+                label: 'Timestamp',
+                value: formatDateTime(entry.timestamp),
+              ),
               if (entry.ipAddress != null)
-                _Row(label: 'IP Address', value: entry.ipAddress!),
+                DetailRow(label: 'IP Address', value: entry.ipAddress!),
             ],
           ),
           const SizedBox(height: 12),
@@ -77,53 +81,6 @@ class HistoryDetailScreen extends StatelessWidget {
               ],
             ),
           ),
-        ],
-      ),
-    );
-  }
-}
-
-// ─── Shared layout helpers ───────────────────────────────────────────────────
-
-class _DetailCard extends StatelessWidget {
-  final List<Widget> children;
-  const _DetailCard({required this.children});
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      margin: EdgeInsets.zero,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: children,
-        ),
-      ),
-    );
-  }
-}
-
-class _Row extends StatelessWidget {
-  final String label;
-  final String? value;
-  final Widget? child;
-
-  const _Row({required this.label, this.value, this.child})
-    : assert(value != null || child != null);
-
-  @override
-  Widget build(BuildContext context) {
-    final labelStyle = Theme.of(context).textTheme.bodySmall?.copyWith(
-      color: Theme.of(context).colorScheme.onSurfaceVariant,
-    );
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 6),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(width: 90, child: Text(label, style: labelStyle)),
-          Expanded(child: child ?? Text(value!)),
         ],
       ),
     );
