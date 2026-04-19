@@ -16,6 +16,7 @@ import '../utils/dialogs.dart';
 import '../utils/errors.dart';
 import '../utils/formatters.dart';
 import '../widgets/alert_list_tile.dart';
+import '../widgets/async_list_view.dart';
 import '../widgets/detail_card.dart';
 import '../widgets/device_list_tile.dart';
 import '../widgets/error_display.dart';
@@ -392,108 +393,38 @@ class _NetworkDetailScreenState extends State<NetworkDetailScreen>
     );
   }
 
-  Widget _buildDeviceList() {
-    if (_devicesLoading && !_devicesLoaded) {
-      return const Center(child: CircularProgressIndicator());
-    }
-    if (_devicesError != null) {
-      return ErrorDisplay(
-        message: _devicesError!,
-        onRetry: () {
+  Widget _buildDeviceList() => AsyncListView<Device>(
+    items: _devices,
+    isLoading: _devicesLoading,
+    error: _devicesError,
+    onRefresh: () async {
+      _devicesLoaded = false;
+      await _loadDevices();
+    },
+    emptyMessage: 'No devices',
+    itemBuilder: (ctx, d) => DeviceListTile(
+      device: d,
+      onTap: () async {
+        await Navigator.of(ctx).pushNamed('/device', arguments: d.id);
+        if (mounted) {
           _devicesLoaded = false;
           _loadDevices();
-        },
-      );
-    }
-    if (_devices.isEmpty) {
-      return RefreshIndicator(
-        onRefresh: () async {
-          _devicesLoaded = false;
-          await _loadDevices();
-        },
-        child: ListView(
-          physics: const AlwaysScrollableScrollPhysics(),
-          children: const [
-            Center(
-              child: Padding(
-                padding: EdgeInsets.all(32),
-                child: Text('No devices'),
-              ),
-            ),
-          ],
-        ),
-      );
-    }
-    return RefreshIndicator(
-      onRefresh: () async {
-        _devicesLoaded = false;
-        await _loadDevices();
+        }
       },
-      child: ListView.separated(
-        physics: const AlwaysScrollableScrollPhysics(),
-        itemCount: _devices.length,
-        separatorBuilder: (_, _) => const Divider(height: 1),
-        itemBuilder: (ctx, i) => DeviceListTile(
-          device: _devices[i],
-          onTap: () async {
-            await Navigator.of(
-              context,
-            ).pushNamed('/device', arguments: _devices[i].id);
-            if (mounted) {
-              _devicesLoaded = false;
-              _loadDevices();
-            }
-          },
-        ),
-      ),
-    );
-  }
+    ),
+  );
 
-  Widget _buildAlertList() {
-    if (_alertsLoading && !_alertsLoaded) {
-      return const Center(child: CircularProgressIndicator());
-    }
-    if (_alertsError != null) {
-      return ErrorDisplay(
-        message: _alertsError!,
-        onRetry: () {
-          _alertsLoaded = false;
-          _loadAlerts();
-        },
-      );
-    }
-    if (_alerts.isEmpty) {
-      return RefreshIndicator(
-        onRefresh: () async {
-          _alertsLoaded = false;
-          await _loadAlerts();
-        },
-        child: ListView(
-          physics: const AlwaysScrollableScrollPhysics(),
-          children: const [
-            Center(
-              child: Padding(
-                padding: EdgeInsets.all(32),
-                child: Text('No alerts'),
-              ),
-            ),
-          ],
-        ),
-      );
-    }
-    return RefreshIndicator(
-      onRefresh: () async {
-        _alertsLoaded = false;
-        await _loadAlerts();
-      },
-      child: ListView.separated(
-        physics: const AlwaysScrollableScrollPhysics(),
-        itemCount: _alerts.length,
-        separatorBuilder: (_, _) => const Divider(height: 1),
-        itemBuilder: (ctx, i) => AlertListTile(alert: _alerts[i]),
-      ),
-    );
-  }
+  Widget _buildAlertList() => AsyncListView<Alert>(
+    items: _alerts,
+    isLoading: _alertsLoading,
+    error: _alertsError,
+    onRefresh: () async {
+      _alertsLoaded = false;
+      await _loadAlerts();
+    },
+    emptyMessage: 'No alerts',
+    itemBuilder: (_, a) => AlertListTile(alert: a),
+  );
 
   Widget _buildLogs() => PaginatedListView<LogEntry>(
     items: _log,

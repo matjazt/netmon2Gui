@@ -14,6 +14,7 @@ import '../utils/dialogs.dart';
 import '../utils/errors.dart';
 import '../utils/formatters.dart';
 import '../widgets/alert_list_tile.dart';
+import '../widgets/async_list_view.dart';
 import '../widgets/detail_card.dart';
 import '../widgets/error_display.dart';
 import '../widgets/history_list_tile.dart';
@@ -432,31 +433,14 @@ class _DeviceDetailScreenState extends State<DeviceDetailScreen>
     );
   }
 
-  Widget _buildAlerts() {
-    if (_alertsLoading && !_alertsLoaded) {
-      return const Center(child: CircularProgressIndicator());
-    }
-    if (_alertsError != null) {
-      return ErrorDisplay(message: _alertsError!, onRetry: _loadAlerts);
-    }
-    return RefreshIndicator(
-      onRefresh: () => _loadAlerts(),
-      child: _alerts.isEmpty
-          ? ListView(
-              physics: const AlwaysScrollableScrollPhysics(),
-              children: const [
-                SizedBox(height: 120),
-                Center(child: Text('No alerts')),
-              ],
-            )
-          : ListView.separated(
-              physics: const AlwaysScrollableScrollPhysics(),
-              itemCount: _alerts.length,
-              separatorBuilder: (_, _) => const Divider(height: 1),
-              itemBuilder: (ctx, i) => AlertListTile(alert: _alerts[i]),
-            ),
-    );
-  }
+  Widget _buildAlerts() => AsyncListView<Alert>(
+    items: _alerts,
+    isLoading: _alertsLoading,
+    error: _alertsError,
+    onRefresh: _loadAlerts,
+    emptyMessage: 'No alerts',
+    itemBuilder: (_, a) => AlertListTile(alert: a),
+  );
 
   Widget _buildLogs() => PaginatedListView<LogEntry>(
     items: _log,

@@ -4,8 +4,8 @@ import '../../models/account.dart';
 import '../../services/account_service.dart';
 import '../../utils/constants.dart';
 import '../../utils/errors.dart';
+import '../../widgets/async_list_view.dart';
 import '../../widgets/confirm_dialog.dart';
-import '../../widgets/error_display.dart';
 import '../../widgets/shell_menu_leading.dart';
 import 'admin_account_form.dart';
 
@@ -103,48 +103,38 @@ class _AdminAccountsScreenState extends State<AdminAccountsScreen> {
         icon: const Icon(Icons.person_add),
         label: const Text('New account'),
       ),
-      body: _loading
-          ? const Center(child: CircularProgressIndicator())
-          : _error != null
-          ? ErrorDisplay(message: _error!, onRetry: _load)
-          : RefreshIndicator(
-              onRefresh: _load,
-              child: ListView.separated(
-                physics: const AlwaysScrollableScrollPhysics(),
-                itemCount: _accounts.length,
-                separatorBuilder: (_, _) => const Divider(height: 1),
-                itemBuilder: (ctx, i) {
-                  final a = _accounts[i];
-                  return ListTile(
-                    leading: CircleAvatar(
-                      child: Text(a.username[0].toUpperCase()),
-                    ),
-                    title: Text(a.username),
-                    subtitle: Text(
-                      [
-                        _typeName(a.accountTypeId),
-                        if (a.fullName != null) a.fullName!,
-                        if (a.email != null) a.email!,
-                      ].join('  ·  '),
-                    ),
-                    trailing: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        IconButton(
-                          icon: const Icon(Icons.edit_outlined),
-                          onPressed: () => _openForm(a),
-                        ),
-                        IconButton(
-                          icon: const Icon(Icons.delete_outline),
-                          color: Theme.of(context).colorScheme.error,
-                          onPressed: () => _delete(a),
-                        ),
-                      ],
-                    ),
-                  );
-                },
+      body: AsyncListView<Account>(
+        items: _accounts,
+        isLoading: _loading,
+        error: _error,
+        onRefresh: _load,
+        emptyMessage: 'No accounts',
+        itemBuilder: (ctx, a) => ListTile(
+          leading: CircleAvatar(child: Text(a.username[0].toUpperCase())),
+          title: Text(a.username),
+          subtitle: Text(
+            [
+              _typeName(a.accountTypeId),
+              if (a.fullName != null) a.fullName!,
+              if (a.email != null) a.email!,
+            ].join('  ·  '),
+          ),
+          trailing: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              IconButton(
+                icon: const Icon(Icons.edit_outlined),
+                onPressed: () => _openForm(a),
               ),
-            ),
+              IconButton(
+                icon: const Icon(Icons.delete_outline),
+                color: Theme.of(ctx).colorScheme.error,
+                onPressed: () => _delete(a),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
