@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 import '../models/log_entry.dart';
 import '../utils/constants.dart';
+import '../utils/formatters.dart';
 import '../widgets/shell_menu_leading.dart';
-
-final _fmt = DateFormat('yyyy-MM-dd HH:mm:ss');
 
 class LogDetailScreen extends StatelessWidget {
   final LogEntry entry;
@@ -14,7 +12,7 @@ class LogDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final levelColor = _levelColor(entry.level);
+    final levelColor = logLevelColor(entry.level);
     return Scaffold(
       appBar: AppBar(
         title: Text("Log Entry #${entry.id}"),
@@ -47,7 +45,7 @@ class LogDetailScreen extends StatelessWidget {
               ),
               _Row(
                 label: 'Timestamp',
-                value: _fmt.format(entry.timestamp.toLocal()),
+                value: formatDateTime(entry.timestamp),
               ),
               _Row(label: 'Origin', value: entry.origin, softWrap: true),
               _Row(label: 'Network', value: entry.networkName, softWrap: true),
@@ -97,15 +95,6 @@ class LogDetailScreen extends StatelessWidget {
       ),
     );
   }
-
-  Color _levelColor(int level) => switch (level) {
-    kLogLevelTrace => Colors.grey,
-    kLogLevelDebug => Colors.blueGrey,
-    kLogLevelInfo => Colors.blue,
-    kLogLevelWarn => Colors.orange,
-    kLogLevelError => Colors.red,
-    _ => Colors.grey,
-  };
 }
 
 // ─── Shared layout helpers ───────────────────────────────────────────────────

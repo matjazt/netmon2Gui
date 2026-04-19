@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 import '../models/log_entry.dart';
 import '../screens/log_detail_screen.dart';
 import '../utils/constants.dart';
-
-final _fmt = DateFormat('yyyy-MM-dd HH:mm:ss');
+import '../utils/formatters.dart';
 
 /// Colour-codes the log level label, then shows origin and message.
 class LogListTile extends StatelessWidget {
@@ -15,7 +13,7 @@ class LogListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final levelColor = _levelColor(entry.level);
+    final levelColor = logLevelColor(entry.level);
     return ListTile(
       dense: true,
       leading: Container(
@@ -41,7 +39,7 @@ class LogListTile extends StatelessWidget {
       title: Text(entry.message, overflow: TextOverflow.fade),
       subtitle: Text(
         [
-          _fmt.format(entry.timestamp.toLocal()),
+          formatDateTime(entry.timestamp),
           if (entry.deviceNameOrVendor != null && entry.networkName != null)
             '${entry.deviceNameOrVendor!} @ ${entry.networkName!}',
           if (entry.deviceNameOrVendor == null && entry.networkName != null)
@@ -52,13 +50,4 @@ class LogListTile extends StatelessWidget {
       ),
     );
   }
-
-  Color _levelColor(int level) => switch (level) {
-    kLogLevelTrace => Colors.grey, // TRACE
-    kLogLevelDebug => Colors.blueGrey, // DEBUG
-    kLogLevelInfo => Colors.blue, // INFO
-    kLogLevelWarn => Colors.orange, // WARN
-    kLogLevelError => Colors.red, // ERROR
-    _ => Colors.grey,
-  };
 }

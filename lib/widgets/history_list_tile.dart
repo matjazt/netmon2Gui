@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 import '../models/device_status_history.dart';
 import '../screens/history_detail_screen.dart';
-
-final _fmt = DateFormat('yyyy-MM-dd HH:mm:ss');
+import '../utils/formatters.dart';
 
 /// A compact tile showing one device-status-history row.
 class HistoryListTile extends StatelessWidget {
@@ -17,7 +15,7 @@ class HistoryListTile extends StatelessWidget {
     final colorScheme = Theme.of(context).colorScheme;
     final color = entry.online ? Colors.green : colorScheme.error;
     final parts = [
-      _fmt.format(entry.timestamp.toLocal()),
+      formatDateTime(entry.timestamp),
       if (entry.networkName != null) entry.networkName!,
       if (entry.ipAddress != null) entry.ipAddress!,
     ];

@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 import '../models/device_status_history.dart';
+import '../utils/formatters.dart';
 import '../widgets/shell_menu_leading.dart';
-
-final _fmt = DateFormat('yyyy-MM-dd HH:mm:ss');
 
 class HistoryDetailScreen extends StatelessWidget {
   final DeviceStatusHistory entry;
@@ -50,10 +48,7 @@ class HistoryDetailScreen extends StatelessWidget {
               _Row(label: 'Network', value: entry.networkName),
               if (entry.deviceNameOrVendor != null)
                 _Row(label: 'Device', value: entry.deviceNameOrVendor),
-              _Row(
-                label: 'Timestamp',
-                value: _fmt.format(entry.timestamp.toLocal()),
-              ),
+              _Row(label: 'Timestamp', value: formatDateTime(entry.timestamp)),
               if (entry.ipAddress != null)
                 _Row(label: 'IP Address', value: entry.ipAddress!),
             ],

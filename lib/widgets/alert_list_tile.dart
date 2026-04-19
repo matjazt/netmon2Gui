@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 import '../models/alert.dart';
 import '../screens/alert_detail_screen.dart';
-
-final _fmt = DateFormat('yyyy-MM-dd HH:mm:ss');
+import '../utils/formatters.dart';
 
 /// A list tile for a single alert entry.
 class AlertListTile extends StatelessWidget {
@@ -28,14 +26,14 @@ class AlertListTile extends StatelessWidget {
         color: color,
       ),
       title: Text(
-        '${_alertTypeLabel(alert.alertType)}${subject.isNotEmpty ? ': $subject' : ''}',
+        '${alertTypeLabel(alert.alertType)}${subject.isNotEmpty ? ': $subject' : ''}',
         overflow: TextOverflow.ellipsis,
       ),
       subtitle: Text(
         [
-          _fmt.format(alert.timestamp.toLocal()),
+          formatDateTime(alert.timestamp),
           if (alert.closureTimestamp != null)
-            'closed at ${_fmt.format(alert.closureTimestamp!.toLocal())}',
+            'closed at ${formatDateTime(alert.closureTimestamp)}',
           if (alert.message != null) alert.message!,
         ].join('  ·  '),
       ),
@@ -50,11 +48,4 @@ class AlertListTile extends StatelessWidget {
       ),
     );
   }
-
-  String _alertTypeLabel(AlertType t) => switch (t) {
-    AlertType.networkDown => 'Network down',
-    AlertType.deviceDown => 'Device down',
-    AlertType.deviceUnauthorized => 'Unauthorized device',
-    AlertType.unknown => 'Unknown',
-  };
 }

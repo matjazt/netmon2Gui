@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 import '../models/alert.dart';
+import '../utils/formatters.dart';
 import '../widgets/shell_menu_leading.dart';
-
-final _fmt = DateFormat('yyyy-MM-dd HH:mm:ss');
 
 class AlertDetailScreen extends StatelessWidget {
   final Alert alert;
@@ -19,7 +17,7 @@ class AlertDetailScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("Alert #${alert.id}: ${_alertTypeLabel(alert.alertType)}"),
+        title: Text("Alert #${alert.id}: ${alertTypeLabel(alert.alertType)}"),
         actions: const [ShellMenuAction()],
       ),
       body: ListView(
@@ -50,7 +48,7 @@ class AlertDetailScreen extends StatelessWidget {
                   ],
                 ),
               ),
-              _Row(label: 'Type', value: _alertTypeLabel(alert.alertType)),
+              _Row(label: 'Type', value: alertTypeLabel(alert.alertType)),
               if (alert.networkName != null)
                 _Row(
                   label: 'Network',
@@ -64,14 +62,11 @@ class AlertDetailScreen extends StatelessWidget {
                   softWrap: true,
                 ),
               _Row(label: 'ID', value: '${alert.id}'),
-              _Row(
-                label: 'Opened',
-                value: _fmt.format(alert.timestamp.toLocal()),
-              ),
+              _Row(label: 'Opened', value: formatDateTime(alert.timestamp)),
               if (alert.closureTimestamp != null)
                 _Row(
                   label: 'Closed',
-                  value: _fmt.format(alert.closureTimestamp!.toLocal()),
+                  value: formatDateTime(alert.closureTimestamp),
                 ),
             ],
           ),
@@ -115,13 +110,6 @@ class AlertDetailScreen extends StatelessWidget {
       ),
     );
   }
-
-  String _alertTypeLabel(AlertType t) => switch (t) {
-    AlertType.networkDown => 'Network down',
-    AlertType.deviceDown => 'Device down',
-    AlertType.deviceUnauthorized => 'Unauthorized device',
-    AlertType.unknown => 'Unknown',
-  };
 }
 
 // ─── Shared layout helpers ────────────────────────────────────────────────────

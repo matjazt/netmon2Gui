@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../models/alert.dart';
@@ -12,13 +11,12 @@ import '../services/device_service.dart';
 import '../services/history_service.dart';
 import '../services/log_service.dart';
 import '../utils/errors.dart';
+import '../utils/formatters.dart';
 import '../widgets/alert_list_tile.dart';
 import '../widgets/error_display.dart';
 import '../widgets/history_list_tile.dart';
 import '../widgets/log_list_tile.dart';
 import '../widgets/shell_menu_leading.dart';
-
-final _fmt = DateFormat('yyyy-MM-dd HH:mm:ss');
 
 class DeviceDetailScreen extends StatefulWidget {
   final int deviceId;
@@ -427,16 +425,8 @@ class _DeviceDetailScreenState extends State<DeviceDetailScreen>
                 if (d.ipAddress != null) _infoRow('IP address', d.ipAddress!),
                 if (d.vendor != null) _infoRow('Vendor', d.vendor!),
                 _infoRow('Operation mode', d.deviceOperationMode ?? '-'),
-                _infoRow(
-                  'First seen',
-                  d.firstSeen != null
-                      ? _fmt.format(d.firstSeen!.toLocal())
-                      : '-',
-                ),
-                _infoRow(
-                  'Last seen',
-                  d.lastSeen != null ? _fmt.format(d.lastSeen!.toLocal()) : '-',
-                ),
+                _infoRow('First seen', formatDateTime(d.firstSeen)),
+                _infoRow('Last seen', formatDateTime(d.lastSeen)),
               ],
             ),
           ),
