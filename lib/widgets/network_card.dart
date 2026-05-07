@@ -6,6 +6,7 @@ import '../models/network.dart';
 class NetworkCard extends StatelessWidget {
   final Network network;
   final VoidCallback? onTap;
+  final VoidCallback? onTimelineTap;
   final int? onlineCount;
   final int? offlineCount;
   final int? alertCount;
@@ -14,6 +15,7 @@ class NetworkCard extends StatelessWidget {
     super.key,
     required this.network,
     this.onTap,
+    this.onTimelineTap,
     this.onlineCount,
     this.offlineCount,
     this.alertCount,
@@ -56,6 +58,19 @@ class NetworkCard extends StatelessWidget {
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),
+                    if (onTimelineTap != null)
+                      IconButton(
+                        icon: const Icon(Icons.timeline),
+                        tooltip: 'Device timeline',
+                        onPressed: onTimelineTap,
+                        iconSize: 20,
+                        visualDensity: VisualDensity.compact,
+                        padding: EdgeInsets.zero,
+                        constraints: const BoxConstraints(
+                          minWidth: 28,
+                          minHeight: 28,
+                        ),
+                      ),
                   ],
                 ),
                 if (onlineCount != null ||

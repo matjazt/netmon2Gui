@@ -16,6 +16,7 @@ import '../widgets/error_display.dart';
 import '../widgets/network_card.dart';
 import '../widgets/network_config_form.dart';
 import '../widgets/shell_menu_leading.dart';
+import 'timeline_screen.dart';
 
 class _NetworkStats {
   final int online;
@@ -210,6 +211,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 onTap: () => Navigator.of(
                   context,
                 ).pushNamed('/network', arguments: n.id),
+                onTimelineTap: () => Navigator.of(context).pushNamed(
+                  '/timeline',
+                  arguments: TimelineArgs(networkId: n.id, networkName: n.name),
+                ),
               ),
             );
           },

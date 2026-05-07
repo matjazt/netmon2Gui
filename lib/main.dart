@@ -13,6 +13,7 @@ import 'screens/login_screen.dart';
 import 'screens/logs_screen.dart';
 import 'screens/network_detail_screen.dart';
 import 'screens/settings_screen.dart';
+import 'screens/timeline_screen.dart';
 import 'utils/theme.dart';
 import 'widgets/shell_menu_leading.dart';
 
@@ -172,6 +173,15 @@ class _MainScaffoldState extends State<MainScaffold> {
         return MaterialPageRoute(
           builder: (_) =>
               DeviceDetailScreen(deviceId: settings.arguments as int),
+          settings: settings,
+        );
+      case '/timeline':
+        final args = settings.arguments as TimelineArgs;
+        return MaterialPageRoute(
+          builder: (_) => TimelineScreen(
+            networkId: args.networkId,
+            networkName: args.networkName,
+          ),
           settings: settings,
         );
     }

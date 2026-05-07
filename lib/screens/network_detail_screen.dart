@@ -25,6 +25,7 @@ import '../widgets/log_list_tile.dart';
 import '../widgets/network_config_form.dart';
 import '../widgets/paginated_list_view.dart';
 import '../widgets/shell_menu_leading.dart';
+import 'timeline_screen.dart';
 
 class NetworkDetailScreen extends StatefulWidget {
   final int networkId;
@@ -516,6 +517,14 @@ class _NetworkDetailScreenState extends State<NetworkDetailScreen>
               icon: const Icon(Icons.settings_outlined, size: 16),
               label: const Text('Edit configuration'),
               onPressed: _editConfig,
+            ),
+            OutlinedButton.icon(
+              icon: const Icon(Icons.timeline, size: 16),
+              label: const Text('Device timeline'),
+              onPressed: () => Navigator.of(context).pushNamed(
+                '/timeline',
+                arguments: TimelineArgs(networkId: n.id, networkName: n.name),
+              ),
             ),
           ],
         ),
